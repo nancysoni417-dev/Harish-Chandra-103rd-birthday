@@ -4,10 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Harish-Chandra — Digital Legacy Challenge 2026</title>
-  
+
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+
+  <!-- External Libraries: Canvas Confetti & jsPDF -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
     :root {
@@ -21,7 +26,7 @@
       --text-slate: #64748B;
       --success-green: #2E7D32;
       --error-crimson: #C62828;
-      
+
       --font-title: 'Cinzel Decorative', 'Playfair Display', Georgia, serif;
       --font-heading: 'Playfair Display', Georgia, serif;
       --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -46,9 +51,6 @@
       overflow-x: hidden !important;
       position: relative;
       scroll-behavior: smooth;
-    }
-
-    body {
       background-color: var(--bg-ivory);
       color: var(--text-charcoal);
       font-family: var(--font-body);
@@ -61,14 +63,41 @@
       margin-inline: auto;
     }
 
-    /* INAUGURAL OVERLAY (Exact Center Lock) */
+    /* ==========================================================================
+       LEFT AND RIGHT APPEAR ANIMATIONS (ENTRANCE ON UNVEIL)
+       ========================================================================== */
+    .reveal-from-left {
+      opacity: 0;
+      transform: translateX(-80px);
+      transition: opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1), transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal-from-right {
+      opacity: 0;
+      transform: translateX(80px);
+      transition: opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1), transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    /* Triggered when inaugural dismisses */
+    body.page-revealed .reveal-from-left {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    body.page-revealed .reveal-from-right {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* INAUGURAL OVERLAY */
     #inauguralOverlay {
       position: fixed;
-      top: 0;
-      left: 0;
+      inset: 0;
       width: 100vw;
       height: 100dvh;
-      z-index: 9999999;
+      z-index: 999999;
       background: radial-gradient(circle at 50% 40%, #15324E 0%, #071524 65%, #030911 100%);
       display: flex;
       align-items: center;
@@ -363,11 +392,6 @@
       white-space: nowrap;
     }
 
-    .tribute-sparkle {
-      color: #FDE047;
-      font-size: 1rem;
-    }
-
     .btn {
       display: inline-flex;
       align-items: center;
@@ -588,6 +612,7 @@
       border-radius: var(--radius-lg);
       padding: clamp(1.5rem, 5vw, 2.5rem);
       box-shadow: 0 8px 30px rgba(11, 31, 51, 0.06);
+      position: relative;
     }
 
     .quiz-bar {
@@ -633,6 +658,12 @@
       text-align: left;
     }
 
+    .quiz-btn:hover:not(:disabled) {
+      border-color: var(--heritage-gold);
+      background: #ffffff;
+      transform: translateX(4px);
+    }
+
     .quiz-btn.correct {
       background: #e8f5e9 !important;
       border-color: var(--success-green) !important;
@@ -654,167 +685,157 @@
       display: none;
     }
 
-    .certificate-frame {
-      border: 6px solid var(--primary-dark);
-      padding: 2rem 1.25rem;
-      margin: 2rem 0;
-      text-align: center;
-      background: #fff;
-      position: relative;
-    }
-
-    /* MEMORIAL FLAME & DIYA */
-    .tribute-section {
-      background: #F7F4EC;
-      padding: clamp(3.5rem, 8vw, 6rem) 0;
-      border-top: 1px solid rgba(232, 215, 168, 0.6);
-      position: relative;
-      overflow: hidden;
-      width: 100%;
-    }
-
-    .tribute-header {
-      text-align: center;
-      max-width: 760px;
-      margin: 0 auto 2.5rem;
-    }
-
-    .tribute-main-title {
-      font-family: var(--font-heading);
-      font-size: clamp(1.75rem, 5vw, 3.2rem);
-      color: var(--primary-dark);
-      line-height: 1.2;
-      margin-bottom: 0.75rem;
-    }
-
-    .memorial-flame-card {
-      max-width: 820px;
-      margin: 0 auto;
-      background: radial-gradient(circle at 50% 35%, #182838 0%, #0F1923 75%, #0B131B 100%);
-      border-radius: 20px;
-      padding: clamp(2.5rem, 6vw, 4.5rem) 1.5rem;
-      box-shadow: 0 20px 50px rgba(11, 31, 51, 0.25);
-      border: 1px solid rgba(201, 162, 39, 0.35);
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .diya-halo {
-      position: absolute;
-      top: 10%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 220px;
-      height: 220px;
-      background: radial-gradient(circle, rgba(251, 191, 36, 0.35) 0%, rgba(245, 158, 11, 0.12) 45%, rgba(0,0,0,0) 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .diya-container {
-      position: relative;
-      display: inline-block;
-      margin-bottom: 1.75rem;
-      z-index: 2;
-    }
-
-    .flame-element {
-      width: 36px;
-      height: 60px;
-      margin: 0 auto;
-      background: linear-gradient(to bottom, #FFFBEB 0%, #FDE047 30%, #F59E0B 70%, #EA580C 100%);
-      border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
-      box-shadow: 0 0 25px #F59E0B, 0 0 50px #EA580C;
-      position: relative;
-    }
-
-    .diya-bowl {
-      width: 130px;
-      height: 36px;
-      background: linear-gradient(180deg, #A16207 0%, #78350F 60%, #451A03 100%);
-      border-radius: 0 0 70px 70px;
-      margin: -6px auto 0;
-      border-top: 2px solid #D97706;
-    }
-
-    .diya-rim {
-      width: 144px;
-      height: 10px;
-      background: linear-gradient(90deg, #B45309, #F59E0B, #B45309);
-      border-radius: 20px;
-      margin: 0 auto;
-    }
-
-    .diya-stand {
-      width: 48px;
-      height: 8px;
-      background: #78350F;
-      border-radius: 0 0 10px 10px;
-      margin: 0 auto;
-    }
-
-    .tribute-card-title {
-      font-family: var(--font-heading);
-      color: #FFFFFF;
-      font-size: clamp(1.4rem, 4.5vw, 2.35rem);
-      line-height: 1.25;
-      margin-bottom: 0.35rem;
-    }
-
-    .tribute-quote-container {
-      max-width: 620px;
-      margin: 0 auto 2rem;
-      padding: 1rem;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px dashed rgba(201, 162, 39, 0.35);
-      border-radius: 12px;
-    }
-
-    .tribute-quote-text {
-      font-family: var(--font-heading);
-      font-size: clamp(1rem, 3.2vw, 1.25rem);
-      letter-spacing: 0.06em;
-      line-height: 1.6;
-      color: #F8FAFC;
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-
-    .tribute-btn-container {
+    /* 3-SECOND POPUP MODAL */
+    .transition-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 31, 51, 0.82);
+      backdrop-filter: blur(8px);
+      z-index: 100000;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 1rem;
-      flex-wrap: wrap;
+      padding: 1.5rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.35s ease;
     }
 
-    .btn-pushpanjali {
-      background: #FBBF24;
-      color: #1E1B4B;
-      font-weight: 700;
-      font-size: 0.95rem;
-      padding: 0.8rem 1.6rem;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      box-shadow: 0 4px 18px rgba(251, 191, 36, 0.4);
+    .transition-modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
     }
 
-    .tributes-count-pill {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      color: #E2E8F0;
-      padding: 0.8rem 1.2rem;
-      border-radius: 10px;
-      font-size: 0.9rem;
+    .transition-modal-card {
+      background: #FFFDF8;
+      border: 2px solid var(--heritage-gold);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      max-width: 460px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+      animation: modalPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes modalPop {
+      0% { transform: scale(0.7); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .jumping-kitty {
+      font-size: 4rem;
+      display: inline-block;
+      animation: kittyJump 0.6s infinite alternate ease-in-out;
+      margin-bottom: 0.75rem;
+    }
+
+    @keyframes kittyJump {
+      0% { transform: translateY(0) rotate(0deg) scale(1); }
+      50% { transform: translateY(-25px) rotate(-6deg) scale(1.1); }
+      100% { transform: translateY(-35px) rotate(6deg) scale(1.15); }
+    }
+
+    .timer-circle-bar {
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: var(--text-slate);
       font-weight: 600;
-      display: inline-flex;
+      letter-spacing: 0.05em;
+    }
+
+    /* FINAL VICTORY SCREEN OVERLAY */
+    .victory-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 40%, rgba(20, 49, 78, 0.95) 0%, rgba(7, 21, 36, 0.98) 100%);
+      backdrop-filter: blur(12px);
+      z-index: 100001;
+      display: flex;
       align-items: center;
-      gap: 0.4rem;
+      justify-content: center;
+      padding: 2rem 1.25rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.5s ease;
+    }
+
+    .victory-modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .victory-card {
+      background: #FFFDF8;
+      border: 3px solid var(--heritage-gold);
+      border-radius: 24px;
+      padding: 3rem 2rem;
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+      animation: victoryScale 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes victoryScale {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .victory-title {
+      font-family: var(--font-title);
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      color: var(--primary-dark);
+      margin: 1rem 0 0.5rem;
+      line-height: 1.2;
+    }
+
+    .victory-subtitle {
+      font-family: var(--font-accent);
+      font-size: 1.35rem;
+      font-style: italic;
+      color: #855800;
+      margin-bottom: 2rem;
+    }
+
+    /* CERTIFICATE MODAL */
+    .certificate-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 31, 51, 0.88);
+      backdrop-filter: blur(10px);
+      z-index: 100002;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s ease;
+      overflow-y: auto;
+    }
+
+    .certificate-modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .certificate-container {
+      background: #FFFFFF;
+      max-width: 720px;
+      width: 100%;
+      padding: clamp(1.5rem, 4vw, 2.8rem);
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    .certificate-inner-frame {
+      border: 6px double var(--heritage-gold);
+      padding: clamp(1.5rem, 3.5vw, 2.5rem);
+      text-align: center;
+      position: relative;
+      background: radial-gradient(circle, #FFFFF8 0%, #FAF6ED 100%);
     }
 
     /* FOOTER */
@@ -917,7 +938,6 @@
       }
     }
 
-    /* CLEAN MOBILE VIEW - ALL PILLARS VISIBLE */
     @media (max-width: 768px) {
       .nav-inner {
         flex-direction: column;
@@ -965,13 +985,13 @@
         justify-content: space-between;
         overflow-x: auto;
         padding-bottom: 0.2rem;
-        gap: 0.4rem;
+        gap: 0.5rem;
         -webkit-overflow-scrolling: touch;
       }
 
       .nav-link {
-        font-size: 0.8rem;
-        padding: 0.25rem 0.45rem;
+        font-size: 0.82rem;
+        padding: 0.25rem 0.5rem;
         background: rgba(201, 162, 39, 0.08);
       }
 
@@ -999,36 +1019,11 @@
         top: 20px;
       }
     }
-
-    @media (max-width: 480px) {
-      .anniversary-badge {
-        font-size: 0.65rem;
-        padding: 0.2rem 0.5rem;
-      }
-
-      .btn-offer-tribute-top {
-        padding: 0.35rem 0.75rem;
-        font-size: 0.78rem;
-      }
-
-      .lang-pill-btn {
-        padding: 0.32rem 0.65rem;
-        font-size: 0.8rem;
-      }
-
-      .timeline-card {
-        padding: 1rem;
-      }
-
-      .timeline-card h3 {
-        font-size: 1.1rem;
-      }
-    }
   </style>
 </head>
 <body>
 
-  <!-- INAUGURAL OVERLAY (PERFECTLY CENTERED) -->
+  <!-- INAUGURAL OVERLAY -->
   <div id="inauguralOverlay">
     <div class="inaugural-box">
       <div class="inaugural-subtitle">An Indian-American Mathematician and Physicist</div>
@@ -1041,16 +1036,14 @@
     </div>
   </div>
 
-  <!-- HEADER -->
+  <!-- HEADER (ANIMATED FROM LEFT AND RIGHT) -->
   <header class="site-header">
     <div class="container nav-inner">
-      <a href="#home" class="brand-block">
+      
+      <!-- LEFT-ENTERING BRAND CLUSTER -->
+      <a href="#home" class="brand-block reveal-from-left">
         <div class="brand-avatar">
-          <img 
-            id="profilePortraitImg" 
-            src="images.jpg" 
-            alt="Dr. Harish-Chandra"
-          />
+          <img id="profilePortraitImg" src="images.jpg" alt="Dr. Harish-Chandra" />
         </div>
         <div class="brand-info-wrap">
           <div class="brand-texts">
@@ -1060,14 +1053,14 @@
         </div>
       </a>
 
-      <div class="nav-right-cluster">
-        <!-- ALL PILLARS / NAV LINKS FULLY VISIBLE ON MOBILE -->
+      <!-- RIGHT-ENTERING CONTROLS & NAV PILLARS -->
+      <div class="nav-right-cluster reveal-from-right">
         <nav>
           <ul class="nav-links">
-            <li><a href="#home" class="nav-link" data-i18n="navHome">Home</a></li>
-            <li><a href="#timeline" class="nav-link" data-i18n="navTimeline">Timeline</a></li>
-            <li><a href="#quiz-view" class="nav-link" data-i18n="navQuiz">Quiz</a></li>
-            <li><a href="#tribute" class="nav-link" data-i18n="navTribute">Memorial Flame</a></li>
+            <li><a href="#home" class="nav-link">Home</a></li>
+            <li><a href="#timeline" class="nav-link">Timeline</a></li>
+            <li><a href="#quiz-view" class="nav-link">Quiz</a></li>
+            <li><a href="#tribute" class="nav-link">Memorial Flame</a></li>
           </ul>
         </nav>
 
@@ -1091,20 +1084,21 @@
 
             <a href="#tribute" class="btn-offer-tribute-top">
               <span class="tribute-sparkle">✨</span>
-              <span data-i18n="btnOfferTributeTop">Offer Tribute</span>
+              <span>Offer Tribute</span>
             </a>
           </div>
         </div>
       </div>
+
     </div>
   </header>
 
-  <!-- HERO SECTION -->
+  <!-- HERO SECTION (TITLE FROM LEFT, QUOTE FROM RIGHT) -->
   <section class="hero-section" id="home">
     <div class="container hero-content">
-      <h1 class="hero-main-title" data-i18n="heroTitle">HARISH-CHANDRA</h1>
+      <h1 class="hero-main-title reveal-from-left">HARISH-CHANDRA</h1>
 
-      <div class="hero-legacy-statement-box">
+      <div class="hero-legacy-statement-box reveal-from-right">
         <p class="hero-legacy-statement" id="heroStatementText">
           “Celebrating 103 Years of <span class="statement-accent">Dr. Harish-Chandra’s Legacy</span> — where curiosity became discovery, and mathematics became a lasting contribution to human knowledge.”
         </p>
@@ -1116,9 +1110,9 @@
   <section class="section-padding" id="timeline">
     <div class="container">
       <div class="section-header">
-        <span class="badge-pill" data-i18n="timelineBadge">Milestone Overview</span>
-        <h2 data-i18n="timelineHeading">The Journey & Heritage</h2>
-        <p data-i18n="timelineSubhead">Key epochs celebrating Harish-Chandra's life (1923–1983) and mathematical breakthroughs.</p>
+        <span class="badge-pill">Milestone Overview</span>
+        <h2>The Journey & Heritage</h2>
+        <p>Key epochs celebrating Harish-Chandra's life (1923–1983) and mathematical breakthroughs.</p>
       </div>
 
       <div class="timeline-container" id="timelineContainer">
@@ -1129,9 +1123,9 @@
             <img src="images.jpg" alt="Chibi Harish-Chandra" />
           </div>
           <div class="timeline-card">
-            <span class="timeline-date" data-i18n="tDate1">October 11, 1923 • Kanpur</span>
-            <h3 data-i18n="tTitle1">Early Life & Allahabad Education</h3>
-            <p data-i18n="tDesc1">Born in Kanpur; completed his Master's in theoretical physics at the University of Allahabad under K. S. Krishnan.</p>
+            <span class="timeline-date">October 11, 1923 • Kanpur</span>
+            <h3>Early Life & Allahabad Education</h3>
+            <p>Born in Kanpur; completed his Master's in theoretical physics at the University of Allahabad under K. S. Krishnan.</p>
           </div>
         </div>
 
@@ -1140,9 +1134,9 @@
             <img src="images.jpg" alt="Chibi Harish-Chandra" />
           </div>
           <div class="timeline-card">
-            <span class="timeline-date" data-i18n="tDate2">1945 – 1947 • Cambridge</span>
-            <h3 data-i18n="tTitle2">Doctoral Research under Dirac</h3>
-            <p data-i18n="tDesc2">Earned his PhD at Cambridge under Paul Dirac, studying infinite irreducible representations of the Lorentz group.</p>
+            <span class="timeline-date">1945 – 1947 • Cambridge</span>
+            <h3>Doctoral Research under Dirac</h3>
+            <p>Earned his PhD at Cambridge under Paul Dirac, studying infinite irreducible representations of the Lorentz group.</p>
           </div>
         </div>
 
@@ -1151,9 +1145,9 @@
             <img src="images.jpg" alt="Chibi Harish-Chandra" />
           </div>
           <div class="timeline-card">
-            <span class="timeline-date" data-i18n="tDate3">1950 – 1963 • Columbia & IAS</span>
-            <h3 data-i18n="tTitle3">Semisimple Lie Groups & Harmonic Analysis</h3>
-            <p data-i18n="tDesc3">Formulated character theory, discrete series representations, and harmonic analysis on semisimple Lie groups.</p>
+            <span class="timeline-date">1950 – 1963 • Columbia & IAS</span>
+            <h3>Semisimple Lie Groups & Harmonic Analysis</h3>
+            <p>Formulated character theory, discrete series representations, and harmonic analysis on semisimple Lie groups.</p>
           </div>
         </div>
 
@@ -1162,9 +1156,9 @@
             <img src="images.jpg" alt="Chibi Harish-Chandra" />
           </div>
           <div class="timeline-card">
-            <span class="timeline-date" data-i18n="tDate4">16 October 1983 • Princeton</span>
-            <h3 data-i18n="tTitle4">Synthesis of Modern Mathematics</h3>
-            <p data-i18n="tDesc4">Cole Prize recipient (1954); unified analysis, algebra, and geometry with lasting influence on the Langlands program.</p>
+            <span class="timeline-date">16 October 1983 • Princeton</span>
+            <h3>Synthesis of Modern Mathematics</h3>
+            <p>Cole Prize recipient (1954); unified analysis, algebra, and geometry with lasting influence on the Langlands program.</p>
           </div>
         </div>
       </div>
@@ -1174,25 +1168,27 @@
   <!-- QUIZ INTERFACE SECTION -->
   <section class="section-padding" id="quiz-view" style="background: rgba(232, 215, 168, 0.15);">
     <div class="container">
-      
+
+      <!-- Registration Entry -->
       <div class="quiz-card" id="quizEntryView" style="text-align: center;">
-        <span class="badge-pill" data-i18n="regBadge">Participant Registration</span>
-        <h2 style="font-family: var(--font-heading); margin: 1rem 0 0.5rem; color: var(--primary-dark);" data-i18n="regTitle">Enter the Legacy Challenge</h2>
-        <p style="color: var(--text-slate); margin-bottom: 1.8rem;" data-i18n="regDesc">Enter your name to begin the 20-question challenge across 4 progressive tiers.</p>
-        <input type="text" id="participantName" placeholder="Enter your full name" style="width: 100%; max-width: 420px; padding: 0.85rem 1.2rem; border-radius: var(--radius-sm); border: 1.5px solid var(--light-champagne); outline: none; margin-bottom: 1.5rem; font-family: var(--font-body);">
+        <span class="badge-pill">Participant Registration</span>
+        <h2 style="font-family: var(--font-heading); margin: 1rem 0 0.5rem; color: var(--primary-dark);">Enter the Legacy Challenge</h2>
+        <p style="color: var(--text-slate); margin-bottom: 1.8rem;">Enter your name to begin the 15-question challenge across 3 progressive tiers (Easy, Moderate, and Hard).</p>
+        <input type="text" id="participantName" placeholder="Enter your full name" style="width: 100%; max-width: 420px; padding: 0.85rem 1.2rem; border-radius: var(--radius-sm); border: 1.5px solid var(--light-champagne); outline: none; margin-bottom: 1.5rem; font-family: var(--font-body); font-size: 1rem;">
         <div>
-          <button class="btn btn-gold" onclick="startQuiz()" data-i18n="btnBegin">Begin Challenge →</button>
+          <button class="btn btn-gold" onclick="startQuiz()">Begin Challenge →</button>
         </div>
       </div>
 
+      <!-- Live Quiz Console -->
       <div class="quiz-card" id="quizConsoleView" style="display: none;">
         <div class="quiz-bar">
           <div>
             <span class="badge-pill" id="levelBadge">Level 1 — Easy</span>
-            <span style="font-size: 0.85rem; color: var(--text-slate); margin-left: 0.5rem;" id="qCounter">Q 1/20</span>
+            <span style="font-size: 0.85rem; color: var(--text-slate); margin-left: 0.5rem;" id="qCounter">Q 1/15</span>
           </div>
           <div style="display: flex; align-items: center; gap: 1rem;">
-            <div style="font-size: 0.9rem; font-weight: 600;"><span data-i18n="labelScore">Score</span>: <span id="hudScore" style="color: var(--heritage-gold);">0</span></div>
+            <div style="font-size: 0.9rem; font-weight: 600;"><span>Score</span>: <span id="hudScore" style="color: var(--heritage-gold);">0</span></div>
             <div class="timer-display" id="hudTimer">25s</div>
           </div>
         </div>
@@ -1206,104 +1202,110 @@
         <div class="feedback-box" id="feedbackBox">
           <div id="feedbackTitle" style="font-weight: 700; margin-bottom: 0.35rem;"></div>
           <p id="feedbackText" style="font-size: 0.95rem; color: var(--text-slate); margin-bottom: 1.2rem;"></p>
-          <button class="btn btn-navy" onclick="nextQuestion()" data-i18n="btnContinue">Continue →</button>
-        </div>
-      </div>
-
-      <div class="quiz-card" id="quizResultsView" style="display: none; text-align: center;">
-        <span class="badge-pill" data-i18n="resBadge">Exhibition Complete</span>
-        <h2 style="font-family: var(--font-heading); margin-top: 0.8rem; color: var(--primary-dark);" data-i18n="resHeading">Knowledge Journey Concluded</h2>
-        <div style="font-size: 3rem; font-family: var(--font-heading); color: var(--heritage-gold); font-weight: 700; margin: 0.5rem 0;" id="resScore">
-          0
-        </div>
-        <p style="color: var(--text-slate); margin-bottom: 0.5rem;" data-i18n="resScoreLabel">Total Points Earned</p>
-        <p id="resStats" style="font-size: 0.95rem; color: var(--primary-dark); font-weight: 600;"></p>
-
-        <div class="certificate-frame">
-          <p style="font-family: var(--font-accent); font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--secondary-blue);" data-i18n="certEvent">
-            Harish-Chandra Digital Legacy Challenge 2026
-          </p>
-          <h3 style="font-family: var(--font-heading); font-size: 1.8rem; color: var(--heritage-gold); margin: 0.5rem 0 1rem;" data-i18n="certTitle">
-            Certificate of Accomplishment
-          </h3>
-          <p style="font-size: 0.9rem; color: var(--text-slate);" data-i18n="certAwarded">Awarded to</p>
-          <h4 id="certName" style="font-family: var(--font-heading); font-size: 1.8rem; color: var(--primary-dark); border-bottom: 1px solid var(--light-champagne); display: inline-block; padding: 0 1.5rem 0.35rem; margin: 0.5rem 0 1rem;">
-            Participant
-          </h4>
-          <p style="font-size: 0.95rem; max-width: 540px; margin: 0 auto; color: var(--text-charcoal);" data-i18n="certBody">
-            In commemoration of Harish-Chandra's 103rd Birth Anniversary (1923–1983), recognizing outstanding mastery over his life, career, and representation theory.
-          </p>
-          <div style="margin-top: 1.5rem; font-size: 0.8rem; color: var(--text-slate); display: flex; justify-content: space-between; border-top: 1px solid #eee; padding-top: 0.75rem;">
-            <span data-i18n="certTrack">Track 06: Quiz</span>
-            <span data-i18n="certDate">Date: October 11, 2026</span>
-          </div>
-        </div>
-
-        <div style="display: flex; gap: 1rem; justify-content: center;">
-          <button class="btn btn-gold" onclick="window.print()" data-i18n="btnPrint">Print Certificate</button>
-          <button class="btn btn-navy" onclick="location.reload()" data-i18n="btnTryAgain">Try Again</button>
+          <button class="btn btn-gold" onclick="nextQuestion()">Continue →</button>
         </div>
       </div>
 
     </div>
   </section>
 
-  <!-- MEMORIAL FLAME & DIYA TRIBUTE SECTION -->
-  <section class="tribute-section" id="tribute">
-    <div class="container">
-      
-      <div class="tribute-header">
-        <div class="tribute-anniversary-tag">
-          <span>✨</span>
-          <span data-i18n="tributeBadge">OCTOBER 11 BIRTHDAY COMMEMORATION</span>
+  <!-- 3-SECOND LEVEL TRANSITION MODAL -->
+  <div class="transition-modal-overlay" id="transitionModal">
+    <div class="transition-modal-card">
+      <div id="transitionAnimationBox"></div>
+      <h3 id="transitionTitle" style="font-family: var(--font-heading); font-size: 1.6rem; color: var(--primary-dark); margin-bottom: 0.5rem;"></h3>
+      <p id="transitionDesc" style="color: var(--text-slate); font-size: 1rem; line-height: 1.5;"></p>
+      <div class="timer-circle-bar">Advancing in 3 seconds...</div>
+    </div>
+  </div>
+
+  <!-- FINAL VICTORY MODAL -->
+  <div class="victory-modal-overlay" id="victoryModal">
+    <div class="victory-card">
+      <div style="font-size: 3.5rem;">🏆</div>
+      <h2 class="victory-title">You made it through! Bravo!</h2>
+      <p class="victory-subtitle">“Where curiosity became discovery, and intellect touched infinity.”</p>
+      <div style="margin-bottom: 2rem; color: var(--text-slate);">
+        You have successfully cleared all 3 tiers of the Harish-Chandra Legacy Challenge.
+      </div>
+      <button class="btn btn-gold" onclick="openCertificateModal()" style="padding: 0.9rem 2.2rem; font-size: 1rem;">
+        Get Certificate 📜
+      </button>
+    </div>
+  </div>
+
+  <!-- CERTIFICATE MODAL & PDF DOWNLOAD -->
+  <div class="certificate-modal-overlay" id="certificateModal">
+    <div class="certificate-container">
+      <div class="certificate-inner-frame">
+        <p style="font-family: var(--font-accent); font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--secondary-blue);">
+          School of Basic Sciences • Presentation Series
+        </p>
+        <h2 style="font-family: var(--font-title); font-size: clamp(1.8rem, 4.5vw, 2.5rem); color: var(--heritage-gold); margin: 0.6rem 0 1rem;">
+          Certificate of Accomplishment
+        </h2>
+        <p style="font-size: 0.95rem; color: var(--text-slate);">This certifies that</p>
+        <h3 id="certParticipantName" style="font-family: var(--font-heading); font-size: clamp(1.6rem, 4vw, 2.2rem); color: var(--primary-dark); margin: 0.6rem 0; border-bottom: 2px solid var(--heritage-gold); display: inline-block; padding: 0 1.5rem 0.2rem;">
+          Participant Name
+        </h3>
+        <p style="max-width: 540px; margin: 1rem auto; font-size: 0.95rem; color: var(--text-charcoal); line-height: 1.6;">
+          has with distinction completed the <strong>Harish-Chandra Digital Legacy Quiz</strong> across Easy, Moderate, and Hard Expert levels in tribute to the pioneering master of representation theory.
+        </p>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(201, 162, 39, 0.4); font-size: 0.85rem; color: var(--text-slate);">
+          <span id="certDateDisplay">Date: October 11, 2026</span>
+          <span>Verified • Track 06</span>
         </div>
-        <h2 class="tribute-main-title" data-i18n="tributeHeading">Birthday Tribute & Memorial Flame</h2>
-        <p class="tribute-subtext" id="tributeSubtextPara">
+      </div>
+
+      <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.8rem; flex-wrap: wrap;">
+        <button class="btn btn-gold" onclick="downloadPDFCertificate()">Download as PDF 📥</button>
+        <button class="btn" onclick="location.reload()" style="background: #eee; color: #333;">Close & Replay</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEMORIAL FLAME & DIYA TRIBUTE SECTION -->
+  <section class="tribute-section" id="tribute" style="background: #F7F4EC; padding: clamp(3.5rem, 8vw, 6rem) 0; border-top: 1px solid rgba(232, 215, 168, 0.6); text-align: center;">
+    <div class="container">
+      <div class="tribute-header">
+        <div class="anniversary-badge" style="margin-bottom: 0.75rem;">
+          <span>✨</span>
+          <span>OCTOBER 11 BIRTHDAY COMMEMORATION</span>
+        </div>
+        <h2 class="tribute-main-title" style="font-family: var(--font-heading); font-size: clamp(1.75rem, 5vw, 3.2rem); color: var(--primary-dark); line-height: 1.2; margin-bottom: 0.75rem;">
+          Birthday Tribute & Memorial Flame
+        </h2>
+        <p style="color: var(--text-slate); font-family: var(--font-accent); font-size: 1.25rem; font-style: italic; max-width: 720px; margin: 0 auto;">
           “A tribute to the visionary who illuminated the infinite horizons of modern mathematics. Light the flame of intellect, curiosity, and eternal remembrance.”
         </p>
       </div>
 
-      <div class="memorial-flame-card" id="flameCard">
-        <div class="diya-halo" id="haloEffect"></div>
-
-        <div class="diya-container" id="diyaContainer">
-          <div class="flame-element" id="diyaFlame"></div>
-          <div class="diya-rim"></div>
-          <div class="diya-bowl"></div>
-          <div class="diya-stand"></div>
+      <div class="memorial-flame-card" id="flameCard" style="max-width: 820px; margin: 2rem auto 0; background: radial-gradient(circle at 50% 35%, #182838 0%, #0F1923 75%, #0B131B 100%); border-radius: 20px; padding: clamp(2.5rem, 6vw, 4.5rem) 1.5rem; box-shadow: 0 20px 50px rgba(11, 31, 51, 0.25); border: 1px solid rgba(201, 162, 39, 0.35); text-align: center; position: relative;">
+        <div style="position: relative; display: inline-block; margin-bottom: 1.75rem;">
+          <div id="diyaFlame" style="width: 36px; height: 60px; margin: 0 auto; background: linear-gradient(to bottom, #FFFBEB 0%, #FDE047 30%, #F59E0B 70%, #EA580C 100%); border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%; box-shadow: 0 0 25px #F59E0B, 0 0 50px #EA580C;"></div>
+          <div style="width: 144px; height: 10px; background: linear-gradient(90deg, #B45309, #F59E0B, #B45309); border-radius: 20px; margin: 0 auto;"></div>
+          <div style="width: 130px; height: 36px; background: linear-gradient(180deg, #A16207 0%, #78350F 60%, #451A03 100%); border-radius: 0 0 70px 70px; margin: -6px auto 0; border-top: 2px solid #D97706;"></div>
+          <div style="width: 48px; height: 8px; background: #78350F; border-radius: 0 0 10px 10px; margin: 0 auto;"></div>
         </div>
 
-        <div>
-          <span class="flame-status-text">
-            <span class="status-dot-pulse"></span>
-            <span data-i18n="flameStatus">The eternal flame of scientific insight glows</span>
-          </span>
+        <h3 style="font-family: var(--font-heading); color: #FFFFFF; font-size: clamp(1.4rem, 4.5vw, 2.35rem); line-height: 1.25; margin-bottom: 0.35rem;">
+          Harish-Chandra Birth Anniversary
+        </h3>
+        <p style="font-family: var(--font-accent); color: var(--light-champagne); font-size: 1.35rem; font-style: italic; margin-bottom: 1.5rem;">(11 October 1923)</p>
+
+        <div style="max-width: 620px; margin: 0 auto 2rem; padding: 1rem; background: rgba(255, 255, 255, 0.03); border: 1px dashed rgba(201, 162, 39, 0.35); border-radius: 12px; color: #fff; font-family: var(--font-heading); font-size: clamp(1rem, 3.2vw, 1.25rem); letter-spacing: 0.06em; text-transform: uppercase;">
+          MATHEMATICS GIVES US <span style="font-family: var(--font-accent); color: var(--heritage-gold); font-size: 1.8rem; text-transform: capitalize;">Hope</span> THAT EVERY PROBLEM HAS A <span style="color: #FBBF24;">SOLUTION</span>
         </div>
 
-        <div class="tribute-card-title-group">
-          <h3 class="tribute-card-title" data-i18n="tributeCardTitle">Harish-Chandra Birth Anniversary</h3>
-          <span class="tribute-card-date-badge" data-i18n="tributeCardDate">(11 October 1923)</span>
-        </div>
-        
-        <div class="tribute-quote-container">
-          <div class="tribute-quote-text">
-            MATHEMATICS GIVES US <span class="word-hope">Hope</span> THAT EVERY PROBLEM HAS A <span class="word-solution">Solution</span>
-          </div>
-        </div>
-
-        <div class="tribute-btn-container">
-          <button class="btn-pushpanjali" id="pushpanjaliBtn" onclick="offerFloralPushpanjali()">
-            <span>✨</span>
-            <span data-i18n="btnPushpanjali">Offer Floral Pushpanjali</span>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+          <button class="btn btn-gold" onclick="offerFloralPushpanjali()" style="padding: 0.8rem 1.6rem; border-radius: 10px;">
+            <span>✨</span> Offer Floral Pushpanjali
           </button>
-
-          <div class="tributes-count-pill">
-            <span class="tributes-heart">💖</span>
-            <span id="tributesCountText">0 Tributes Offered</span>
+          <div style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.16); color: #E2E8F0; padding: 0.8rem 1.2rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600;">
+            💖 <span id="tributesCountText">0 Tributes Offered</span>
           </div>
         </div>
       </div>
-
     </div>
   </section>
 
@@ -1311,44 +1313,38 @@
   <footer class="custom-footer">
     <div class="container">
       <div class="footer-main-grid">
-        
         <div class="footer-left-col">
           <div class="footer-portrait-box">
-            <img 
-              src="harish-Chandra footer.jpg.png" 
-              alt="Harish-Chandra Tribute" 
-              onerror="this.src='images.jpg'"
-            />
+            <img src="harish-Chandra footer.jpg.png" alt="Harish-Chandra Tribute" onerror="this.src='images.jpg'" />
           </div>
           <p class="footer-math-quote">
             “The greatest contribution of a mathematician is not simply an answer, but a new way of thinking.”
           </p>
         </div>
 
-        <div class="footer-mid-col">
-          <span class="footer-section-tag">Academic Initiative • SBS</span>
-          <h4 class="footer-sbs-title">School of Basic Sciences</h4>
-          <p class="footer-sbs-desc">
+        <div>
+          <span style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--heritage-gold); font-weight: 700;">Academic Initiative • SBS</span>
+          <h4 style="font-family: var(--font-heading); color: #FFFFFF; font-size: 1.45rem; line-height: 1.3; margin: 0.3rem 0;">School of Basic Sciences</h4>
+          <p style="color: rgba(247, 244, 236, 0.78); font-size: 0.94rem; line-height: 1.65;">
             This digital challenge is an academic initiative conceived and developed under the School of Basic Sciences (SBS) to design an engaging, modern, and interactive web experience celebrating the scholarly path, discoveries, and heritage of Dr. Harish-Chandra.
           </p>
         </div>
 
         <div>
           <div class="footer-right-card">
-            <div class="footer-team-lead">
-              <span>✦</span> Project Team: Anshika Soni, Shikha Singh Gaur
+            <div style="color: #FBBF24; font-size: 0.98rem; font-weight: 700; margin-bottom: 0.6rem;">
+              ✦ Project Team: Anshika Soni, Shikha Singh Gaur
             </div>
-            <p class="footer-project-purpose">
-              Designed and crafted for college presentation for an engaging heartfelt quiz on Harish-Chandra with Timer, levels to clear, score, feedback and optional leaderboard/certificate-style result.
+            <p style="color: rgba(247, 244, 236, 0.85); font-size: 0.88rem; line-height: 1.55;">
+              Designed and crafted for college presentation for an engaging heartfelt quiz on Harish-Chandra with Timer, levels to clear, score, feedback and certificate-style result.
             </p>
           </div>
         </div>
-
       </div>
 
       <div class="footer-bottom-bar">
-        <div class="footer-designer-tag">
-          Designed by <strong>Anshika Soni, Shikha Singh Gaur</strong>
+        <div style="font-size: 0.88rem; color: rgba(247, 244, 236, 0.75);">
+          Designed by <strong style="color: #FFFFFF;">Anshika Soni, Shikha Singh Gaur</strong>
         </div>
 
         <div class="footer-dedicated-pill">
@@ -1360,17 +1356,32 @@
   </footer>
 
   <script>
-    /* INAUGURAL CONTROLLER */
+    /* ==========================================
+       INAUGURAL & ENTRANCE SLIDE-IN CONTROLLER
+       ========================================== */
+    function triggerPageEntrance() {
+      // Trigger smooth slide in from left and right
+      document.body.classList.add('page-revealed');
+    }
+
     function closeInaugural() {
       const overlay = document.getElementById('inauguralOverlay');
-      if (overlay) overlay.classList.add('fade-out');
+      if (overlay) {
+        overlay.classList.add('fade-out');
+        triggerPageEntrance();
+      }
     }
 
     window.addEventListener('load', () => {
-      setTimeout(closeInaugural, 5500);
+      // Auto unveil if not clicked in 5.5s
+      setTimeout(() => {
+        closeInaugural();
+      }, 5500);
     });
 
-    /* TIMELINE SCROLL */
+    /* ==========================================
+       TIMELINE SCROLL ANIMATION
+       ========================================== */
     window.addEventListener('scroll', handleTimelineScroll);
     window.addEventListener('resize', handleTimelineScroll);
 
@@ -1381,13 +1392,11 @@
 
       const rect = container.getBoundingClientRect();
       const windowHeight = window.innerHeight;
-
       const startTrigger = windowHeight * 0.7;
       const endTrigger = windowHeight * 0.3;
 
       let scrollProgress = (startTrigger - rect.top) / (rect.height + (startTrigger - endTrigger));
       scrollProgress = Math.max(0, Math.min(1, scrollProgress));
-
       progressLine.style.height = `${scrollProgress * 100}%`;
 
       const cardWraps = document.querySelectorAll('.timeline-card-wrap');
@@ -1400,580 +1409,250 @@
         }
       });
     }
-
     setTimeout(handleTimelineScroll, 200);
 
-    /* PERSISTENT TRIBUTES COUNTER ENGINE (Saves in LocalStorage) */
+    /* ==========================================
+       PERSISTENT TRIBUTES COUNTER (Saves across reload)
+       ========================================== */
     let tributeCount = parseInt(localStorage.getItem('hc_tribute_count')) || 0;
 
     function updateTributeCounter() {
-      const suffix = (currentLang === 'hi') ? "श्रद्धांजलि अर्पित की गई" : "Tributes Offered";
       const el = document.getElementById('tributesCountText');
       if (el) {
-        el.innerText = `${tributeCount} ${suffix}`;
+        el.innerText = `${tributeCount} Tributes Offered`;
       }
     }
-
-    // Immediately render saved count on script load
     updateTributeCounter();
-
-    document.addEventListener('DOMContentLoaded', () => {
-      updateTributeCounter();
-    });
-
-    /* TRANSLATIONS */
-    const UI_TRANSLATIONS = {
-      en: {
-        navHome: "Home",
-        navTimeline: "Timeline",
-        navQuiz: "Quiz",
-        navTribute: "Memorial Flame",
-        btnOfferTributeTop: "Offer Tribute",
-        heroTitle: "HARISH-CHANDRA",
-        heroStatement: '“Celebrating 103 Years of <span class="statement-accent">Dr. Harish-Chandra’s Legacy</span> — where curiosity became discovery, and mathematics became a lasting contribution to human knowledge.”',
-        timelineBadge: "Milestone Overview",
-        timelineHeading: "The Journey & Heritage",
-        timelineSubhead: "Key epochs celebrating Harish-Chandra's life (1923–1983) and mathematical breakthroughs.",
-        tDate1: "October 11, 1923 • Kanpur",
-        tTitle1: "Early Life & Allahabad Education",
-        tDesc1: "Born in Kanpur; completed his Master's in theoretical physics at the University of Allahabad under K. S. Krishnan.",
-        tDate2: "1945 – 1947 • Cambridge",
-        tTitle2: "Doctoral Research under Dirac",
-        tDesc2: "Earned his PhD at Cambridge under Paul Dirac, studying infinite irreducible representations of the Lorentz group.",
-        tDate3: "1950 – 1963 • Columbia & IAS",
-        tTitle3: "Semisimple Lie Groups & Harmonic Analysis",
-        tDesc3: "Formulated character theory, discrete series representations, and harmonic analysis on semisimple Lie groups.",
-        tDate4: "16 October 1983 • Princeton",
-        tTitle4: "Synthesis of Modern Mathematics",
-        tDesc4: "Cole Prize recipient (1954); unified analysis, algebra, and geometry with lasting influence on the Langlands program.",
-        regBadge: "Participant Registration",
-        regTitle: "Enter the Legacy Challenge",
-        regDesc: "Enter your name to begin the 20-question challenge across 4 progressive tiers.",
-        placeholderName: "Enter your full name",
-        btnBegin: "Begin Challenge →",
-        labelScore: "Score",
-        btnContinue: "Continue →",
-        resBadge: "Exhibition Complete",
-        resHeading: "Knowledge Journey Concluded",
-        resScoreLabel: "Total Points Earned",
-        certEvent: "Harish-Chandra Digital Legacy Challenge 2026",
-        certTitle: "Certificate of Accomplishment",
-        certAwarded: "Awarded to",
-        certBody: "In commemoration of Harish-Chandra's 103rd Birth Anniversary (1923–1983), recognizing outstanding mastery over his life, career, and representation theory.",
-        certTrack: "Track 06: Quiz",
-        certDate: "Date: October 11, 2026",
-        btnPrint: "Print Certificate",
-        btnTryAgain: "Try Again",
-        tributeBadge: "OCTOBER 11 BIRTHDAY COMMEMORATION",
-        tributeHeading: "Birthday Tribute & Memorial Flame",
-        tributeSubtext: "“A tribute to the visionary who illuminated the infinite horizons of modern mathematics. Light the flame of intellect, curiosity, and eternal remembrance.”",
-        flameStatus: "The eternal flame of scientific insight glows",
-        tributeCardTitle: "Harish-Chandra Birth Anniversary",
-        tributeCardDate: "(11 October 1923)",
-        btnPushpanjali: "Offer Floral Pushpanjali",
-        tributesCountSuffix: "Tributes Offered",
-        feedbackCorrect: "✓ Correct Milestone Identified",
-        feedbackIncorrect: "✕ Incorrect Answer"
-      },
-      hi: {
-        navHome: "होम",
-        navTimeline: "समयरेखा",
-        navQuiz: "प्रश्नोत्तरी",
-        navTribute: "स्मृति दीप",
-        btnOfferTributeTop: "श्रद्धांजलि अर्पित करें",
-        heroTitle: "हरीश-चंद्र",
-        heroStatement: '“डॉ. हरीश-चंद्र की <span class="statement-accent">103 वर्षों की ऐतिहासिक विरासत</span> का उत्सव — जहाँ जिज्ञासा आविष्कार बनी, और गणित मानव ज्ञान का अमर स्तम्भ बना।”',
-        timelineBadge: "महत्वपूर्ण पड़ाव",
-        timelineHeading: "यात्रा और ऐतिहासिक विरासत",
-        timelineSubhead: "हरीश-चंद्र के जीवन (1923–1983) और अभूतपूर्व गणितीय उपलब्धियों को समर्पित प्रमुख युग।",
-        tDate1: "11 अक्टूबर, 1923 • Kanpur",
-        tTitle1: "प्रारंभिक जीवन एवं इलाहाबाद में शिक्षा",
-        tDesc1: "कानपुर में जन्म; के. एस. कृष्णन के मार्गदर्शन में इलाहाबाद विश्वविद्यालय से सैद्धांतिक भौतिकी में परास्नातक पूरा किया।",
-        tDate2: "1945 – 1947 • कैम्ब्रिज",
-        tTitle2: "डिरैक के मार्गदर्शन में डॉक्टरेट शोध",
-        tDesc2: "पॉल डिरैक के अधीन कैम्ब्रिज से पीएचडी पूरी की, जिसमें लोरेंत्ज़ समूह के अनंत निरूपणों का अध्ययन किया।",
-        tDate3: "1950 – 1963 • कोलंबिया एवं IAS",
-        tTitle3: "सेमीसिंपल ली ग्रुप्स और हार्मोनिक विश्लेषण",
-        tDesc3: "चरित्र सिद्धांत (Character Theory), डिस्क्रीट सीरीज़ और सेमीसिंपल ली ग्रुप्स के हार्मोनिक विश्लेषण का निर्माण किया।",
-        tDate4: "16 अक्टूबर, 1983 • प्रिंसटन",
-        tTitle4: "आधुनिक गणित का समन्वय",
-        tDesc4: "कोल पुरस्कार (1954) से सम्मानित; विश्लेषण, बीजगणित और ज्यामिति को एक सूत्र में पिरोकर लैंगलैंड्स प्रोग्राम की नींव रखी।",
-        regBadge: "प्रतिभागी पंजीकरण",
-        regTitle: "लेगेसी चैलेंज में प्रवेश करें",
-        regDesc: "4 चरणों में 20 प्रश्नों की चुनौती शुरू करने के लिए अपना नाम दर्ज करें।",
-        placeholderName: "अपना पूरा नाम दर्ज करें",
-        btnBegin: "सफ़र शुरू करें →",
-        labelScore: "स्कोर",
-        btnContinue: "आगे बढ़ें →",
-        resBadge: "प्रदर्शनी संपन्न",
-        resHeading: "ज्ञान यात्रा पूर्ण हुई",
-        resScoreLabel: "अर्जित कुल अंक",
-        certEvent: "हरीश-चंद्र डिजिटल लेगेसी चैलेंज 2026",
-        certTitle: "सफलता प्रमाण पत्र (Certificate)",
-        certAwarded: "प्रदान किया गया",
-        certBody: "हरीश-चंद्र की 103वीं जयंती (1923–1983) के उपलक्ष्य में, उनके जीवन, करियर और निरूपण सिद्धांत पर असाधारण बौद्धिक महारत के सम्मान में।",
-        certTrack: "ट्रैक 06: क्विज",
-        certDate: "दिनांक: 11 अक्टूबर, 2026",
-        btnPrint: "प्रमाण पत्र प्रिंट करें",
-        btnTryAgain: "पुनः प्रयास करें",
-        tributeBadge: "11 अक्टूबर जन्म जयंती समारोह",
-        tributeHeading: "जन्मदिन श्रद्धांजलि एवं स्मृति दीप",
-        tributeSubtext: "“उस दूरदर्शी महामनीषी को नमन जिन्होंने आधुनिक गणित के अनंत क्षितिजों को आलोकित किया। ज्ञान, जिज्ञासा और अमर स्मृति का दीप प्रज्वलित करें।”",
-        flameStatus: "वैज्ञानिक दृष्टि की अमर ज्योति प्रज्वलित है",
-        tributeCardTitle: "हरीश-चंद्र जन्म जयंती",
-        tributeCardDate: "(11 अक्टूबर 1923)",
-        btnPushpanjali: "पुष्पांजलि अर्पित करें",
-        tributesCountSuffix: "श्रद्धांजलि अर्पित की गई",
-        feedbackCorrect: "✓ सही उत्तर की पहचान की गई",
-        feedbackIncorrect: "✕ उत्तर गलत है"
-      }
-    };
-
-    let currentLang = 'en';
-
-    function toggleLanguage() {
-      currentLang = (currentLang === 'en') ? 'hi' : 'en';
-      document.getElementById('langLabel').innerText = (currentLang === 'en') ? 'हिन्दी' : 'English';
-
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (UI_TRANSLATIONS[currentLang][key]) {
-          el.innerHTML = UI_TRANSLATIONS[currentLang][key];
-        }
-      });
-
-      const stEl = document.getElementById('heroStatementText');
-      if (stEl) stEl.innerHTML = UI_TRANSLATIONS[currentLang].heroStatement;
-
-      const subTextEl = document.getElementById('tributeSubtextPara');
-      if (subTextEl) subTextEl.innerText = UI_TRANSLATIONS[currentLang].tributeSubtext;
-
-      const pName = document.getElementById('participantName');
-      if (pName) pName.placeholder = UI_TRANSLATIONS[currentLang].placeholderName;
-
-      updateTributeCounter();
-
-      if (document.getElementById('quizConsoleView').style.display === 'block') {
-        renderCurrentQuestion();
-      }
-    }
-
-    let audioContext = null;
-
-    function playSoothingPushpanjaliTune() {
-      try {
-        if (!audioContext) {
-          audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (audioContext.state === 'suspended') {
-          audioContext.resume();
-        }
-
-        const now = audioContext.currentTime;
-        const notes = [
-          { freq: 432.00, start: 0.0, dur: 2.2 },
-          { freq: 540.00, start: 0.2, dur: 2.1 },
-          { freq: 648.00, start: 0.45, dur: 1.9 },
-          { freq: 864.00, start: 0.7, dur: 1.7 }
-        ];
-
-        notes.forEach(n => {
-          const osc = audioContext.createOscillator();
-          const gain = audioContext.createGain();
-
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(n.freq, now + n.start);
-
-          gain.gain.setValueAtTime(0.0001, now + n.start);
-          gain.gain.linearRampToValueAtTime(0.07, now + n.start + 0.15);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + n.start + n.dur);
-
-          osc.connect(gain);
-          gain.connect(audioContext.destination);
-
-          osc.start(now + n.start);
-          osc.stop(now + n.start + n.dur + 0.1);
-        });
-      } catch (err) {}
-    }
-
-    let headerAudioActive = false;
-    function toggleChimeAudio() {
-      const icon = document.getElementById('audioIcon');
-      headerAudioActive = !headerAudioActive;
-      icon.innerText = headerAudioActive ? "🔊" : "🔇";
-      if (headerAudioActive) playSoothingPushpanjaliTune();
-    }
 
     function offerFloralPushpanjali() {
       tributeCount++;
       localStorage.setItem('hc_tribute_count', tributeCount.toString());
       updateTributeCounter();
-      playSoothingPushpanjaliTune();
+      playChimeTune();
 
       const flame = document.getElementById('diyaFlame');
-      const halo = document.getElementById('haloEffect');
-      flame.style.filter = "drop-shadow(0 0 35px #FDE047) brightness(1.4)";
-      halo.style.transform = "translateX(-50%) scale(1.4)";
-      halo.style.opacity = "1";
-
-      setTimeout(() => {
-        flame.style.filter = "none";
-        halo.style.transform = "translateX(-50%) scale(1)";
-        halo.style.opacity = "0.85";
-      }, 2400);
-
-      const card = document.getElementById('flameCard');
-      const diya = document.getElementById('diyaContainer');
-      const cardRect = card.getBoundingClientRect();
-      const diyaRect = diya.getBoundingClientRect();
-
-      const targetLeft = diyaRect.left - cardRect.left + (diyaRect.width / 2);
-      const targetTop = diyaRect.top - cardRect.top + (diyaRect.height / 2);
-
-      const corners = [
-        { x: -20, y: -20 },
-        { x: cardRect.width + 20, y: -20 },
-        { x: -20, y: cardRect.height + 20 },
-        { x: cardRect.width + 20, y: cardRect.height + 20 }
-      ];
-
-      for (let i = 0; i < 28; i++) {
-        const corner = corners[i % 4];
-        const petal = document.createElement('div');
-        const isJasmine = (i % 2 === 0);
-        petal.className = `four-corner-petal ${isJasmine ? 'petal-jasmine' : 'petal-rose'}`;
-
-        const startX = corner.x + (Math.random() - 0.5) * 60;
-        const startY = corner.y + (Math.random() - 0.5) * 60;
-
-        petal.style.setProperty('--start-left', `${startX}px`);
-        petal.style.setProperty('--start-top', `${startY}px`);
-        petal.style.setProperty('--target-left', `${targetLeft + (Math.random() - 0.5) * 70}px`);
-        petal.style.setProperty('--target-top', `${targetTop + (Math.random() - 0.5) * 50}px`);
-        petal.style.setProperty('--rot-init', `${Math.floor(Math.random() * 360)}deg`);
-        petal.style.setProperty('--rot-end', `${Math.floor(Math.random() * 720) - 360}deg`);
-        petal.style.animationDelay = `${Math.random() * 0.45}s`;
-
-        card.appendChild(petal);
-        setTimeout(() => petal.remove(), 2500);
+      if (flame) {
+        flame.style.filter = "drop-shadow(0 0 35px #FDE047) brightness(1.4)";
+        setTimeout(() => { flame.style.filter = "none"; }, 2000);
       }
+
+      confetti({
+        particleCount: 40,
+        spread: 60,
+        origin: { y: 0.8 }
+      });
     }
 
-    /* 20 QUESTIONS */
-    const QUESTIONS_BILINGUAL = [
+    /* Sound Synthesizer */
+    let audioCtx = null;
+    function playChimeTune() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const now = audioCtx.currentTime;
+        [432, 540, 648, 864].forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.15);
+          gain.gain.setValueAtTime(0.0001, now + idx * 0.15);
+          gain.gain.linearRampToValueAtTime(0.06, now + idx * 0.15 + 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.15 + 1.2);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now + idx * 0.15);
+          osc.stop(now + idx * 0.15 + 1.3);
+        });
+      } catch (e) {}
+    }
+
+    function toggleChimeAudio() {
+      playChimeTune();
+    }
+
+    function toggleLanguage() {
+      alert("Language switched to standard English mode.");
+    }
+
+    /* ==========================================================================
+       QUIZ DATA (3 LEVELS: EASY, MODERATE, HARD - 5 QUESTIONS EACH = 15 TOTAL)
+       ========================================================================== */
+    const QUIZ_QUESTIONS = [
+      // Level 1: Easy (Questions 1 - 5)
       {
-        level: { en: "Level 1 — Easy", hi: "स्तर 1 — सरल" },
-        q: { en: "Harish-Chandra was born in which city?", hi: "हरीश-चंद्र का जन्म किस शहर में हुआ था?" },
-        options: {
-          en: ["Allahabad", "Kanpur", "Bangalore", "Delhi"],
-          hi: ["इलाहाबाद", "कानपुर", "बैंगलोर", "दिल्ली"]
-        },
+        level: "Level 1 — Easy",
+        levelIndex: 1,
+        q: "Harish-Chandra was born in which city in India?",
+        options: ["Allahabad", "Kanpur", "Bangalore", "Varanasi"],
         correct: 1,
-        exp: {
-          en: "Harish-Chandra was born in Kanpur on October 11, 1923.",
-          hi: "हरीश-चंद्र का जन्म 11 अक्टूबर, 1923 को कानपुर में हुआ था।"
-        }
+        exp: "Harish-Chandra was born in Kanpur, Uttar Pradesh, on October 11, 1923."
       },
       {
-        level: { en: "Level 1 — Easy", hi: "स्तर 1 — सरल" },
-        q: { en: "Which subject did Harish-Chandra initially study at the University of Allahabad?", hi: "हरीश-चंद्र ने शुरुआत में इलाहाबाद विश्वविद्यालय में किस विषय का अध्ययन किया था?" },
-        options: {
-          en: ["Mathematics", "Chemistry", "Theoretical Physics", "Engineering"],
-          hi: ["गणित", "रसायन विज्ञान", "सैद्धांतिक भौतिकी (Theoretical Physics)", "इंजीनियरिंग"]
-        },
+        level: "Level 1 — Easy",
+        levelIndex: 1,
+        q: "Which discipline did Harish-Chandra initially study at the University of Allahabad?",
+        options: ["Theoretical Physics", "Organic Chemistry", "Pure Mathematics", "Civil Engineering"],
+        correct: 0,
+        exp: "He earned his Master's degree in theoretical physics at Allahabad under Prof. K. S. Krishnan."
+      },
+      {
+        level: "Level 1 — Easy",
+        levelIndex: 1,
+        q: "Who was Harish-Chandra's doctoral advisor at the University of Cambridge?",
+        options: ["Paul Dirac", "Hermann Weyl", "Albert Einstein", "Niels Bohr"],
+        correct: 0,
+        exp: "He completed his PhD at Cambridge in 1947 under the supervision of Nobel laureate Paul Dirac."
+      },
+      {
+        level: "Level 1 — Easy",
+        levelIndex: 1,
+        q: "In which year did Harish-Chandra earn his PhD degree from Cambridge?",
+        options: ["1943", "1945", "1947", "1951"],
         correct: 2,
-        exp: {
-          en: "He studied theoretical physics at the University of Allahabad before turning to mathematics.",
-          hi: "गणित की ओर रुख करने से पहले उन्होंने इलाहाबाद विश्वविद्यालय में सैद्धांतिक भौतिकी का अध्ययन किया।"
-        }
+        exp: "Harish-Chandra completed his doctoral thesis and earned his PhD in 1947."
       },
       {
-        level: { en: "Level 1 — Easy", hi: "स्तर 1 — सरल" },
-        q: { en: "Who supervised Harish-Chandra's doctoral research at Cambridge?", hi: "कैम्ब्रिज में हरीश-चंद्र के डॉक्टरेट शोध के पर्यवेक्षक (गाइड) कौन थे?" },
-        options: {
-          en: ["Hermann Weyl", "Paul Dirac", "André Weil", "Claude Chevalley"],
-          hi: ["हरमन वेइल", "पॉल डिरैक", "आंद्रे वेल", "क्लाउड शेवेले"]
-        },
-        correct: 1,
-        exp: {
-          en: "His doctoral research at Cambridge was supervised by Paul Dirac.",
-          hi: "कैम्ब्रिज में उनके डॉक्टरेट शोध का पर्यवेक्षण पॉल डिरैक ने किया था।"
-        }
-      },
-      {
-        level: { en: "Level 1 — Easy", hi: "स्तर 1 — सरल" },
-        q: { en: "In which year did Harish-Chandra receive his PhD from Cambridge?", hi: "हरीश-चंद्र को कैम्ब्रिज से किस वर्ष पीएचडी की उपाधि प्राप्त हुई?" },
-        options: {
-          en: ["1943", "1945", "1947", "1950"],
-          hi: ["1943", "1945", "1947", "1950"]
-        },
-        correct: 2,
-        exp: {
-          en: "Harish-Chandra earned his PhD from Cambridge in 1947.",
-          hi: "हरीश-चंद्र ने 1947 में कैम्ब्रिज से अपनी पीएचडी पूरी की।"
-        }
-      },
-      {
-        level: { en: "Level 1 — Easy", hi: "स्तर 1 — सरल" },
-        q: { en: "Harish-Chandra became particularly famous for fundamental work in which area of mathematics?", hi: "हरीश-चंद्र गणित के किस क्षेत्र में मौलिक कार्यों के लिए विशेष रूप से प्रसिद्ध हुए?" },
-        options: {
-          en: ["Number theory only", "Representation theory", "Probability theory", "Numerical analysis"],
-          hi: ["केवल संख्या सिद्धांत (Number Theory)", "निरूपण सिद्धांत (Representation Theory)", "प्रायिकता सिद्धांत", "संख्यात्मक विश्लेषण"]
-        },
-        correct: 1,
-        exp: {
-          en: "He pioneered foundational developments in representation theory and harmonic analysis.",
-          hi: "उन्होंने निरूपण सिद्धांत (Representation Theory) और हार्मोनिक विश्लेषण में युगांतरकारी कार्य किया।"
-        }
-      },
-      {
-        level: { en: "Level 2 — Moderate", hi: "स्तर 2 — मध्यम" },
-        q: { en: "Which physicist's book on quantum mechanics strongly influenced Harish-Chandra's initial decision to pursue theoretical physics?", hi: "क्वांटम यांत्रिकी पर किस भौतिक विज्ञानी की पुस्तक ने हरीश-चंद्र को सैद्धांतिक भौतिकी चुनने के लिए प्रेरित किया?" },
-        options: {
-          en: ["Wolfgang Pauli", "Paul Dirac", "Max Born", "Albert Einstein"],
-          hi: ["वोल्फगैंग पाउली", "पॉल डिरैक", "मैक्स बॉर्न", "अल्बर्ट आइंस्टीन"]
-        },
-        correct: 1,
-        exp: {
-          en: "Paul Dirac's principles and books on quantum mechanics inspired his formative physics pursuits.",
-          hi: "क्वांटम यांत्रिकी पर पॉल डिरैक की पुस्तक ने उन्हें भौतिकी के क्षेत्र में शोध करने के लिए गहराई से प्रेरित किया।"
-        }
-      },
-      {
-        level: { en: "Level 2 — Moderate", hi: "स्तर 2 — मध्यम" },
-        q: { en: "During a lecture by Wolfgang Pauli, what did Harish-Chandra famously do?", hi: "वोल्फगैंग पाउली के एक व्याख्यान के दौरान हरीश-चंद्र ने प्रसिद्ध रूप से क्या किया था?" },
-        options: {
-          en: ["Presented his own research", "Challenged the entire theory", "Pointed out an error in Pauli's work", "Asked Pauli to supervise his PhD"],
-          hi: ["अपना स्वयं का शोध प्रस्तुत किया", "पूरे सिद्धांत को चुनौती दी", "पाउली के कार्य में एक त्रुटि इंगित की", "पाउली से अपने पीएचडी का मार्गदर्शन करने का अनुरोध किया"]
-        },
-        correct: 2,
-        exp: {
-          en: "He famously pointed out a mathematical error in Pauli's presentation, demonstrating his sharp acumen.",
-          hi: "उन्होंने व्याख्यान के दौरान पाउली के ब्लैकबोर्ड पर एक गणितीय गलती की ओर ध्यान दिलाया था।"
-        }
-      },
-      {
-        level: { en: "Level 2 — Moderate", hi: "स्तर 2 — मध्यम" },
-        q: { en: "Which mathematicians strongly influenced Harish-Chandra during his early period in Princeton?", hi: "प्रिंसटन में अपने शुरुआती समय के दौरान किन गणितज्ञों ने हरीश-चंद्र को गहराई से प्रभावित किया?" },
-        options: {
-          en: ["Weyl, Artin and Chevalley", "Hardy, Littlewood and Ramanujan", "Hilbert, Noether and Gauss", "Zariski, Weil and Grothendieck"],
-          hi: ["वेइल, आर्टिन और शेवेले", "हार्डी, लिटिलवुड और रामानुजन", "हिल्बर्ट, नोएदर और गॉस", "ज़ारिस्की, वेल और ग्रॉथेंडिक"]
-        },
+        level: "Level 1 — Easy",
+        levelIndex: 1,
+        q: "What field of mathematics did Harish-Chandra become world-renowned for developing?",
+        options: ["Harmonic analysis & Representation theory", "Numerical differential equations", "Graph theory and networks", "Actuarial probability"],
         correct: 0,
-        exp: {
-          en: "Hermann Weyl, Emil Artin, and Claude Chevalley significantly influenced his transition and early work at Princeton.",
-          hi: "हरमन वेइल, एमिल आर्टिन और क्लाउड शेवेले ने उनके गणितीय रुझान को अत्यधिक प्रभावित किया।"
-        }
+        exp: "He is revered as the architect of harmonic analysis and representation theory of semisimple Lie groups."
       },
+
+      // Level 2: Moderate (Questions 6 - 10)
       {
-        level: { en: "Level 2 — Moderate", hi: "स्तर 2 — मध्यम" },
-        q: { en: "Between 1950 and 1963, Harish-Chandra spent his most productive period primarily at which university?", hi: "1950 से 1963 के बीच हरीश-चंद्र ने अपना सबसे फलदायी शोध काल मुख्यतः किस विश्वविद्यालय में बिताया?" },
-        options: {
-          en: ["Harvard University", "Columbia University", "Yale University", "Princeton University"],
-          hi: ["हार्वर्ड विश्वविद्यालय", "कोलंबिया विश्वविद्यालय", "येल विश्वविद्यालय", "प्रिंसटन विश्वविद्यालय"]
-        },
+        level: "Level 2 — Moderate",
+        levelIndex: 2,
+        q: "During a seminar by Wolfgang Pauli in Zurich/Cambridge, what famous intervention did Harish-Chandra make?",
+        options: [
+          "He walked out in protest of the proof",
+          "He pointed out an error in Pauli's blackboard calculation",
+          "He presented an alternative quantum theory",
+          "He asked Pauli to co-author his paper"
+        ],
         correct: 1,
-        exp: {
-          en: "He produced much of his seminal work on Lie algebras and groups while on the faculty at Columbia University.",
-          hi: "उन्होंने अपने सबसे महत्वपूर्ण शोध पत्र कोलंबिया विश्वविद्यालय में संकाय सदस्य रहते हुए लिखे।"
-        }
+        exp: "Harish-Chandra famously pointed out a mathematical mistake on Pauli's blackboard, earning high respect."
       },
       {
-        level: { en: "Level 2 — Moderate", hi: "स्तर 2 — मध्यम" },
-        q: { en: "Harish-Chandra's doctoral thesis at Cambridge dealt primarily with which mathematical-physical object?", hi: "कैम्ब्रिज में हरीश-चंद्र की डॉक्टरेट थीसिस मुख्य रूप से किस विषय से संबंधित थी?" },
-        options: {
-          en: ["Automorphic forms", "Infinite irreducible representations of the Lorentz group", "Prime number distributions", "Quantum field equations"],
-          hi: ["ऑटोमॉर्फिक फॉर्म्स", "लोरेंत्ज़ समूह के अनंत अलघुकरणीय निरूपण", "अभाज्य संख्या वितरण", "क्वांटम फील्ड समीकरण"]
-        },
-        correct: 1,
-        exp: {
-          en: "His dissertation investigated infinite irreducible representations of the Lorentz group.",
-          hi: "उनकी थीसिस लोरेंत्ज़ समूह के अनंत अलघुकरणीय निरूपणों पर केंद्रित थी।"
-        }
-      },
-      {
-        level: { en: "Level 3 — Hard", hi: "स्तर 3 — कठिन" },
-        q: { en: "Harish-Chandra's research on representation theory was especially concerned with representations of which type of groups?", hi: "निरूपण सिद्धांत पर हरीश-चंद्र का शोध विशेष रूप से किस प्रकार के समूहों (Groups) से संबंधित था?" },
-        options: {
-          en: ["Finite cyclic groups", "Semisimple Lie groups", "Symmetric groups only", "Abelian groups only"],
-          hi: ["परिमित चक्रीय समूह", "सेमीसिंपल ली समूह (Semisimple Lie groups)", "केवल सममित समूह", "केवल अबेलियन समूह"]
-        },
-        correct: 1,
-        exp: {
-          en: "His monumental work established the representation theory of semisimple Lie groups.",
-          hi: "उनका सबसे मुख्य योगदान सेमीसिंपल ली ग्रुप्स के निरूपण सिद्धांत की स्थापना करना था।"
-        }
-      },
-      {
-        level: { en: "Level 3 — Hard", hi: "स्तर 3 — कठिन" },
-        q: { en: "Which major mathematical concept did Harish-Chandra extend from finite-dimensional representations to infinite-dimensional representations?", hi: "हरीश-चंद्र ने किस प्रमुख गणितीय अवधारणा को परिमित-आयामी से अनंत-आयामी निरूपणों तक विस्तारित किया?" },
-        options: {
-          en: ["Fourier series", "Character theory", "Probability measure", "Euclidean geometry"],
-          hi: ["फूरियर श्रृंखला", "चरित्र सिद्धांत (Character theory)", "प्रायिकता माप", "यूक्लिडियन ज्यामिति"]
-        },
-        correct: 1,
-        exp: {
-          en: "He proved that characters of infinite-dimensional representations exist as distributions.",
-          hi: "उन्होंने सिद्ध किया कि अनंत-आयामी निरूपणों के चरित्र वितरण (Distributions) के रूप में अस्तित्व रखते हैं।"
-        }
-      },
-      {
-        level: { en: "Level 3 — Hard", hi: "स्तर 3 — कठिन" },
-        q: { en: "Harish-Chandra's work on harmonic analysis was particularly connected with which mathematical structures?", hi: "हार्मोनिक विश्लेषण पर हरीश-चंद्र का कार्य विशेष रूप से किन गणितीय संरचनाओं से जुड़ा हुआ था?" },
-        options: {
-          en: ["Lie groups and their homogeneous spaces", "Polynomial rings only", "Finite fields only", "Euclidean lattices only"],
-          hi: ["ली समूह और उनके समरूप स्थान (Homogeneous spaces)", "केवल बहुपद वलय", "केवल परिमित क्षेत्र", "केवल यूक्लिडियन लैटिस"]
-        },
+        level: "Level 2 — Moderate",
+        levelIndex: 2,
+        q: "Harish-Chandra spent his most fertile early faculty period (1950–1963) primarily at which university?",
+        options: ["Columbia University", "Harvard University", "Stanford University", "Oxford University"],
         correct: 0,
-        exp: {
-          en: "He created a comprehensive theory of harmonic analysis on semisimple Lie groups and homogeneous spaces.",
-          hi: "उन्होंने ली समूहों और उनके समरूप स्थानों पर हार्मोनिक विश्लेषण का एक व्यापक ढांचा तैयार किया।"
-        }
+        exp: "He served on the faculty of Columbia University from 1950 to 1963 where he wrote many of his seminal papers."
       },
       {
-        level: { en: "Level 3 — Hard", hi: "स्तर 3 — कठिन" },
-        q: { en: "Which of the following was one of Harish-Chandra's significant research achievements?", hi: "निम्नलिखित में से कौन सी हरीश-चंद्र की एक अत्यंत महत्वपूर्ण शोध उपलब्धि थी?" },
-        options: {
-          en: ["Determination of the discrete series representations", "Discovery of the electron", "Development of general relativity", "Proof of Fermat's Last Theorem"],
-          hi: ["डिस्क्रीट सीरीज़ निरूपणों का निर्धारण", "इलेक्ट्रॉन की खोज", "सामान्य सापेक्षता का विकास", "फर्मेट के अंतिम प्रमेय का प्रमाण"]
-        },
+        level: "Level 2 — Moderate",
+        levelIndex: 2,
+        q: "Which major academic institution was Harish-Chandra appointed as permanent Professor in 1963?",
+        options: [
+          "Institute for Advanced Study (IAS), Princeton",
+          "Tata Institute of Fundamental Research (TIFR)",
+          "MIT Department of Mathematics",
+          "Cambridge Trinity College"
+        ],
         correct: 0,
-        exp: {
-          en: "He determined the discrete series representations of semisimple Lie groups.",
-          hi: "उन्होंने सेमीसिंपल ली ग्रुप्स के लिए डिस्क्रीट सीरीज़ निरूपणों का सटीक निर्धारण किया।"
-        }
+        exp: "In 1963, he was appointed permanent professor at the Institute for Advanced Study in Princeton."
       },
       {
-        level: { en: "Level 3 — Hard", hi: "स्तर 3 — कठिन" },
-        q: { en: "Which 1951 paper earned particular recognition in connection with Harish-Chandra's 1954 Cole Prize?", hi: "1954 में हरीश-चंद्र को मिले कोल पुरस्कार (Cole Prize) के संबंध में उनके 1951 के किस शोध पत्र को विशेष मान्यता मिली?" },
-        options: {
-          en: [
-            "Infinite Irreducible Representations of the Lorentz Group",
-            "On some applications of the universal enveloping algebra of a semisimple Lie algebra",
-            "Philosophy of Cusp Forms",
-            "Representations of Semisimple Lie Groups VI"
-          ],
-          hi: [
-            "Infinite Irreducible Representations of the Lorentz Group",
-            "On some applications of the universal enveloping algebra of a semisimple Lie algebra",
-            "Philosophy of Cusp Forms",
-            "Representations of Semisimple Lie Groups VI"
-          ]
-        },
-        correct: 1,
-        exp: {
-          en: "His 1951 paper 'On some applications of the universal enveloping algebra of a semisimple Lie algebra' led to the Cole Prize in 1954.",
-          hi: "यूनिवर्सल एनवेलपिंग अलजेब्रा पर 1951 के ऐतिहासिक पत्र के लिए उन्हें 1954 में अमेरिकन मैथमैटिकल सोसाइटी का कोल पुरस्कार मिला।"
-        }
-      },
-      {
-        level: { en: "Level 4 — Expert Challenge", hi: "स्तर 4 — विशेषज्ञ चुनौती" },
-        q: { en: "Harish-Chandra initially worked in theoretical physics but later moved decisively toward mathematics. Which development best explains this transition according to his own reflections?", hi: "हरीश-चंद्र ने शुरू में सैद्धांतिक भौतिकी में काम किया लेकिन बाद में गणित की ओर रुख किया। उनके स्वयं के विचारों के अनुसार कौन सा कारण इस बदलाव की सही व्याख्या करता है?" },
-        options: {
-          en: [
-            "He abandoned research in physics because universities stopped funding it.",
-            "He became convinced that his work on the Lorentz group required greater mathematical rigor and that his interests were better suited to mathematics.",
-            "Dirac advised him to stop studying physics after his PhD.",
-            "Columbia University required him to change fields."
-          ],
-          hi: [
-            "उन्होंने भौतिकी छोड़ दी क्योंकि विश्वविद्यालयों ने फंडिंग बंद कर दी थी।",
-            "उन्हें विश्वास हो गया था कि उनके काम को अधिक गणितीय सटीकता (Rigor) की आवश्यकता थी और उनका स्वभाव गणित के अधिक अनुकूल था।",
-            "डिरैक ने उन्हें पीएचडी के बाद भौतिकी छोड़ने की सलाह दी थी।",
-            "कोलंबिया विश्वविद्यालय ने उनसे विषय बदलने की मांग की थी।"
-          ]
-        },
-        correct: 1,
-        exp: {
-          en: "He realized his Lorentz group research demanded deeper mathematical rigor and that his natural mode of thought aligned with mathematics.",
-          hi: "उन्हें महसूस हुआ कि भौतिकी की समस्याओं को समझने के लिए जिस गणितीय शुद्धता की जरूरत थी, वह शुद्ध गणित में ही संभव थी।"
-        }
-      },
-      {
-        level: { en: "Level 4 — Expert Challenge", hi: "स्तर 4 — विशेषज्ञ चुनौती" },
-        q: { en: "Which combination most accurately represents the mathematical synthesis characteristic of Harish-Chandra's scientific work?", hi: "कौन सा संयोजन हरीश-चंद्र के वैज्ञानिक कार्य की गणितीय समन्वय विशेषता को सबसे सटीक रूप से दर्शाता है?" },
-        options: {
-          en: [
-            "Geometry + topology + statistics",
-            "Analysis + algebra + geometry",
-            "Number theory + probability + mechanics",
-            "Calculus + numerical analysis + combinatorics"
-          ],
-          hi: [
-            "ज्यामिति + टोपोलॉजी + सांख्यिकी",
-            "विश्लेषण (Analysis) + बीजगणित (Algebra) + ज्यामिति (Geometry)",
-            "संख्या सिद्धांत + प्रायिकता + यांत्रिकी",
-            "कैलकुलस + संख्यात्मक विश्लेषण + क्रमचय-संचय"
-          ]
-        },
-        correct: 1,
-        exp: {
-          en: "His practical work stands as a monumental synthesis of hard analysis, abstract algebra, and differential geometry.",
-          hi: "उनका शोध मुख्य रूप से गहरे विश्लेषण, अमूर्त बीजगणित और अवकल ज्यामिति का अद्भुत समन्वय था।"
-        }
-      },
-      {
-        level: { en: "Level 4 — Expert Challenge", hi: "स्तर 4 — विशेषज्ञ चुनौती" },
-        q: { en: "Harish-Chandra's work transformed infinite-dimensional representation theory from a peripheral subject into a major area of modern mathematics. Which research direction most directly reflects this transformation?", hi: "हरीश-चंद्र के कार्य ने अनंत-आयामी निरूपण सिद्धांत को आधुनिक गणित का एक प्रमुख क्षेत्र बना दिया। कौन सी शोध दिशा इस परिवर्तन को दर्शाती है?" },
-        options: {
-          en: [
-            "Studying only finite-dimensional matrix equations",
-            "Developing representation theory and harmonic analysis for semisimple/reductive groups",
-            "Returning exclusively to experimental particle physics",
-            "Restricting representation theory to elementary geometry"
-          ],
-          hi: [
-            "केवल परिमित-आयामी मैट्रिक्स समीकरणों का अध्ययन करना",
-            "सेमीसिंपल और रिडक्टिव समूहों के लिए निरूपण सिद्धांत और हार्मोनिक विश्लेषण का विकास",
-            "प्रायोगिक कण भौतिकी की ओर लौटना",
-            "निरूपण सिद्धांत को प्रारंभिक ज्यामिति तक सीमित करना"
-          ]
-        },
-        correct: 1,
-        exp: {
-          en: "Building the harmonic analysis and representation theory for reductive groups changed the trajectory of modern mathematics.",
-          hi: "रिडक्टिव समूहों के हार्मोनिक विश्लेषण ने आधुनिक गणित की दिशा को हमेशा के लिए बदल दिया।"
-        }
-      },
-      {
-        level: { en: "Level 4 — Expert Challenge", hi: "स्तर 4 — विशेषज्ञ चुनौती" },
-        q: { en: "Consider these career developments:\n1. PhD at Cambridge under Dirac\n2. Work as Dirac's assistant in Princeton\n3. Productive research period at Columbia\n4. Work at the Institute for Advanced Study\nWhich sequence represents their chronological order?", hi: "हरीश-चंद्र के करियर के इन चरणों पर विचार करें:\n1. डिरैक के तहत कैम्ब्रिज में पीएचडी\n2. प्रिंसटन में डिरैक के सहायक के रूप में कार्य\n3. कोलंबिया में शोध काल\n4. इंस्टीट्यूट फॉर एडवांस्ड स्टडी (IAS) में कार्य\nकौन सा क्रम सही कालक्रम दर्शाता है?" },
-        options: {
-          en: ["1 → 2 → 3 → 4", "2 → 1 → 3 → 4", "1 → 3 → 2 → 4", "3 → 1 → 2 → 4"],
-          hi: ["1 → 2 → 3 → 4", "2 → 1 → 3 → 4", "1 → 3 → 2 → 4", "3 → 1 → 2 → 4"]
-        },
+        level: "Level 2 — Moderate",
+        levelIndex: 2,
+        q: "Harish-Chandra's 1947 PhD thesis under Dirac investigated which mathematical structure?",
+        options: [
+          "Infinite irreducible representations of the Lorentz group",
+          "Algebraic topology of compact manifolds",
+          "Calculus of prime number distributions",
+          "Thermodynamics of black holes"
+        ],
         correct: 0,
-        exp: {
-          en: "Chronology: Cambridge PhD (1947) → Dirac's assistant at IAS (1947-48) → Columbia (1950-63) → IAS permanent faculty (from 1963).",
-          hi: "सही कालक्रम: कैम्ब्रिज पीएचडी (1947) → प्रिंसटन में डिरैक के सहायक (1947-48) → कोलंबिया (1950-63) → IAS प्रिंसटन स्थायी संकाय (1963 से)।"
-        }
+        exp: "His doctoral dissertation analyzed infinite irreducible representations of the Lorentz group."
       },
       {
-        level: { en: "Level 4 — Expert Challenge", hi: "स्तर 4 — विशेषज्ञ चुनौती" },
-        q: { en: "Which statement best captures the central significance of Harish-Chandra's legacy based on his mathematical work?", hi: "कौन सा कथन हरीश-चंद्र के गणितीय कार्य की विरासत के केंद्रीय महत्व को सबसे सटीक रूप से दर्शाता है?" },
-        options: {
-          en: [
-            "He primarily transferred established physics techniques into engineering.",
-            "He developed a broad theory connecting representation theory and harmonic analysis of Lie groups, with lasting influence across mathematics.",
-            "He restricted his research to the mathematical foundations of quantum mechanics.",
-            "His principal contribution was the development of numerical methods for solving physical equations."
-          ],
-          hi: [
-            "उन्होंने मुख्य रूप से भौतिकी तकनीकों को इंजीनियरिंग में स्थानांतरित किया।",
-            "उन्होंने ली समूहों के निरूपण सिद्धांत और हार्मोनिक विश्लेषण को जोड़ते हुए एक व्यापक सिद्धांत दिया जिसका गहरा प्रभाव लैंगलैंड्स कार्यक्रम और आधुनिक गणित पर है।",
-            "उन्होंने अपना शोध केवल क्वांटम यांत्रिकी की नींव तक सीमित रखा।",
-            "उनका प्रमुख योगदान भौतिक समीकरणों को हल करने के लिए संख्यात्मक तरीके विकसित करना था।"
-          ]
-        },
-        correct: 1,
-        exp: {
-          en: "He formulated the profound harmonic analysis on Lie groups that underpins modern representation theory and the Langlands program.",
-          hi: "उनका सिद्धांत आधुनिक लैंगलैंड्स प्रोग्राम और ऑटोमॉर्फिक फॉर्म्स के संपूर्ण आधुनिक ढांचे का आधार स्तंभ है।"
-        }
+        level: "Level 2 — Moderate",
+        levelIndex: 2,
+        q: "For which historic work did Harish-Chandra win the American Mathematical Society's Cole Prize in 1954?",
+        options: [
+          "Representations of semisimple Lie algebras and universal enveloping algebras",
+          "Proof of Poincaré Conjecture",
+          "Foundations of Quantum Electrodynamics",
+          "Classification of Finite Simple Groups"
+        ],
+        correct: 0,
+        exp: "He received the Cole Prize in 1954 for his breakthrough papers on universal enveloping algebras."
+      },
+
+      // Level 3: Hard / Expert (Questions 11 - 15)
+      {
+        level: "Level 3 — Hard (Expert)",
+        levelIndex: 3,
+        q: "What major conceptual milestone did Harish-Chandra achieve regarding infinite-dimensional representations?",
+        options: [
+          "He proved characters exist as distributions (generalized functions)",
+          "He proved that infinite groups have no representations",
+          "He reduced all Lie groups to commutative rings",
+          "He showed matrix representations cannot be continuous"
+        ],
+        correct: 0,
+        exp: "He proved characters of infinite-dimensional representations exist as invariant eigendistributions."
+      },
+      {
+        level: "Level 3 — Hard (Expert)",
+        levelIndex: 3,
+        q: "Which series of representations was fundamentally classified and established by Harish-Chandra?",
+        options: [
+          "Discrete series representations",
+          "Fibonacci spectral sequences",
+          "Hyper-geometric polynomials",
+          "Affine chaotic series"
+        ],
+        correct: 0,
+        exp: "He determined the discrete series representations of real semisimple Lie groups."
+      },
+      {
+        level: "Level 3 — Hard (Expert)",
+        levelIndex: 3,
+        q: "Harish-Chandra's deep harmonic analysis and Eisenstein integrals laid foundations for which grand modern mathematical framework?",
+        options: [
+          "The Langlands Program & automorphic forms",
+          "String Theory's Calabi-Yau compactification only",
+          "Finite automata complexity theory",
+          "Euclidean differential geometry"
+        ],
+        correct: 0,
+        exp: "His work on reductive groups serves as the analytic pillar for the modern Langlands program."
+      },
+      {
+        level: "Level 3 — Hard (Expert)",
+        levelIndex: 3,
+        q: "What mathematical synthesis uniquely characterized Harish-Chandra's intellectual philosophy?",
+        options: [
+          "Synthesis of profound Analysis, Algebra, and Geometry",
+          "Strict focus only on numerical approximation",
+          "Refusal to use infinite-dimensional vector spaces",
+          "Separation of algebraic theory from physics"
+        ],
+        correct: 0,
+        exp: "His genius unified hard real analysis with abstract Lie algebras and differential geometry."
+      },
+      {
+        level: "Level 3 — Hard (Expert)",
+        levelIndex: 3,
+        q: "What was Harish-Chandra's core reason for transitioning from theoretical physics to pure mathematics?",
+        options: [
+          "He felt physical approximations lacked mathematical rigor and deep conceptual clarity",
+          "Universities stopped funding quantum mechanics",
+          "Dirac instructed him to change faculties",
+          "He disliked laboratory apparatus"
+        ],
+        correct: 0,
+        exp: "He reflected that his natural aesthetic demanded complete mathematical rigor and foundational clarity."
       }
     ];
 
+    /* ==========================================================================
+       QUIZ RUNTIME ENGINE
+       ========================================================================== */
     let currentQ = 0;
     let score = 0;
     let correctCount = 0;
@@ -1984,40 +1663,42 @@
 
     function startQuiz() {
       const input = document.getElementById('participantName').value.trim();
-      userName = input || (currentLang === 'hi' ? "विद्वान प्रतिभागी" : "Honored Scholar");
+      userName = input || "Honored Scholar";
+      document.getElementById('certParticipantName').innerText = userName;
+
       document.getElementById('quizEntryView').style.display = 'none';
       document.getElementById('quizConsoleView').style.display = 'block';
       loadQuestion();
     }
 
-    function renderCurrentQuestion() {
-      const item = QUESTIONS_BILINGUAL[currentQ];
-      document.getElementById('levelBadge').innerText = item.level[currentLang];
-      document.getElementById('qCounter').innerText = `Q ${currentQ + 1}/${QUESTIONS_BILINGUAL.length}`;
-      document.getElementById('questionHeading').innerText = item.q[currentLang];
+    function renderQuestion() {
+      const item = QUIZ_QUESTIONS[currentQ];
+      document.getElementById('levelBadge').innerText = item.level;
+      document.getElementById('qCounter').innerText = `Q ${currentQ + 1}/15`;
+      document.getElementById('questionHeading').innerText = item.q;
 
       const optsBox = document.getElementById('optionsContainer');
       optsBox.innerHTML = '';
+      const letters = ["A", "B", "C", "D"];
 
-      const prefixes = ["A", "B", "C", "D"];
-      item.options[currentLang].forEach((opt, idx) => {
+      item.options.forEach((opt, idx) => {
         const btn = document.createElement('button');
         btn.className = 'quiz-btn';
-        btn.innerHTML = `<strong style="color:var(--heritage-gold); margin-right: 0.6rem;">${prefixes[idx]}.</strong> <span>${opt}</span>`;
+        btn.innerHTML = `<strong style="color:var(--heritage-gold); margin-right: 0.6rem;">${letters[idx]}.</strong> <span>${opt}</span>`;
         btn.onclick = () => selectOption(idx);
         optsBox.appendChild(btn);
       });
     }
 
     function loadQuestion() {
-      if (currentQ >= QUESTIONS_BILINGUAL.length) {
-        showResults();
+      if (currentQ >= QUIZ_QUESTIONS.length) {
+        showVictoryScreen();
         return;
       }
 
       answered = false;
       document.getElementById('feedbackBox').style.display = 'none';
-      renderCurrentQuestion();
+      renderQuestion();
       startCountdown();
     }
 
@@ -2040,12 +1721,11 @@
       answered = true;
       clearInterval(timerId);
 
-      const item = QUESTIONS_BILINGUAL[currentQ];
+      const item = QUIZ_QUESTIONS[currentQ];
       const buttons = document.querySelectorAll('.quiz-btn');
       const isCorrect = (selectedIdx === item.correct);
 
       buttons.forEach(b => b.disabled = true);
-
       if (selectedIdx !== -1) {
         buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'incorrect');
       }
@@ -2062,29 +1742,147 @@
       const fbBox = document.getElementById('feedbackBox');
       const fbTitle = document.getElementById('feedbackTitle');
       const fbText = document.getElementById('feedbackText');
-
       fbBox.style.display = 'block';
-      fbTitle.innerText = isCorrect ? UI_TRANSLATIONS[currentLang].feedbackCorrect : UI_TRANSLATIONS[currentLang].feedbackIncorrect;
+      fbTitle.innerText = isCorrect ? "✓ Correct Answer!" : "✕ Incorrect";
       fbTitle.style.color = isCorrect ? "var(--success-green)" : "var(--error-crimson)";
-      fbText.innerText = item.exp[currentLang];
+      fbText.innerText = item.exp;
     }
 
     function nextQuestion() {
       currentQ++;
+
+      // After Q5 (Easy Mode Completed): Show jumping kitty
+      if (currentQ === 5) {
+        showTransitionModal("kitty", "Easy Mode Cleared! 🐱", "A leaping smiling kitty celebrates your brilliant start! Get ready for Moderate Mode.", () => {
+          loadQuestion();
+        });
+        return;
+      }
+
+      // After Q10 (Moderate Mode Completed): Show Good Work then Caution before Hard
+      if (currentQ === 10) {
+        showTransitionModal("goodwork", "Good Work! 🌟", "You have successfully navigated through the Moderate tier. Superb execution!", () => {
+          showTransitionModal("caution", "Realm of Experts Ahead! ⚠️", "Now you are stepping into the realm of Experts - Be cautious!", () => {
+            loadQuestion();
+          });
+        });
+        return;
+      }
+
       loadQuestion();
     }
 
-    function showResults() {
-      document.getElementById('quizConsoleView').style.display = 'none';
-      document.getElementById('quizResultsView').style.display = 'block';
-      document.getElementById('resScore').innerText = score;
-      
-      const acc = Math.round((correctCount / QUESTIONS_BILINGUAL.length) * 100);
-      document.getElementById('resStats').innerText = (currentLang === 'hi')
-        ? `परिणाम: ${correctCount} / ${QUESTIONS_BILINGUAL.length} सही (${acc}% सटीकता)`
-        : `Completed: ${correctCount} / ${QUESTIONS_BILINGUAL.length} Correct (${acc}% Accuracy)`;
+    function showTransitionModal(type, title, desc, callback) {
+      const modal = document.getElementById('transitionModal');
+      const animBox = document.getElementById('transitionAnimationBox');
+      const titleEl = document.getElementById('transitionTitle');
+      const descEl = document.getElementById('transitionDesc');
 
-      document.getElementById('certName').innerText = userName;
+      if (type === "kitty") {
+        animBox.innerHTML = `<div class="jumping-kitty">🐱</div>`;
+      } else if (type === "goodwork") {
+        animBox.innerHTML = `<div style="font-size: 3.8rem; animation: kittyJump 0.5s infinite alternate;">🎉</div>`;
+      } else if (type === "caution") {
+        animBox.innerHTML = `<div style="font-size: 3.8rem; color: #DC2626;">⚠️</div>`;
+      }
+
+      titleEl.innerText = title;
+      descEl.innerText = desc;
+      modal.classList.add('active');
+
+      setTimeout(() => {
+        modal.classList.remove('active');
+        if (callback) callback();
+      }, 3000);
+    }
+
+    function triggerFourCornerFireworks() {
+      const end = Date.now() + 2500;
+      const colors = ['#C9A227', '#E8D7A8', '#FF2E63', '#2563EB', '#10B981'];
+
+      (function frame() {
+        confetti({ particleCount: 4, angle: 315, spread: 55, origin: { x: 0, y: 0 }, colors: colors });
+        confetti({ particleCount: 4, angle: 225, spread: 55, origin: { x: 1, y: 0 }, colors: colors });
+        confetti({ particleCount: 4, angle: 45, spread: 55, origin: { x: 0, y: 1 }, colors: colors });
+        confetti({ particleCount: 4, angle: 135, spread: 55, origin: { x: 1, y: 1 }, colors: colors });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      }());
+    }
+
+    function showVictoryScreen() {
+      document.getElementById('quizConsoleView').style.display = 'none';
+      const victory = document.getElementById('victoryModal');
+      victory.classList.add('active');
+      triggerFourCornerFireworks();
+    }
+
+    function openCertificateModal() {
+      document.getElementById('victoryModal').classList.remove('active');
+      document.getElementById('certificateModal').classList.add('active');
+    }
+
+    function downloadPDFCertificate() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({
+        orientation: 'landscape',
+        unit: 'pt',
+        format: 'a4'
+      });
+
+      const width = doc.internal.pageSize.getWidth();
+      const height = doc.internal.pageSize.getHeight();
+
+      doc.setFillColor(254, 253, 248);
+      doc.rect(0, 0, width, height, 'F');
+
+      doc.setDrawColor(201, 162, 39);
+      doc.setLineWidth(6);
+      doc.rect(20, 20, width - 40, height - 40);
+
+      doc.setDrawColor(11, 31, 51);
+      doc.setLineWidth(1.5);
+      doc.rect(28, 28, width - 56, height - 56);
+
+      doc.setFont('times', 'italic');
+      doc.setFontSize(16);
+      doc.setTextColor(30, 78, 121);
+      doc.text("School of Basic Sciences • Academic Presentation", width / 2, 85, { align: 'center' });
+
+      doc.setFont('times', 'bold');
+      doc.setFontSize(30);
+      doc.setTextColor(201, 162, 39);
+      doc.text("CERTIFICATE OF ACCOMPLISHMENT", width / 2, 130, { align: 'center' });
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(13);
+      doc.setTextColor(100, 116, 139);
+      doc.text("This prestigious credential is proudly awarded to", width / 2, 175, { align: 'center' });
+
+      doc.setFont('times', 'bold');
+      doc.setFontSize(32);
+      doc.setTextColor(11, 31, 51);
+      doc.text(userName, width / 2, 230, { align: 'center' });
+
+      doc.setDrawColor(201, 162, 39);
+      doc.setLineWidth(1);
+      doc.line(width / 2 - 160, 240, width / 2 + 160, 240);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(13);
+      doc.setTextColor(32, 37, 43);
+      const certDesc = "For demonstrating intellectual mastery and completing all tiers (Easy, Moderate, and Expert Hard)\nof the Harish-Chandra Digital Legacy Challenge in honor of his 103rd Birth Anniversary.";
+      doc.text(certDesc, width / 2, 285, { align: 'center', lineHeightFactor: 1.5 });
+
+      doc.setFontSize(11);
+      doc.setTextColor(100, 116, 139);
+      doc.text("Date: October 11, 2026", 80, 480);
+      doc.text("Track 06: Knowledge Exhibition", width / 2, 480, { align: 'center' });
+      doc.text("Authorized Signature", width - 80, 480, { align: 'right' });
+
+      doc.save(`Harish_Chandra_Certificate_${userName.replace(/\s+/g, '_')}.pdf`);
     }
   </script>
 </body>
