@@ -61,7 +61,7 @@
       margin-inline: auto;
     }
 
-    /* INAUGURAL OVERLAY (Exact Center Lock) */
+    /* INAUGURAL OVERLAY */
     #inauguralOverlay {
       position: fixed;
       top: 0;
@@ -69,7 +69,7 @@
       width: 100vw;
       height: 100dvh;
       z-index: 9999999;
-      background: radial-gradient(circle at 50% 40%, #15324D 0%, #071524 65%, #030911 100%);
+      background: radial-gradient(circle at 50% 40%, #15324E 0%, #071524 65%, #030911 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -163,7 +163,7 @@
       transition: var(--transition-smooth);
     }
 
-    /* HEADER WITH VISIBLE PILLARS */
+    /* HEADER */
     .site-header {
       position: sticky;
       top: 0;
@@ -429,6 +429,7 @@
       line-height: 1.15;
       background: linear-gradient(135deg, #FFFFFF 20%, #F5E8C7 55%, #C9A227 100%);
       -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
       filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.5));
     }
@@ -915,7 +916,7 @@
       }
     }
 
-    /* CLEAN MOBILE VIEW - ALL PILLARS VISIBLE */
+    /* MOBILE VIEW (< 768px) */
     @media (max-width: 768px) {
       .nav-inner {
         flex-direction: column;
@@ -957,7 +958,6 @@
         padding-top: 0.5rem;
       }
 
-      /* Navigation Pillars Horizontal Bar */
       .nav-links {
         display: flex;
         width: 100%;
@@ -1385,7 +1385,6 @@
       document.getElementById('tributesCountText').innerText = `${tributeCount} ${suffix}`;
     }
 
-    // Initialize saved count on page load
     document.addEventListener('DOMContentLoaded', () => {
       updateTributeCounter();
     });
@@ -1629,320 +1628,7 @@
       }
     }
 
-    /* 20 QUESTIONS ENGINE */
-    const QUESTIONS_BILINGUAL = [
-      {
-        level: { en: "Level 1 — Easy", hi: "स्तर 1 — सरल" },
-        q: { en: "Harish-Chandra was born in which city?", hi: "हरीश-चंद्र का जन्म किस शहर में हुआ था?" },
-        options: {
-          en: ["Allahabad", "Kanpur", "Bangalore", "Delhi"],
-          hi: ["इलाहाबाद", "कानपुर", "बैंगलोर", "दिल्ली"]
-        },
-        correct: 1,
-        exp: {
-          en: "Harish-Chandra was born in Kanpur on October 11, 1923.",
-          hi: "हरीश-चंद्र का जन्म 11 अक्टूबर, 1923 को कानपुर में हुआ था।"
-        }
-      },
-      {
-        level: { en: "Level 1 — Easy", hi: "स्तर 1 — सरल" },
-        q: { en: "Which subject did Harish-Chandra initially study at the University of Allahabad?", hi: "हरीश-चंद्र ने शुरुआत में इलाहाबाद विश्वविद्यालय में किस विषय का अध्ययन किया था?" },
-        options: {
-          en: ["Mathematics", "Chemistry", "Theoretical Physics", "Engineering"],
-          hi: ["गणित", "रसायन विज्ञान", "सैद्धांतिक भौतिकी (Theoretical Physics)", "इंजीनियरिंग"]
-        },
-        correct: 2,
-        exp: {
-          en: "He studied theoretical physics at the University of Allahabad before turning to mathematics.",
-          hi: "गणित की ओर रुख करने से पहले उन्होंने इलाहाबाद विश्वविद्यालय में सैद्धांतिक भौतिकी का अध्ययन किया।"
-        }
-      },
-      {
-        level: { en: "Level 1 — Easy", hi: "स्तर 1 — सरल" },
-        q: { en: "Who supervised Harish-Chandra's doctoral research at Cambridge?", hi: "कैम्ब्रिज में हरीश-चंद्र के डॉक्टरेट शोध के पर्यवेक्षक (गाइड) कौन थे?" },
-        options: {
-          en: ["Hermann Weyl", "Paul Dirac", "André Weil", "Claude Chevalley"],
-          hi: ["हरमन वेइल", "पॉल डिरैक", "आंद्रे वेल", "क्लाउड शेवेले"]
-        },
-        correct: 1,
-        exp: {
-          en: "His doctoral research at Cambridge was supervised by Paul Dirac.",
-          hi: "कैम्ब्रिज में उनके डॉक्टरेट शोध का पर्यवेक्षण पॉल डिरैक ने किया था।"
-        }
-      },
-      {
-        level: { en: "Level 1 — Easy", hi: "स्तर 1 — सरल" },
-        q: { en: "In which year did Harish-Chandra receive his PhD from Cambridge?", hi: "हरीश-चंद्र को कैम्ब्रिज से किस वर्ष पीएचडी की उपाधि प्राप्त हुई?" },
-        options: {
-          en: ["1943", "1945", "1947", "1950"],
-          hi: ["1943", "1945", "1947", "1950"]
-        },
-        correct: 2,
-        exp: {
-          en: "Harish-Chandra earned his PhD from Cambridge in 1947.",
-          hi: "हरीश-चंद्र ने 1947 में कैम्ब्रिज से अपनी पीएचडी पूरी की।"
-        }
-      },
-      {
-        level: { en: "Level 1 — Easy", hi: "स्तर 1 — सरल" },
-        q: { en: "Harish-Chandra became particularly famous for fundamental work in which area of mathematics?", hi: "हरीश-चंद्र गणित के किस क्षेत्र में मौलिक कार्यों के लिए विशेष रूप से प्रसिद्ध हुए?" },
-        options: {
-          en: ["Number theory only", "Representation theory", "Probability theory", "Numerical analysis"],
-          hi: ["केवल संख्या सिद्धांत (Number Theory)", "निरूपण सिद्धांत (Representation Theory)", "प्रायिकता सिद्धांत", "संख्यात्मक विश्लेषण"]
-        },
-        correct: 1,
-        exp: {
-          en: "He pioneered foundational developments in representation theory and harmonic analysis.",
-          hi: "उन्होंने निरूपण सिद्धांत (Representation Theory) और हार्मोनिक विश्लेषण में युगांतरकारी कार्य किया।"
-        }
-      },
-      {
-        level: { en: "Level 2 — Moderate", hi: "स्तर 2 — मध्यम" },
-        q: { en: "Which physicist's book on quantum mechanics strongly influenced Harish-Chandra's initial decision to pursue theoretical physics?", hi: "क्वांटम यांत्रिकी पर किस भौतिक विज्ञानी की पुस्तक ने हरीश-चंद्र को सैद्धांतिक भौतिकी चुनने के लिए प्रेरित किया?" },
-        options: {
-          en: ["Wolfgang Pauli", "Paul Dirac", "Max Born", "Albert Einstein"],
-          hi: ["वोल्फगैंग पाउली", "पॉल डिरैक", "मैक्स बॉर्न", "अल्बर्ट आइंस्टीन"]
-        },
-        correct: 1,
-        exp: {
-          en: "Paul Dirac's principles and books on quantum mechanics inspired his formative physics pursuits.",
-          hi: "क्वांटम यांत्रिकी पर पॉल डिरैक की पुस्तक ने उन्हें भौतिकी के क्षेत्र में शोध करने के लिए गहराई से प्रेरित किया।"
-        }
-      },
-      {
-        level: { en: "Level 2 — Moderate", hi: "स्तर 2 — मध्यम" },
-        q: { en: "During a lecture by Wolfgang Pauli, what did Harish-Chandra famously do?", hi: "वोल्फगैंग पाउली के एक व्याख्यान के दौरान हरीश-चंद्र ने प्रसिद्ध रूप से क्या किया था?" },
-        options: {
-          en: ["Presented his own research", "Challenged the entire theory", "Pointed out an error in Pauli's work", "Asked Pauli to supervise his PhD"],
-          hi: ["अपना स्वयं का शोध प्रस्तुत किया", "पूरे सिद्धांत को चुनौती दी", "पाउली के कार्य में एक त्रुटि इंगित की", "पाउली से अपने पीएचडी का मार्गदर्शन करने का अनुरोध किया"]
-        },
-        correct: 2,
-        exp: {
-          en: "He famously pointed out a mathematical error in Pauli's presentation, demonstrating his sharp acumen.",
-          hi: "उन्होंने व्याख्यान के दौरान पाउली के ब्लैकबोर्ड पर एक गणितीय गलती की ओर ध्यान दिलाया था।"
-        }
-      },
-      {
-        level: { en: "Level 2 — Moderate", hi: "स्तर 2 — मध्यम" },
-        q: { en: "Which mathematicians strongly influenced Harish-Chandra during his early period in Princeton?", hi: "प्रिंसटन में अपने शुरुआती समय के दौरान किन गणितज्ञों ने हरीश-चंद्र को गहराई से प्रभावित किया?" },
-        options: {
-          en: ["Weyl, Artin and Chevalley", "Hardy, Littlewood and Ramanujan", "Hilbert, Noether and Gauss", "Zariski, Weil and Grothendieck"],
-          hi: ["वेइल, आर्टिन और शेवेले", "हार्डी, लिटिलवुड और रामानुजन", "हिल्बर्ट, नोएदर और गॉस", "ज़ारिस्की, वेल और ग्रॉथेंडिक"]
-        },
-        correct: 0,
-        exp: {
-          en: "Hermann Weyl, Emil Artin, and Claude Chevalley significantly influenced his transition and early work at Princeton.",
-          hi: "हरमन वेइल, एमिल आर्टिन और क्लाउड शेवेले ने उनके गणितीय रुझान को अत्यधिक प्रभावित किया।"
-        }
-      },
-      {
-        level: { en: "Level 2 — Moderate", hi: "स्तर 2 — मध्यम" },
-        q: { en: "Between 1950 and 1963, Harish-Chandra spent his most productive period primarily at which university?", hi: "1950 से 1963 के बीच हरीश-चंद्र ने अपना सबसे फलदायी शोध काल मुख्यतः किस विश्वविद्यालय में बिताया?" },
-        options: {
-          en: ["Harvard University", "Columbia University", "Yale University", "Princeton University"],
-          hi: ["हार्वर्ड विश्वविद्यालय", "कोलंबिया विश्वविद्यालय", "येल विश्वविद्यालय", "प्रिंसटन विश्वविद्यालय"]
-        },
-        correct: 1,
-        exp: {
-          en: "He produced much of his seminal work on Lie algebras and groups while on the faculty at Columbia University.",
-          hi: "उन्होंने अपने सबसे महत्वपूर्ण शोध पत्र कोलंबिया विश्वविद्यालय में संकाय सदस्य रहते हुए लिखे।"
-        }
-      },
-      {
-        level: { en: "Level 2 — Moderate", hi: "स्तर 2 — मध्यम" },
-        q: { en: "Harish-Chandra's doctoral thesis at Cambridge dealt primarily with which mathematical-physical object?", hi: "कैम्ब्रिज में हरीश-चंद्र की डॉक्टरेट थीसिस मुख्य रूप से किस विषय से संबंधित थी?" },
-        options: {
-          en: ["Automorphic forms", "Infinite irreducible representations of the Lorentz group", "Prime number distributions", "Quantum field equations"],
-          hi: ["ऑटोमॉर्फिक फॉर्म्स", "लोरेंत्ज़ समूह के अनंत अलघुकरणीय निरूपण", "अभाज्य संख्या वितरण", "क्वांटम फील्ड समीकरण"]
-        },
-        correct: 1,
-        exp: {
-          en: "His dissertation investigated infinite irreducible representations of the Lorentz group.",
-          hi: "उनकी थीसिस लोरेंत्ज़ समूह के अनंत अलघुकरणीय निरूपणों पर केंद्रित थी।"
-        }
-      },
-      {
-        level: { en: "Level 3 — Hard", hi: "स्तर 3 — कठिन" },
-        q: { en: "Harish-Chandra's research on representation theory was especially concerned with representations of which type of groups?", hi: "निरूपण सिद्धांत पर हरीश-चंद्र का शोध विशेष रूप से किस प्रकार के समूहों (Groups) से संबंधित था?" },
-        options: {
-          en: ["Finite cyclic groups", "Semisimple Lie groups", "Symmetric groups only", "Abelian groups only"],
-          hi: ["परिमित चक्रीय समूह", "सेमीसिंपल ली समूह (Semisimple Lie groups)", "केवल सममित समूह", "केवल अबेलियन समूह"]
-        },
-        correct: 1,
-        exp: {
-          en: "His monumental work established the representation theory of semisimple Lie groups.",
-          hi: "उनका सबसे मुख्य योगदान सेमीसिंपल ली ग्रुप्स के निरूपण सिद्धांत की स्थापना करना था।"
-        }
-      },
-      {
-        level: { en: "Level 3 — Hard", hi: "स्तर 3 — कठिन" },
-        q: { en: "Which major mathematical concept did Harish-Chandra extend from finite-dimensional representations to infinite-dimensional representations?", hi: "हरीश-चंद्र ने किस प्रमुख गणितीय अवधारणा को परिमित-आयामी से अनंत-आयामी निरूपणों तक विस्तारित किया?" },
-        options: {
-          en: ["Fourier series", "Character theory", "Probability measure", "Euclidean geometry"],
-          hi: ["फूरियर श्रृंखला", "चरित्र सिद्धांत (Character theory)", "प्रायिकता माप", "यूक्लिडियन ज्यामिति"]
-        },
-        correct: 1,
-        exp: {
-          en: "He proved that characters of infinite-dimensional representations exist as distributions.",
-          hi: "उन्होंने सिद्ध किया कि अनंत-आयामी निरूपणों के चरित्र वितरण (Distributions) के रूप में अस्तित्व रखते हैं।"
-        }
-      },
-      {
-        level: { en: "Level 3 — Hard", hi: "स्तर 3 — कठिन" },
-        q: { en: "Harish-Chandra's work on harmonic analysis was particularly connected with which mathematical structures?", hi: "हार्मोनिक विश्लेषण पर हरीश-चंद्र का कार्य विशेष रूप से किन गणितीय संरचनाओं से जुड़ा हुआ था?" },
-        options: {
-          en: ["Lie groups and their homogeneous spaces", "Polynomial rings only", "Finite fields only", "Euclidean lattices only"],
-          hi: ["ली समूह और उनके समरूप स्थान (Homogeneous spaces)", "केवल बहुपद वलय", "केवल परिमित क्षेत्र", "केवल यूक्लिडियन लैटिस"]
-        },
-        correct: 0,
-        exp: {
-          en: "He created a comprehensive theory of harmonic analysis on semisimple Lie groups and homogeneous spaces.",
-          hi: "उन्होंने ली समूहों और उनके समरूप स्थानों पर हार्मोनिक विश्लेषण का एक व्यापक ढांचा तैयार किया।"
-        }
-      },
-      {
-        level: { en: "Level 3 — Hard", hi: "स्तर 3 — कठिन" },
-        q: { en: "Which of the following was one of Harish-Chandra's significant research achievements?", hi: "निम्नलिखित में से कौन सी हरीश-चंद्र की एक अत्यंत महत्वपूर्ण शोध उपलब्धि थी?" },
-        options: {
-          en: ["Determination of the discrete series representations", "Discovery of the electron", "Development of general relativity", "Proof of Fermat's Last Theorem"],
-          hi: ["डिस्क्रीट सीरीज़ निरूपणों का निर्धारण", "इलेक्ट्रॉन की खोज", "सामान्य सापेक्षता का विकास", "फर्मेट के अंतिम प्रमेय का प्रमाण"]
-        },
-        correct: 0,
-        exp: {
-          en: "He determined the discrete series representations of semisimple Lie groups.",
-          hi: "उन्होंने सेमीसिंपल ली ग्रुप्स के लिए डिस्क्रीट सीरीज़ निरूपणों का सटीक निर्धारण किया।"
-        }
-      },
-      {
-        level: { en: "Level 3 — Hard", hi: "स्तर 3 — कठिन" },
-        q: { en: "Which 1951 paper earned particular recognition in connection with Harish-Chandra's 1954 Cole Prize?", hi: "1954 में हरीश-चंद्र को मिले कोल पुरस्कार (Cole Prize) के संबंध में उनके 1951 के किस शोध पत्र को विशेष मान्यता मिली?" },
-        options: {
-          en: [
-            "Infinite Irreducible Representations of the Lorentz Group",
-            "On some applications of the universal enveloping algebra of a semisimple Lie algebra",
-            "Philosophy of Cusp Forms",
-            "Representations of Semisimple Lie Groups VI"
-          ],
-          hi: [
-            "Infinite Irreducible Representations of the Lorentz Group",
-            "On some applications of the universal enveloping algebra of a semisimple Lie algebra",
-            "Philosophy of Cusp Forms",
-            "Representations of Semisimple Lie Groups VI"
-          ]
-        },
-        correct: 1,
-        exp: {
-          en: "His 1951 paper 'On some applications of the universal enveloping algebra of a semisimple Lie algebra' led to the Cole Prize in 1954.",
-          hi: "यूनिवर्सल एनवेलपिंग अलजेब्रा पर 1951 के ऐतिहासिक पत्र के लिए उन्हें 1954 में अमेरिकन मैथमैटिकल सोसाइटी का कोल पुरस्कार मिला।"
-        }
-      },
-      {
-        level: { en: "Level 4 — Expert Challenge", hi: "स्तर 4 — विशेषज्ञ चुनौती" },
-        q: { en: "Harish-Chandra initially worked in theoretical physics but later moved decisively toward mathematics. Which development best explains this transition according to his own reflections?", hi: "हरीश-चंद्र ने शुरू में सैद्धांतिक भौतिकी में काम किया लेकिन बाद में गणित की ओर रुख किया। उनके स्वयं के विचारों के अनुसार कौन सा कारण इस बदलाव की सही व्याख्या करता है?" },
-        options: {
-          en: [
-            "He abandoned research in physics because universities stopped funding it.",
-            "He became convinced that his work on the Lorentz group required greater mathematical rigor and that his interests were better suited to mathematics.",
-            "Dirac advised him to stop studying physics after his PhD.",
-            "Columbia University required him to change fields."
-          ],
-          hi: [
-            "उन्होंने भौतिकी छोड़ दी क्योंकि विश्वविद्यालयों ने फंडिंग बंद कर दी थी।",
-            "उन्हें विश्वास हो गया था कि उनके काम को अधिक गणितीय सटीकता (Rigor) की आवश्यकता थी और उनका स्वभाव गणित के अधिक अनुकूल था।",
-            "डिरैक ने उन्हें पीएचडी के बाद भौतिकी छोड़ने की सलाह दी थी।",
-            "कोलंबिया विश्वविद्यालय ने उनसे विषय बदलने की मांग की थी।"
-          ]
-        },
-        correct: 1,
-        exp: {
-          en: "He realized his Lorentz group research demanded deeper mathematical rigor and that his natural mode of thought aligned with mathematics.",
-          hi: "उन्हें महसूस हुआ कि भौतिकी की समस्याओं को समझने के लिए जिस गणितीय शुद्धता की जरूरत थी, वह शुद्ध गणित में ही संभव थी।"
-        }
-      },
-      {
-        level: { en: "Level 4 — Expert Challenge", hi: "स्तर 4 — विशेषज्ञ चुनौती" },
-        q: { en: "Which combination most accurately represents the mathematical synthesis characteristic of Harish-Chandra's scientific work?", hi: "कौन सा संयोजन हरीश-चंद्र के वैज्ञानिक कार्य की गणितीय समन्वय विशेषता को सबसे सटीक रूप से दर्शाता है?" },
-        options: {
-          en: [
-            "Geometry + topology + statistics",
-            "Analysis + algebra + geometry",
-            "Number theory + probability + mechanics",
-            "Calculus + numerical analysis + combinatorics"
-          ],
-          hi: [
-            "ज्यामिति + टोपोलॉजी + सांख्यिकी",
-            "विश्लेषण (Analysis) + बीजगणित (Algebra) + ज्यामिति (Geometry)",
-            "संख्या सिद्धांत + प्रायिकता + यांत्रिकी",
-            "कैलकुलस + संख्यात्मक विश्लेषण + क्रमचय-संचय"
-          ]
-        },
-        correct: 1,
-        exp: {
-          en: "His practical work stands as a monumental synthesis of hard analysis, abstract algebra, and differential geometry.",
-          hi: "उनका शोध मुख्य रूप से गहरे विश्लेषण, अमूर्त बीजगणित और अवकल ज्यामिति का अद्भुत समन्वय था।"
-        }
-      },
-      {
-        level: { en: "Level 4 — Expert Challenge", hi: "स्तर 4 — विशेषज्ञ चुनौती" },
-        q: { en: "Harish-Chandra's work transformed infinite-dimensional representation theory from a peripheral subject into a major area of modern mathematics. Which research direction most directly reflects this transformation?", hi: "हरीश-चंद्र के कार्य ने अनंत-आयामी निरूपण सिद्धांत को आधुनिक गणित का एक प्रमुख क्षेत्र बना दिया। कौन सी शोध दिशा इस परिवर्तन को दर्शाती है?" },
-        options: {
-          en: [
-            "Studying only finite-dimensional matrix equations",
-            "Developing representation theory and harmonic analysis for semisimple/reductive groups",
-            "Returning exclusively to experimental particle physics",
-            "Restricting representation theory to elementary geometry"
-          ],
-          hi: [
-            "केवल परिमित-आयामी मैट्रिक्स समीकरणों का अध्ययन करना",
-            "सेमीसिंपल और रिडक्टिव समूहों के लिए निरूपण सिद्धांत और हार्मोनिक विश्लेषण का विकास",
-            "प्रायोगिक कण भौतिकी की ओर लौटना",
-            "निरूपण सिद्धांत को प्रारंभिक ज्यामिति तक सीमित करना"
-          ]
-        },
-        correct: 1,
-        exp: {
-          en: "Building the harmonic analysis and representation theory for reductive groups changed the trajectory of modern mathematics.",
-          hi: "रिडक्टिव समूहों के हार्मोनिक विश्लेषण ने आधुनिक गणित की दिशा को हमेशा के लिए बदल दिया।"
-        }
-      },
-      {
-        level: { en: "Level 4 — Expert Challenge", hi: "स्तर 4 — विशेषज्ञ चुनौती" },
-        q: { en: "Consider these career developments:\n1. PhD at Cambridge under Dirac\n2. Work as Dirac's assistant in Princeton\n3. Productive research period at Columbia\n4. Work at the Institute for Advanced Study\nWhich sequence represents their chronological order?", hi: "हरीश-चंद्र के करियर के इन चरणों पर विचार करें:\n1. डिरैक के तहत कैम्ब्रिज में पीएचडी\n2. प्रिंसटन में डिरैक के सहायक के रूप में कार्य\n3. कोलंबिया में शोध काल\n4. इंस्टीट्यूट फॉर एडवांस्ड स्टडी (IAS) में कार्य\nकौन सा क्रम सही कालक्रम दर्शाता है?" },
-        options: {
-          en: ["1 → 2 → 3 → 4", "2 → 1 → 3 → 4", "1 → 3 → 2 → 4", "3 → 1 → 2 → 4"],
-          hi: ["1 → 2 → 3 → 4", "2 → 1 → 3 → 4", "1 → 3 → 2 → 4", "3 → 1 → 2 → 4"]
-        },
-        correct: 0,
-        exp: {
-          en: "Chronology: Cambridge PhD (1947) → Dirac's assistant at IAS (1947-48) → Columbia (1950-63) → IAS permanent faculty (from 1963).",
-          hi: "सही कालक्रम: कैम्ब्रिज पीएचडी (1947) → प्रिंसटन में डिरैक के सहायक (1947-48) → कोलंबिया (1950-63) → IAS प्रिंसटन स्थायी संकाय (1963 से)।"
-        }
-      },
-      {
-        level: { en: "Level 4 — Expert Challenge", hi: "स्तर 4 — विशेषज्ञ चुनौती" },
-        q: { en: "Which statement best captures the central significance of Harish-Chandra's legacy based on his mathematical work?", hi: "कौन सा कथन हरीश-चंद्र के गणितीय कार्य की विरासत के केंद्रीय महत्व को सबसे सटीक रूप से दर्शाता है?" },
-        options: {
-          en: [
-            "He primarily transferred established physics techniques into engineering.",
-            "He developed a broad theory connecting representation theory and harmonic analysis of Lie groups, with lasting influence across mathematics.",
-            "He restricted his research to the mathematical foundations of quantum mechanics.",
-            "His principal contribution was the development of numerical methods for solving physical equations."
-          ],
-          hi: [
-            "उन्होंने मुख्य रूप से भौतिकी तकनीकों को इंजीनियरिंग में स्थानांतरित किया।",
-            "उन्होंने ली समूहों के निरूपण सिद्धांत और हार्मोनिक विश्लेषण को जोड़ते हुए एक व्यापक सिद्धांत दिया जिसका गहरा प्रभाव लैंगलैंड्स कार्यक्रम और आधुनिक गणित पर है।",
-            "उन्होंने अपना शोध केवल क्वांटम यांत्रिकी की नींव तक सीमित रखा।",
-            "उनका प्रमुख योगदान भौतिक समीकरणों को हल करने के लिए संख्यात्मक तरीके विकसित करना था।"
-          ]
-        },
-        correct: 1,
-        exp: {
-          en: "He formulated the profound harmonic analysis on Lie groups that underpins modern representation theory and the Langlands program.",
-          hi: "उनका सिद्धांत आधुनिक लैंगलैंड्स प्रोग्राम और ऑटोमॉर्फिक फॉर्म्स के संपूर्ण आधुनिक ढांचे का आधार स्तंभ है।"
-        }
-      }
-    ];
-
+    /* QUIZ RUNTIME */
     let currentQ = 0;
     let score = 0;
     let correctCount = 0;
