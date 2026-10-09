@@ -1272,8 +1272,8 @@
 
     .footer-portrait-frame {
       width: 100%;
-      max-width: 310px; /* Quote ki width ke exact barabar */
-      height: 180px;     /* Bada aur cinematic landscape frame */
+      max-width: 310px;
+      height: 180px;
       border-radius: 18px;
       border: 1.5px solid rgba(245, 158, 11, 0.4);
       background: rgba(7, 13, 24, 0.85);
@@ -1288,7 +1288,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: right 20%; /* Portrait ko perfectly center-right align karega */
+      object-position: right 20%;
       display: block;
     }
 
@@ -1507,7 +1507,7 @@
         </svg>
 
         <div class="concentric-frame">
-          <img src="images.jpg" alt="Dr. Harish-Chandra" onerror="this.src='images.jpg'" />
+          <img src="images.jpg" alt="Dr. Harish-Chandra" />
         </div>
       </div>
 
@@ -1529,7 +1529,7 @@
     <div class="container nav-inner">
       <a href="#hero" class="brand-block">
         <div class="brand-avatar">
-          <img src="images.jpg" alt="Dr. Harish-Chandra" onerror="this.src='images.jpg'" />
+          <img src="images.jpg" alt="Dr. Harish-Chandra" />
         </div>
         <div class="brand-texts">
           <span class="brand-name">Harish-Chandra</span>
@@ -1620,7 +1620,7 @@
         </div>
 
         <!-- 3. PRINCETON & IAS -->
-        <div class="timeline-step" data-step="3" style="--node-accent: #10b981; --node-accent-glow: rgba(16, 185, 129, 0.45);">
+        <div class="timeline-step" data-step="3" style="--node-accent: #10b981; --node-accent-glow: rgba(168, 85, 247, 0.45);">
           <div class="timeline-checkpoint" aria-hidden="true">
             <div class="checkpoint-core"></div>
           </div>
@@ -1901,7 +1901,12 @@
           <!-- Left Column: Portrait & Legacy Quote -->
           <div class="footer-legacy-portrait-col">
             <div class="footer-portrait-frame">
-              <img src="footer-portrait.png" alt="Dr. Harish-Chandra" />
+              <!-- Cascading fallback ensures image always loads smoothly -->
+              <img 
+                src="footer-portrait.png" 
+                alt="Dr. Harish-Chandra" 
+                onerror="this.onerror=null; this.src='Harish-Chandra%20footer.jpg.png'; this.onerror=function(){this.src='images.jpg';};" 
+              />
             </div>
             <p class="footer-legacy-quote">
               “Great mathematics does not end with a theorem; it begins a legacy of ideas for generations to explore.”
