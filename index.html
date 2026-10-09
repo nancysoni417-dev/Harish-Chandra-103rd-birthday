@@ -306,7 +306,7 @@
     .nav-right-cluster {
       display: flex;
       align-items: center;
-      gap: 1.5rem;
+      gap: 1.2rem;
       flex-shrink: 0;
     }
 
@@ -314,7 +314,7 @@
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.65rem;
       list-style: none;
     }
 
@@ -330,7 +330,10 @@
       border: 1.5px solid rgba(201, 162, 39, 0.45);
       box-shadow: 0 0 10px rgba(201, 162, 39, 0.25), inset 0 0 6px rgba(232, 215, 168, 0.2);
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      cursor: pointer;
     }
 
     .nav-link:hover {
@@ -862,7 +865,110 @@
       background: radial-gradient(circle, #FFFFF8 0%, #FAF6ED 100%);
     }
 
-    /* MEMORIAL FLAME & CONTINUOUS FLICKERING DIYA ANIMATION */
+    /* ==========================================================================
+       LEADERBOARD MODAL STYLING
+       ========================================================================== */
+    .leaderboard-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 31, 51, 0.88);
+      backdrop-filter: blur(10px);
+      z-index: 100005;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.35s ease;
+    }
+
+    .leaderboard-modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .leaderboard-card {
+      background: #FFFDF8;
+      border: 2.5px solid var(--heritage-gold);
+      border-radius: 20px;
+      padding: clamp(1.5rem, 4vw, 2.5rem);
+      max-width: 620px;
+      width: 100%;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+      position: relative;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .leaderboard-header {
+      text-align: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .leaderboard-header h3 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.4rem, 4vw, 1.85rem);
+      color: var(--primary-dark);
+      margin-top: 0.25rem;
+    }
+
+    .leaderboard-table-wrap {
+      overflow-y: auto;
+      flex: 1;
+      border: 1px solid rgba(232, 215, 168, 0.6);
+      border-radius: var(--radius-sm);
+      margin-bottom: 1.25rem;
+    }
+
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    .leaderboard-table th {
+      background: #15324D;
+      color: var(--light-champagne);
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    .leaderboard-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid rgba(232, 215, 168, 0.3);
+      color: var(--text-charcoal);
+    }
+
+    .leaderboard-table tr:hover {
+      background: rgba(201, 162, 39, 0.08);
+    }
+
+    .rank-medal {
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+    }
+
+    .rank-1 { background: #FFD700; color: #4A3B00; }
+    .rank-2 { background: #C0C0C0; color: #2B2B2B; }
+    .rank-3 { background: #CD7F32; color: #3A2000; }
+
+    /* ==========================================================================
+       MEMORIAL FLAME & CONTINUOUS FLICKERING DIYA ANIMATION
+       ========================================================================== */
     .tribute-section {
       background: #F7F4EC;
       padding: clamp(3.5rem, 8vw, 6rem) 0;
@@ -924,6 +1030,7 @@
       z-index: 2;
     }
 
+    /* ALL-THE-TIME FLICKERING & SWAYING FLAME */
     .flame-element {
       width: 36px;
       height: 60px;
@@ -1179,12 +1286,12 @@
         justify-content: space-between;
         overflow-x: auto;
         padding-bottom: 0.2rem;
-        gap: 0.4rem;
+        gap: 0.35rem;
       }
 
       .nav-link {
-        font-size: 0.8rem;
-        padding: 0.25rem 0.55rem;
+        font-size: 0.78rem;
+        padding: 0.25rem 0.5rem;
       }
 
       .header-action-group {
@@ -1262,12 +1369,13 @@
 
       <!-- RIGHT: Glowing Pillars & Actions -->
       <div class="nav-right-cluster reveal-from-right">
-        <!-- Glowing Navigation Pillars -->
+        <!-- Glowing Navigation Pillars with Leaderboard -->
         <nav>
           <ul class="nav-links">
             <li><a href="#home" class="nav-link">Home</a></li>
             <li><a href="#timeline" class="nav-link">Timeline</a></li>
             <li><a href="#quiz-view" class="nav-link">Quiz</a></li>
+            <li><button type="button" class="nav-link" onclick="openLeaderboardModal()">🏆 Leaderboard</button></li>
             <li><a href="#tribute" class="nav-link">Memorial Flame</a></li>
           </ul>
         </nav>
@@ -1376,8 +1484,9 @@
         <h2 style="font-family: var(--font-heading); margin: 1rem 0 0.5rem; color: var(--primary-dark);">Enter the Legacy Challenge</h2>
         <p style="color: var(--text-slate); margin-bottom: 1.8rem;">Enter your name to begin the 15-question challenge across 3 progressive tiers (Easy, Moderate, and Hard).</p>
         <input type="text" id="participantName" placeholder="Enter your full name" style="width: 100%; max-width: 420px; padding: 0.85rem 1.2rem; border-radius: var(--radius-sm); border: 1.5px solid var(--light-champagne); outline: none; margin-bottom: 1.5rem; font-family: var(--font-body); font-size: 1rem;">
-        <div>
+        <div style="display:flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
           <button class="btn btn-gold" onclick="startQuiz()">Begin Challenge →</button>
+          <button class="btn" style="background: #eef2f6; color: #1e293b;" onclick="openLeaderboardModal()">View Leaderboard 🏆</button>
         </div>
       </div>
 
@@ -1410,6 +1519,37 @@
     </div>
   </section>
 
+  <!-- LEADERBOARD MODAL -->
+  <div class="leaderboard-modal-overlay" id="leaderboardModal">
+    <div class="leaderboard-card">
+      <div class="leaderboard-header">
+        <span class="badge-pill">Hall of Honor</span>
+        <h3>Scholars Leaderboard</h3>
+        <p style="font-size: 0.85rem; color: var(--text-slate); margin-top: 0.25rem;">Rankings for Harish-Chandra Digital Legacy Challenge</p>
+      </div>
+
+      <div class="leaderboard-table-wrap">
+        <table class="leaderboard-table">
+          <thead>
+            <tr>
+              <th style="width: 55px; text-align: center;">Rank</th>
+              <th>Scholar Name</th>
+              <th style="text-align: right;">Score</th>
+              <th style="text-align: center;">Correct</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardTableBody">
+            <!-- Populated via Javascript -->
+          </tbody>
+        </table>
+      </div>
+
+      <div style="display: flex; justify-content: center; gap: 0.75rem;">
+        <button class="btn btn-gold" style="padding: 0.6rem 1.6rem; font-size: 0.9rem;" onclick="closeLeaderboardModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 3-SECOND LEVEL TRANSITION MODAL -->
   <div class="transition-modal-overlay" id="transitionModal">
     <div class="transition-modal-card">
@@ -1426,12 +1566,17 @@
       <div style="font-size: 3.5rem;">🏆</div>
       <h2 class="victory-title">You made it through! Bravo!</h2>
       <p class="victory-subtitle">“Where curiosity became discovery, and intellect touched infinity.”</p>
-      <div style="margin-bottom: 2rem; color: var(--text-slate);">
+      <div style="margin-bottom: 1.5rem; color: var(--text-slate);">
         You have successfully cleared all 3 tiers of the Harish-Chandra Legacy Challenge.
       </div>
-      <button class="btn btn-gold" onclick="openCertificateModal()" style="padding: 0.9rem 2.2rem; font-size: 1rem;">
-        Get Certificate 📜
-      </button>
+      <div style="display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap;">
+        <button class="btn btn-gold" onclick="openCertificateModal()" style="padding: 0.85rem 1.8rem; font-size: 0.95rem;">
+          Get Certificate 📜
+        </button>
+        <button class="btn" style="background: #15324D; color: #FFFDF8; padding: 0.85rem 1.8rem; font-size: 0.95rem;" onclick="openLeaderboardModal()">
+          View Ranking 🏆
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1532,7 +1677,7 @@
               ✦ Project Team: Anshika Soni, Shikha Singh Gaur
             </div>
             <p style="color: rgba(247, 244, 236, 0.85); font-size: 0.88rem; line-height: 1.55;">
-              Designed and crafted for college presentation for an engaging heartfelt quiz on Harish-Chandra with Timer, levels to clear, score, feedback and certificate-style result.
+              Designed and crafted for college presentation for an engaging heartfelt quiz on Harish-Chandra with Timer, levels to clear, score, feedback, leaderboard and certificate-style result.
             </p>
           </div>
         </div>
@@ -1599,6 +1744,7 @@
     }
     setTimeout(handleTimelineScroll, 200);
 
+    /* PERSISTENT TRIBUTES */
     let tributeCount = parseInt(localStorage.getItem('hc_tribute_count')) || 0;
 
     function updateTributeCounter() {
@@ -1628,6 +1774,75 @@
       });
     }
 
+    /* LEADERBOARD SYSTEM */
+    const DEFAULT_LEADERBOARD = [
+      { name: "Anshika Soni", score: 1850, correct: "15/15" },
+      { name: "Shikha Singh Gaur", score: 1820, correct: "15/15" },
+      { name: "Paul Dirac (Memorial)", score: 1750, correct: "14/15" },
+      { name: "K. S. Krishnan (Scholar)", score: 1680, correct: "14/15" },
+      { name: "Lie Theory Explorer", score: 1540, correct: "13/15" }
+    ];
+
+    function getLeaderboardData() {
+      const stored = localStorage.getItem('hc_quiz_leaderboard');
+      if (!stored) {
+        localStorage.setItem('hc_quiz_leaderboard', JSON.stringify(DEFAULT_LEADERBOARD));
+        return DEFAULT_LEADERBOARD;
+      }
+      try {
+        return JSON.parse(stored);
+      } catch (e) {
+        return DEFAULT_LEADERBOARD;
+      }
+    }
+
+    function saveToLeaderboard(name, finalScore, correctAnswers) {
+      let list = getLeaderboardData();
+      list.push({
+        name: name || "Anonymous Scholar",
+        score: finalScore,
+        correct: `${correctAnswers}/15`
+      });
+      list.sort((a, b) => b.score - a.score);
+      list = list.slice(0, 10);
+      localStorage.setItem('hc_quiz_leaderboard', JSON.stringify(list));
+    }
+
+    function renderLeaderboardTable() {
+      const list = getLeaderboardData();
+      const tbody = document.getElementById('leaderboardTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      list.forEach((entry, idx) => {
+        const tr = document.createElement('tr');
+        let rankBadge = `${idx + 1}`;
+        if (idx === 0) rankBadge = `<span class="rank-medal rank-1">🥇</span>`;
+        else if (idx === 1) rankBadge = `<span class="rank-medal rank-2">🥈</span>`;
+        else if (idx === 2) rankBadge = `<span class="rank-medal rank-3">🥉</span>`;
+
+        tr.innerHTML = `
+          <td style="text-align: center; font-weight: 700;">${rankBadge}</td>
+          <td style="font-weight: 600;">${entry.name}</td>
+          <td style="text-align: right; color: var(--heritage-gold); font-weight: 700;">${entry.score} pts</td>
+          <td style="text-align: center; font-size: 0.85rem; color: var(--text-slate);">${entry.correct}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openLeaderboardModal() {
+      renderLeaderboardTable();
+      const modal = document.getElementById('leaderboardModal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function closeLeaderboardModal() {
+      const modal = document.getElementById('leaderboardModal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    /* Sound Synthesizer */
     let audioCtx = null;
     function playChimeTune() {
       try {
@@ -1658,6 +1873,7 @@
       alert("Language switched to standard English mode.");
     }
 
+    /* QUIZ QUESTIONS */
     const QUIZ_QUESTIONS = [
       {
         level: "Level 1 — Easy",
@@ -1985,6 +2201,7 @@
 
     function showVictoryScreen() {
       document.getElementById('quizConsoleView').style.display = 'none';
+      saveToLeaderboard(userName, score, correctCount);
       const victory = document.getElementById('victoryModal');
       victory.classList.add('active');
       triggerFourCornerFireworks();
