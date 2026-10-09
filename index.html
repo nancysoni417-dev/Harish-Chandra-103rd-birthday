@@ -3,40 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Harish-Chandra — Digital Legacy Challenge 2026 v2</title>
+  <title>Harish-Chandra — 103rd Birth Anniversary Academic Exhibition</title>
 
-  <!-- Google Fonts -->
+  <!-- Google Fonts: Playfair Display, Cinzel, Inter & Cormorant Garamond -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600&display=swap" rel="stylesheet">
 
-  <!-- External Libraries: Canvas Confetti & jsPDF -->
+  <!-- External Production CDNs -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
     :root {
-      --primary-dark: #0B1F33;
-      --secondary-blue: #1E4E79;
-      --heritage-gold: #C9A227;
-      --light-champagne: #E8D7A8;
-      --bg-ivory: #F7F4EC;
-      --card-white: #FFFDF8;
-      --text-charcoal: #20252B;
-      --text-slate: #64748B;
-      --success-green: #2E7D32;
-      --error-crimson: #C62828;
+      --bg-dark: #0B132B;
+      --bg-card: rgba(15, 23, 42, 0.78);
+      --burgundy: #4A0E17;
+      --burgundy-light: #6B1D2F;
+      --gold: #D4AF37;
+      --gold-light: #F3E5AB;
+      --gold-glow: rgba(212, 175, 55, 0.45);
+      --slate-text: #94A3B8;
+      --ivory-text: #F8FAFC;
+      --success: #10B981;
+      --crimson: #EF4444;
 
-      --font-title: 'Cinzel Decorative', 'Playfair Display', Georgia, serif;
+      --font-serif: 'Cinzel', 'Playfair Display', Georgia, serif;
       --font-heading: 'Playfair Display', Georgia, serif;
       --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-accent: 'Cormorant Garamond', Garamond, serif;
+      --font-quote: 'Cormorant Garamond', serif;
 
       --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 18px;
-      --border-subtle: 1px solid rgba(232, 215, 168, 0.6);
-      --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      --radius-md: 14px;
+      --radius-lg: 22px;
+      --border-gold: 1px solid rgba(212, 175, 55, 0.35);
+      --transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     *, *::before, *::after {
@@ -45,2574 +47,1341 @@
       padding: 0;
     }
 
-    html, body {
-      width: 100%;
-      max-width: 100vw;
-      overflow-x: hidden !important;
-      position: relative;
-      scroll-behavior: smooth;
-      background-color: var(--bg-ivory);
-      color: var(--text-charcoal);
+    body {
+      background-color: var(--bg-dark);
+      color: var(--ivory-text);
       font-family: var(--font-body);
-      line-height: 1.65;
+      line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
       -webkit-font-smoothing: antialiased;
     }
 
-    .container {
-      width: min(1200px, 95%);
-      margin-inline: auto;
-    }
-
-    /* Reveal Animations */
-    .reveal-from-left {
-      opacity: 0;
-      transform: translateX(-50px);
-      transition: opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1), transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: opacity, transform;
-    }
-
-    .reveal-from-right {
-      opacity: 0;
-      transform: translateX(50px);
-      transition: opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1), transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: opacity, transform;
-    }
-
-    body.page-revealed .reveal-from-left,
-    body.page-revealed .reveal-from-right {
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    /* INAUGURAL OVERLAY */
-    #inauguralOverlay {
+    /* Math Background Canvas */
+    #mathCanvas {
       position: fixed;
-      inset: 0;
+      top: 0;
+      left: 0;
       width: 100vw;
       height: 100vh;
-      height: 100dvh;
-      z-index: 9999999;
-      background: radial-gradient(circle at 50% 40%, #15324E 0%, #071524 65%, #030911 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem 1rem;
-      transition: opacity 0.7s ease, visibility 0.7s ease;
-      overflow-x: hidden;
-      overflow-y: auto;
-    }
-
-    #inauguralOverlay.fade-out {
-      opacity: 0;
-      visibility: hidden;
       pointer-events: none;
+      z-index: 0;
+      opacity: 0.16;
     }
 
-    .inaugural-box {
-      width: 100%;
-      max-width: 520px;
-      margin: auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
+    .container {
+      width: min(1200px, 92%);
+      margin-inline: auto;
+      position: relative;
+      z-index: 2;
     }
 
-    .inaugural-subtitle {
-      font-family: var(--font-accent);
-      font-size: clamp(0.95rem, 3.8vw, 1.35rem);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: var(--light-champagne);
-      margin-bottom: 1.5rem;
-      line-height: 1.4;
-      width: 100%;
-      text-wrap: balance;
-    }
-
-    .inaugural-photo-frame {
-      width: clamp(130px, 34vw, 170px);
-      height: clamp(130px, 34vw, 170px);
-      border-radius: 50%;
-      border: 3.5px solid var(--heritage-gold);
-      box-shadow: 0 0 35px rgba(201, 162, 39, 0.75), 0 0 70px rgba(232, 215, 168, 0.3);
-      overflow: hidden;
-      margin-bottom: 1.5rem;
-      background: #0B1F33;
-      flex-shrink: 0;
-    }
-
-    .inaugural-photo-frame img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center top;
-      display: block;
-    }
-
-    .inaugural-name-title {
-      font-family: var(--font-title);
-      font-size: clamp(1.6rem, 5.5vw, 2.5rem);
-      color: #FFFFFF;
-      margin-bottom: 0.35rem;
-      line-height: 1.2;
-      letter-spacing: 0.03em;
-      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
-    }
-
-    .inaugural-name-sub {
-      font-family: var(--font-heading);
-      font-size: clamp(1.05rem, 3.8vw, 1.45rem);
-      color: var(--light-champagne);
-      margin-bottom: 0.6rem;
-      letter-spacing: 0.04em;
-      font-weight: 600;
-    }
-
-    .inaugural-dates {
-      font-family: var(--font-accent);
-      font-size: clamp(0.95rem, 3.6vw, 1.3rem);
-      font-style: italic;
-      letter-spacing: 0.04em;
-      color: var(--heritage-gold);
-      margin-bottom: 1.8rem;
-      width: 100%;
-    }
-
-    .inaugural-enter-btn {
-      background: linear-gradient(135deg, #D4AF37 0%, var(--heritage-gold) 100%);
-      color: var(--primary-dark);
-      border: none;
-      padding: 0.75rem 2.2rem;
-      font-size: 0.88rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 4px 18px rgba(201, 162, 39, 0.45);
-      transition: var(--transition-smooth);
-    }
-
-    .inaugural-enter-btn:hover {
-      transform: scale(1.04);
-      box-shadow: 0 6px 24px rgba(232, 215, 168, 0.6);
-    }
-
-    /* ==========================================================================
-       SITE HEADER & WHITE GLOWING PILL BOX
-       ========================================================================== */
+    /* ================= HEADER & NAV ================= */
     .site-header {
       position: sticky;
       top: 0;
       z-index: 1000;
-      background: rgba(247, 244, 236, 0.98);
-      backdrop-filter: blur(10px);
-      border-bottom: var(--border-subtle);
-      width: 100%;
+      background: rgba(11, 19, 43, 0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
     }
 
     .nav-inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0.65rem 0;
-      min-height: 84px;
-      gap: 1.2rem;
+      min-height: 80px;
+      padding: 0.5rem 0;
     }
 
-    .brand-block {
-      display: inline-flex;
+    .brand-group {
+      display: flex;
       align-items: center;
-      gap: 0.85rem;
+      gap: 1rem;
       text-decoration: none;
-      flex-shrink: 0;
     }
 
     .brand-avatar {
-      width: 50px;
-      height: 50px;
-      min-width: 50px;
-      min-height: 50px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
-      border: 2px solid var(--heritage-gold);
-      box-shadow: 0 3px 12px rgba(201, 162, 39, 0.35);
-      flex-shrink: 0;
-      overflow: hidden;
+      border: 2px solid var(--gold);
+      box-shadow: 0 0 16px var(--gold-glow);
+      background: radial-gradient(circle, #D4AF37 0%, #4A0E17 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: var(--primary-dark);
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      color: #FFF;
+      font-weight: 700;
     }
 
-    .brand-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center top;
-      display: block;
-    }
-
-    .brand-texts {
+    .brand-meta {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
-      gap: 0.15rem;
-      white-space: nowrap;
     }
 
-    .brand-name {
-      font-family: var(--font-heading);
+    .brand-title {
+      font-family: var(--font-serif);
       font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--primary-dark);
-      letter-spacing: 0.01em;
-      line-height: 1.15;
-    }
-
-    .brand-lifespan {
-      font-size: 0.72rem;
-      color: var(--text-slate);
-      font-weight: 500;
-      letter-spacing: 0.02em;
-    }
-
-    .brand-badges-row {
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
-      margin-top: 0.2rem;
-      flex-wrap: wrap;
-    }
-
-    .anniversary-badge-left {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.18rem 0.55rem;
-      border-radius: 50px;
-      background: rgba(201, 162, 39, 0.12);
-      border: 1.2px solid var(--heritage-gold);
-      color: var(--primary-dark);
-      font-size: 0.65rem;
-      font-weight: 700;
+      font-weight: 800;
+      color: var(--ivory-text);
       letter-spacing: 0.04em;
-      text-transform: uppercase;
-      white-space: nowrap;
-      box-shadow: 0 0 8px rgba(201, 162, 39, 0.2);
     }
 
-    .anniversary-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--heritage-gold);
-      display: inline-block;
-      box-shadow: 0 0 5px #F59E0B;
+    .brand-sub {
+      font-size: 0.72rem;
+      color: var(--gold-light);
+      letter-spacing: 0.05em;
     }
 
-    /* HEADER WHITE GLOWING PILL BOX */
-    .header-designer-glow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.22rem 0.65rem;
-      border-radius: 50px;
-      background: #0B1F33;
-      border: 1.5px solid #FFFFFF;
-      color: #F8FAFC;
-      font-size: 0.68rem;
-      letter-spacing: 0.02em;
-      white-space: nowrap;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.45), inset 0 0 5px rgba(255, 255, 255, 0.3);
-      animation: whiteNeonPulse 2.2s infinite alternate ease-in-out;
-      transition: var(--transition-smooth);
-    }
-
-    .header-designer-glow strong {
-      color: #FFFFFF;
-      font-weight: 700;
-      text-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
-    }
-
-    @keyframes whiteNeonPulse {
-      0% {
-        box-shadow: 0 0 8px rgba(255, 255, 255, 0.65), 0 0 16px rgba(255, 255, 255, 0.35);
-        border-color: rgba(255, 255, 255, 0.85);
-      }
-      50% {
-        box-shadow: 0 0 16px rgba(255, 255, 255, 1), 0 0 28px rgba(255, 255, 255, 0.7), 0 0 38px rgba(232, 215, 168, 0.4);
-        border-color: #FFFFFF;
-      }
-      100% {
-        box-shadow: 0 0 8px rgba(255, 255, 255, 0.65), 0 0 16px rgba(255, 255, 255, 0.35);
-        border-color: rgba(255, 255, 255, 0.85);
-      }
-    }
-
-    .nav-right-cluster {
+    .nav-links-wrap {
       display: flex;
       align-items: center;
-      gap: 0.85rem;
-      flex-wrap: nowrap;
-      margin-left: auto;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
+      gap: 0.6rem;
       list-style: none;
-      flex-wrap: nowrap;
     }
 
-    .nav-link {
+    .nav-pill {
       font-size: 0.82rem;
       font-weight: 600;
-      color: var(--primary-dark);
+      color: var(--ivory-text);
       text-decoration: none;
-      white-space: nowrap;
-      padding: 0.32rem 0.62rem;
+      padding: 0.4rem 0.85rem;
       border-radius: 30px;
-      background: #FFFDF8;
-      border: 1.4px solid rgba(201, 162, 39, 0.45);
-      box-shadow: 0 0 8px rgba(201, 162, 39, 0.2), inset 0 0 5px rgba(232, 215, 168, 0.2);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      background: rgba(255, 255, 255, 0.03);
+      transition: var(--transition);
       display: inline-flex;
       align-items: center;
-      gap: 0.3rem;
+      gap: 0.35rem;
       cursor: pointer;
     }
 
-    .nav-link:hover {
-      color: #926C00;
-      border-color: var(--heritage-gold);
-      background: #FFFFFF;
-      box-shadow: 0 0 16px rgba(201, 162, 39, 0.6), 0 0 24px rgba(251, 191, 36, 0.3);
+    .nav-pill:hover, .nav-pill.active {
+      border-color: var(--gold);
+      background: rgba(212, 175, 55, 0.15);
+      color: var(--gold-light);
+      box-shadow: 0 0 14px var(--gold-glow);
       transform: translateY(-2px);
     }
 
-    .header-action-group {
+    .controls-cluster {
       display: flex;
       align-items: center;
-      gap: 0.45rem;
-      flex-shrink: 0;
+      gap: 0.75rem;
     }
 
-    .btn-audio-toggle {
-      background: transparent;
-      border: none;
-      color: #5533FF;
-      font-size: 1.15rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.25rem;
+    .btn-audio {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      color: var(--gold-light);
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      transition: var(--transition-smooth);
-    }
-
-    .lang-pill-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      background: #EEF4FF;
-      border: 1px solid #D5E2FF;
-      border-radius: 8px;
-      padding: 0.3rem 0.6rem;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: #334466;
       cursor: pointer;
-      transition: var(--transition-smooth);
-      font-family: var(--font-body);
-      white-space: nowrap;
-    }
-
-    .lang-icon-svg {
-      width: 14px;
-      height: 14px;
-      fill: #4455FF;
-    }
-
-    .btn-offer-tribute-top {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      background: linear-gradient(135deg, #5B21B6 0%, #7C3AED 45%, #E11D48 100%);
-      color: #ffffff;
-      padding: 0.4rem 0.85rem;
-      border-radius: 8px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      letter-spacing: 0.01em;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
-      transition: var(--transition-smooth);
-      text-decoration: none;
-      white-space: nowrap;
-    }
-
-    .btn-offer-tribute-top:hover {
-      box-shadow: 0 6px 18px rgba(124, 58, 237, 0.55);
-      transform: translateY(-1px);
-    }
-
-    .btn {
-      display: inline-flex;
+      font-size: 1.1rem;
+      display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.5rem;
-      padding: 0.85rem 1.85rem;
-      font-size: 0.95rem;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      transition: var(--transition-smooth);
+      transition: var(--transition);
+    }
+
+    .btn-audio:hover {
+      background: var(--gold);
+      color: var(--bg-dark);
+      box-shadow: 0 0 16px var(--gold-glow);
+    }
+
+    .hamburger-btn {
+      display: none;
+      background: none;
       border: none;
-      text-decoration: none;
+      color: var(--gold-light);
+      font-size: 1.6rem;
+      cursor: pointer;
+    }
+
+    /* ================= HERO SECTION ================= */
+    .hero-section {
+      padding: clamp(4rem, 8vw, 7rem) 0 3.5rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1.2rem;
+      border-radius: 50px;
+      border: 1px solid var(--gold);
+      background: rgba(74, 14, 23, 0.45);
+      box-shadow: 0 0 20px rgba(74, 14, 23, 0.8), inset 0 0 10px rgba(212, 175, 55, 0.2);
+      font-family: var(--font-serif);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.4rem, 7vw, 4.8rem);
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      line-height: 1.15;
+      background: linear-gradient(135deg, #FFFFFF 20%, #F3E5AB 55%, #D4AF37 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.7));
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-quote {
+      font-family: var(--font-quote);
+      font-size: clamp(1.15rem, 3.4vw, 1.85rem);
+      font-style: italic;
+      color: var(--gold-light);
+      max-width: 820px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.5;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .hero-cta-group {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
 
     .btn-gold {
-      background: linear-gradient(135deg, #D4AF37 0%, var(--heritage-gold) 100%);
-      color: var(--primary-dark);
-      box-shadow: 0 6px 20px rgba(201, 162, 39, 0.35);
+      background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 60%, #AA820A 100%);
+      color: #070D1D;
+      border: none;
+      padding: 0.85rem 2rem;
+      border-radius: 40px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(212, 175, 55, 0.45);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
     }
 
-    .badge-pill {
-      display: inline-block;
-      padding: 0.3rem 0.85rem;
-      font-size: 0.75rem;
+    .btn-gold:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 10px 30px rgba(212, 175, 55, 0.65);
+    }
+
+    .btn-burgundy {
+      background: linear-gradient(135deg, #6B1D2F 0%, #4A0E17 100%);
+      color: #FFF;
+      border: 1px solid var(--gold);
+      padding: 0.85rem 2rem;
+      border-radius: 40px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .btn-burgundy:hover {
+      background: #842339;
+      box-shadow: 0 0 20px rgba(74, 14, 23, 0.8);
+      transform: translateY(-3px);
+    }
+
+    /* ================= TIMELINE SECTION ================= */
+    .timeline-section {
+      padding: 4.5rem 0;
+      position: relative;
+    }
+
+    .section-title-wrap {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .section-subtitle {
+      font-family: var(--font-serif);
+      font-size: 0.8rem;
+      letter-spacing: 0.15em;
+      color: var(--gold);
       text-transform: uppercase;
-      letter-spacing: 0.12em;
-      font-weight: 600;
-      border-radius: 50px;
-      background-color: rgba(201, 162, 39, 0.12);
-      color: var(--primary-dark);
-      border: 1px solid var(--light-champagne);
+      font-weight: 700;
     }
 
-    /* COMPACT & ELEGANT HERO SECTION */
-    .hero-section {
-      background: radial-gradient(circle at 50% 35%, #15324D 0%, #0B1F33 75%, #06111C 100%);
-      color: var(--bg-ivory);
-      padding: clamp(2.5rem, 5.5vw, 4.2rem) 0;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      width: 100%;
-      border-bottom: 1.5px solid rgba(201, 162, 39, 0.25);
-    }
-
-    .hero-content {
-      max-width: 840px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 2;
-    }
-
-    .hero-main-title {
-      font-family: var(--font-title);
-      font-size: clamp(1.8rem, 5.5vw, 3.4rem);
-      font-weight: 900;
-      letter-spacing: 0.04em;
-      margin-bottom: 0.9rem;
-      line-height: 1.18;
-      background: linear-gradient(135deg, #FFFFFF 20%, #F5E8C7 55%, #C9A227 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.5));
-      word-break: break-word;
-    }
-
-    .hero-legacy-statement-box {
-      max-width: 740px;
-      margin: 0 auto;
-      padding: 0 0.8rem;
-    }
-
-    .hero-legacy-statement {
-      font-family: var(--font-accent);
-      font-size: clamp(1rem, 3.2vw, 1.55rem);
-      font-weight: 500;
-      line-height: 1.55;
-      font-style: italic;
-      letter-spacing: 0.015em;
-      color: rgba(247, 244, 236, 0.95);
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
-      word-break: break-word;
-    }
-
-    .hero-legacy-statement .statement-accent {
-      color: var(--light-champagne);
-      font-weight: 600;
-    }
-
-    .section-padding {
-      padding: clamp(3rem, 7vw, 5rem) 0;
-    }
-
-    .section-header {
-      text-align: center;
-      max-width: 650px;
-      margin: 0 auto 2.5rem;
-      padding: 0 0.5rem;
-    }
-
-    .section-header h2 {
+    .section-title {
       font-family: var(--font-heading);
-      font-size: clamp(1.6rem, 5vw, 2.3rem);
-      color: var(--primary-dark);
-      margin-top: 0.5rem;
+      font-size: clamp(1.8rem, 4.5vw, 2.7rem);
+      margin-top: 0.35rem;
+      color: #FFF;
     }
 
-    /* TIMELINE */
     .timeline-container {
       position: relative;
-      max-width: 820px;
-      width: 100%;
+      max-width: 860px;
       margin: 0 auto;
-      padding: 1rem 0.5rem 1rem 3.5rem;
+      padding-left: 2.5rem;
     }
 
     .timeline-container::before {
       content: '';
       position: absolute;
-      left: 19px;
+      left: 8px;
       top: 0;
       bottom: 0;
-      width: 4px;
-      background: rgba(232, 215, 168, 0.4);
-      border-radius: 4px;
-    }
-
-    .timeline-progress-line {
-      position: absolute;
-      left: 19px;
-      top: 0;
-      width: 4px;
-      height: 0%;
-      background: linear-gradient(180deg, #F59E0B 0%, var(--heritage-gold) 50%, #B45309 100%);
-      box-shadow: 0 0 12px rgba(201, 162, 39, 0.65);
-      border-radius: 4px;
-      transition: height 0.15s ease-out;
-      z-index: 1;
-    }
-
-    .timeline-card-wrap {
-      position: relative;
-      margin-bottom: 2.5rem;
-      width: 100%;
-    }
-
-    .chibi-node {
-      position: absolute;
-      left: calc(-3.5rem + 1px);
-      top: 20px;
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: #FFFFFF;
-      border: 2.5px solid rgba(232, 215, 168, 0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 3;
-      transform: scale(0.65);
-      opacity: 0.5;
-      transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-      overflow: hidden;
-    }
-
-    .chibi-node img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center 20%;
-    }
-
-    .timeline-card-wrap.unlocked .chibi-node {
-      transform: scale(1.15);
-      opacity: 1;
-      border-color: var(--heritage-gold);
-      box-shadow: 0 0 18px rgba(201, 162, 39, 0.6), 0 4px 12px rgba(11, 31, 51, 0.2);
+      width: 3px;
+      background: linear-gradient(180deg, var(--gold) 0%, rgba(74, 14, 23, 0.4) 100%);
     }
 
     .timeline-card {
       position: relative;
-      background: var(--card-white);
-      border: var(--border-subtle);
+      background: var(--bg-card);
+      border: var(--border-gold);
       border-radius: var(--radius-md);
-      padding: clamp(1.1rem, 3.5vw, 1.85rem);
-      box-shadow: 0 6px 22px rgba(11, 31, 51, 0.05);
-      opacity: 0;
-      transform: translateY(35px);
-      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-      width: 100%;
-      word-break: break-word;
+      padding: 1.6rem 1.8rem;
+      margin-bottom: 2.2rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      transition: var(--transition);
     }
 
-    .timeline-card-wrap.unlocked .timeline-card {
-      opacity: 1;
-      transform: translateY(0);
+    .timeline-card::before {
+      content: '';
+      position: absolute;
+      left: calc(-2.5rem - 1px);
+      top: 24px;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: var(--bg-dark);
+      border: 3.5px solid var(--gold);
+      box-shadow: 0 0 12px var(--gold);
     }
 
-    .timeline-date {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
+    .timeline-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-4px);
+      box-shadow: 0 14px 40px rgba(212, 175, 55, 0.15);
+    }
+
+    .timeline-era {
+      font-family: var(--font-serif);
+      color: var(--gold);
+      font-size: 0.85rem;
       font-weight: 700;
-      color: var(--heritage-gold);
+      letter-spacing: 0.08em;
       margin-bottom: 0.35rem;
-      display: inline-block;
     }
 
-    .timeline-card h3 {
+    .timeline-heading {
       font-family: var(--font-heading);
-      color: var(--primary-dark);
-      font-size: clamp(1.15rem, 3.5vw, 1.45rem);
-      margin-bottom: 0.5rem;
+      font-size: 1.35rem;
+      margin-bottom: 0.6rem;
+      color: #FFF;
     }
 
-    /* QUIZ CONSOLE */
-    .quiz-card {
-      max-width: 780px;
-      margin: 0 auto;
-      background: var(--card-white);
-      border: 1px solid var(--light-champagne);
-      border-radius: var(--radius-lg);
-      padding: clamp(1.25rem, 5vw, 2.5rem);
-      box-shadow: 0 8px 30px rgba(11, 31, 51, 0.06);
-      position: relative;
-    }
-
-    .quiz-bar {
+    .fact-toggle {
+      margin-top: 1rem;
+      background: rgba(212, 175, 55, 0.08);
+      border: 1px dashed rgba(212, 175, 55, 0.4);
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 1rem;
+      font-size: 0.85rem;
+      cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 1.25rem;
-      border-bottom: 1px solid rgba(232, 215, 168, 0.6);
-      margin-bottom: 1.8rem;
-      flex-wrap: wrap;
-      gap: 0.75rem;
+      color: var(--gold-light);
     }
 
-    .timer-display {
-      font-family: monospace;
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--primary-dark);
-      background: #f1ebd9;
-      padding: 0.35rem 0.9rem;
-      border-radius: 20px;
+    .fact-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease-out;
+      font-size: 0.85rem;
+      color: var(--slate-text);
+      padding-inline: 0.5rem;
     }
 
-    .quiz-options {
-      display: flex;
-      flex-direction: column;
-      gap: 0.85rem;
-      margin-top: 1.8rem;
+    .fact-content.open {
+      max-height: 140px;
+      padding-top: 0.75rem;
     }
 
-    .quiz-btn {
-      display: flex;
-      align-items: center;
-      padding: 0.85rem 1.1rem;
-      background: #faf8f2;
-      border: 1.5px solid rgba(232, 215, 168, 0.7);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-family: var(--font-body);
-      font-size: 0.95rem;
-      color: var(--text-charcoal);
-      transition: var(--transition-smooth);
-      text-align: left;
-    }
-
-    .quiz-btn:hover:not(:disabled) {
-      border-color: var(--heritage-gold);
-      background: #ffffff;
-      transform: translateX(4px);
-    }
-
-    .quiz-btn.correct {
-      background: #e8f5e9 !important;
-      border-color: var(--success-green) !important;
-      color: var(--success-green) !important;
-    }
-
-    .quiz-btn.incorrect {
-      background: #ffebee !important;
-      border-color: var(--error-crimson) !important;
-      color: var(--error-crimson) !important;
-    }
-
-    .feedback-box {
-      margin-top: 1.8rem;
-      padding: 1.25rem;
-      border-radius: var(--radius-sm);
-      background: #fbf9f4;
-      border: 1px solid var(--light-champagne);
-      display: none;
-    }
-
-    /* LEADERBOARD MODAL */
-    .leaderboard-modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(11, 31, 51, 0.88);
-      backdrop-filter: blur(10px);
-      z-index: 100005;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.35s ease;
-    }
-
-    .leaderboard-modal-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .leaderboard-card {
-      background: #FFFDF8;
-      border: 2.5px solid var(--heritage-gold);
-      border-radius: 20px;
-      padding: clamp(1.5rem, 4vw, 2.5rem);
-      max-width: 620px;
-      width: 100%;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+    /* ================= QUIZ & TIMER UPGRADE ================= */
+    .quiz-section {
+      padding: 5rem 0;
       position: relative;
-      max-height: 85vh;
+    }
+
+    .quiz-card {
+      background: var(--bg-card);
+      border: var(--border-gold);
+      border-radius: var(--radius-lg);
+      padding: clamp(1.5rem, 5vw, 3rem);
+      max-width: 820px;
+      margin: 0 auto;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    .quiz-hud {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .hud-meta {
       display: flex;
       flex-direction: column;
+      gap: 0.3rem;
     }
 
-    .leaderboard-header {
-      text-align: center;
-      margin-bottom: 1.25rem;
-    }
-
-    .leaderboard-header h3 {
-      font-family: var(--font-heading);
-      font-size: clamp(1.4rem, 4vw, 1.85rem);
-      color: var(--primary-dark);
-      margin-top: 0.25rem;
-    }
-
-    .leaderboard-table-wrap {
-      overflow-y: auto;
-      flex: 1;
-      border: 1px solid rgba(232, 215, 168, 0.6);
-      border-radius: var(--radius-sm);
-      margin-bottom: 1.25rem;
-    }
-
-    .leaderboard-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 0.9rem;
-    }
-
-    .leaderboard-table th {
-      background: #15324D;
-      color: var(--light-champagne);
-      padding: 0.75rem 1rem;
-      font-weight: 600;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      position: sticky;
-      top: 0;
-      z-index: 2;
-    }
-
-    .leaderboard-table td {
-      padding: 0.75rem 1rem;
-      border-bottom: 1px solid rgba(232, 215, 168, 0.3);
-      color: var(--text-charcoal);
-    }
-
-    .leaderboard-table tr:hover {
-      background: rgba(201, 162, 39, 0.08);
-    }
-
-    .rank-medal {
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-    }
-
-    .rank-1 { background: #FFD700; color: #4A3B00; }
-    .rank-2 { background: #C0C0C0; color: #2B2B2B; }
-    .rank-3 { background: #CD7F32; color: #3A2000; }
-
-    /* 3-SECOND POPUP MODAL */
-    .transition-modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(11, 31, 51, 0.82);
-      backdrop-filter: blur(8px);
-      z-index: 100000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.35s ease;
-    }
-
-    .transition-modal-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .transition-modal-card {
-      background: #FFFDF8;
-      border: 2px solid var(--heritage-gold);
-      border-radius: 20px;
-      padding: 2.5rem 2rem;
-      max-width: 460px;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-      animation: modalPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    @keyframes modalPop {
-      0% { transform: scale(0.7); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    .jumping-kitty {
-      font-size: 4rem;
+    .tier-badge {
       display: inline-block;
-      animation: kittyJump 0.6s infinite alternate ease-in-out;
-      margin-bottom: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      background: rgba(74, 14, 23, 0.6);
+      border: 1px solid var(--gold);
+      font-family: var(--font-serif);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--gold-light);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      width: fit-content;
     }
 
-    @keyframes kittyJump {
-      0% { transform: translateY(0) rotate(0deg) scale(1); }
-      50% { transform: translateY(-25px) rotate(-6deg) scale(1.1); }
-      100% { transform: translateY(-35px) rotate(6deg) scale(1.15); }
+    .hud-stats {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
     }
 
-    .timer-circle-bar {
-      margin-top: 1rem;
-      font-size: 0.8rem;
-      color: var(--text-slate);
-      font-weight: 600;
-      letter-spacing: 0.05em;
+    /* SVG Circular Timer */
+    .timer-ring-wrap {
+      position: relative;
+      width: 58px;
+      height: 58px;
     }
 
-    /* FINAL VICTORY SCREEN OVERLAY */
-    .victory-modal-overlay {
-      position: fixed;
+    .timer-ring-wrap svg {
+      transform: rotate(-90deg);
+      width: 58px;
+      height: 58px;
+    }
+
+    .timer-ring-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.08);
+      stroke-width: 4.5;
+    }
+
+    .timer-ring-progress {
+      fill: none;
+      stroke: var(--gold);
+      stroke-width: 4.5;
+      stroke-linecap: round;
+      stroke-dasharray: 157;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 1s linear, stroke 0.4s ease;
+    }
+
+    .timer-ring-text {
+      position: absolute;
       inset: 0;
-      background: radial-gradient(circle at 50% 40%, rgba(20, 49, 78, 0.95) 0%, rgba(7, 21, 36, 0.98) 100%);
-      backdrop-filter: blur(12px);
-      z-index: 100001;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2rem 1.25rem;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.5s ease;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: #FFF;
+      font-family: monospace;
     }
 
-    .victory-modal-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .victory-card {
-      background: #FFFDF8;
-      border: 3px solid var(--heritage-gold);
-      border-radius: 24px;
-      padding: 3rem 2rem;
-      max-width: 520px;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
-      animation: victoryScale 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    @keyframes victoryScale {
-      0% { transform: scale(0.6); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    .victory-title {
-      font-family: var(--font-title);
-      font-size: clamp(1.8rem, 5vw, 2.6rem);
-      color: var(--primary-dark);
-      margin: 1rem 0 0.5rem;
-      line-height: 1.2;
-    }
-
-    .victory-subtitle {
-      font-family: var(--font-accent);
-      font-size: 1.35rem;
-      font-style: italic;
-      color: #855800;
+    .quiz-question-box {
       margin-bottom: 2rem;
     }
 
-    /* CERTIFICATE MODAL */
-    .certificate-modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(11, 31, 51, 0.88);
-      backdrop-filter: blur(10px);
-      z-index: 100002;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.4s ease;
-      overflow-y: auto;
-    }
-
-    .certificate-modal-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .certificate-container {
-      background: #FFFFFF;
-      max-width: 720px;
-      width: 100%;
-      padding: clamp(1.5rem, 4vw, 2.8rem);
-      border-radius: 12px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-      position: relative;
-    }
-
-    .certificate-inner-frame {
-      border: 6px double var(--heritage-gold);
-      padding: clamp(1.5rem, 3.5vw, 2.5rem);
-      text-align: center;
-      position: relative;
-      background: radial-gradient(circle, #FFFFF8 0%, #FAF6ED 100%);
-    }
-
-    /* ==========================================================================
-       FEEDBACK & RATING MODULE
-       ========================================================================== */
-    .feedback-section {
-      background: linear-gradient(180deg, #FAF6ED 0%, #F1EAD9 100%);
-      padding: clamp(3.5rem, 7vw, 5.5rem) 0;
-      border-top: 1px solid rgba(201, 162, 39, 0.4);
-      position: relative;
-    }
-
-    .feedback-wrapper {
-      max-width: 820px;
-      margin: 0 auto;
-    }
-
-    .feedback-card {
-      background: #FFFDF8;
-      border: 2px solid var(--heritage-gold);
-      border-radius: 20px;
-      padding: clamp(1.8rem, 5vw, 2.8rem);
-      box-shadow: 0 12px 35px rgba(11, 31, 51, 0.08);
-      margin-bottom: 2.5rem;
-    }
-
-    .feedback-card h3 {
+    .question-title {
       font-family: var(--font-heading);
-      font-size: clamp(1.5rem, 4.5vw, 2.1rem);
-      color: var(--primary-dark);
-      text-align: center;
-      margin-top: 0.35rem;
-    }
-
-    .star-rating-container {
-      display: flex;
-      justify-content: center;
-      gap: 0.45rem;
-      margin: 1.25rem 0 1.5rem;
-      font-size: 2.4rem;
-      cursor: pointer;
-    }
-
-    .star-rating-container span {
-      color: #D1D5DB;
-      transition: all 0.2s ease;
-      user-select: none;
-    }
-
-    .star-rating-container span.active,
-    .star-rating-container span.hovered {
-      color: #F59E0B;
-      transform: scale(1.18);
-      filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.6));
-    }
-
-    .feedback-form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .feedback-input,
-    .feedback-select,
-    .feedback-textarea {
-      width: 100%;
-      padding: 0.8rem 1rem;
-      border-radius: var(--radius-sm);
-      border: 1.5px solid rgba(201, 162, 39, 0.5);
-      background: #FFFFFF;
-      font-family: var(--font-body);
-      font-size: 0.95rem;
-      color: var(--text-charcoal);
-      outline: none;
-      transition: var(--transition-smooth);
-    }
-
-    .feedback-input:focus,
-    .feedback-select:focus,
-    .feedback-textarea:focus {
-      border-color: var(--heritage-gold);
-      box-shadow: 0 0 10px rgba(201, 162, 39, 0.3);
-    }
-
-    .feedback-textarea {
-      resize: vertical;
-      min-height: 95px;
-      margin-bottom: 0.5rem;
-    }
-
-    .char-counter {
-      font-size: 0.78rem;
-      color: var(--text-slate);
-      text-align: right;
-      margin-bottom: 1.25rem;
-    }
-
-    .recent-reviews-title {
-      font-family: var(--font-heading);
-      font-size: 1.4rem;
-      color: var(--primary-dark);
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .reviews-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 1rem;
-    }
-
-    .review-card {
-      background: #FFFFFF;
-      border: 1px solid rgba(232, 215, 168, 0.7);
-      border-radius: 12px;
-      padding: 1.15rem;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .review-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.45rem;
-    }
-
-    .review-name {
-      font-weight: 700;
-      color: var(--primary-dark);
-      font-size: 0.95rem;
-    }
-
-    .review-stars {
-      color: #F59E0B;
-      font-size: 0.9rem;
-      letter-spacing: 2px;
-    }
-
-    .review-cat-tag {
-      display: inline-block;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      padding: 0.15rem 0.45rem;
-      border-radius: 4px;
-      background: rgba(201, 162, 39, 0.12);
-      color: #855800;
-      margin-bottom: 0.45rem;
-    }
-
-    .review-comment {
-      font-size: 0.88rem;
-      color: var(--text-slate);
+      font-size: clamp(1.2rem, 3vw, 1.55rem);
       line-height: 1.45;
+      color: #FFF;
     }
 
-    .feedback-toast {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background: #15324D;
-      color: #FFFFFF;
-      border: 2px solid var(--heritage-gold);
-      padding: 0.9rem 1.6rem;
-      border-radius: 50px;
-      font-weight: 600;
+    .options-grid {
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    .option-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      border-radius: var(--radius-sm);
+      padding: 0.95rem 1.25rem;
+      text-align: left;
+      color: var(--ivory-text);
       font-size: 0.95rem;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-      z-index: 1000000;
+      cursor: pointer;
+      transition: var(--transition);
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      transform: translateY(120px);
-      opacity: 0;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      gap: 0.85rem;
+      width: 100%;
     }
 
-    .feedback-toast.show {
-      transform: translateY(0);
-      opacity: 1;
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--gold);
+      background: rgba(212, 175, 55, 0.12);
+      transform: translateX(4px);
     }
 
-    /* ==========================================================================
-       MEMORIAL FLAME & CONTINUOUS FLICKERING DIYA ANIMATION
-       ========================================================================== */
-    .tribute-section {
-      background: #F7F4EC;
-      padding: clamp(3.5rem, 8vw, 6rem) 0;
-      border-top: 1px solid rgba(232, 215, 168, 0.6);
+    .option-btn.correct {
+      background: rgba(16, 185, 129, 0.25) !important;
+      border-color: var(--success) !important;
+      color: #6EE7B7 !important;
+    }
+
+    .option-btn.incorrect {
+      background: rgba(239, 68, 68, 0.25) !important;
+      border-color: var(--crimson) !important;
+      color: #FCA5A5 !important;
+    }
+
+    .feedback-drawer {
+      margin-top: 1.5rem;
+      padding: 1.25rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--gold);
+      background: rgba(11, 19, 43, 0.9);
+      display: none;
+    }
+
+    /* ================= MEMORIAL TRIBUTE FLAME ================= */
+    .memorial-section {
+      padding: 5rem 0;
       position: relative;
-      overflow: hidden;
     }
 
-    .tribute-header {
+    .memorial-card {
+      background: radial-gradient(circle at 50% 35%, #250A10 0%, #0B132B 80%);
+      border: 1.5px solid var(--gold);
+      border-radius: var(--radius-lg);
+      padding: clamp(2.5rem, 6vw, 4.5rem) 1.5rem;
       text-align: center;
-      max-width: 760px;
-      margin: 0 auto 2.5rem;
-      padding: 0 0.5rem;
-    }
-
-    .tribute-main-title {
-      font-family: var(--font-heading);
-      font-size: clamp(1.75rem, 5vw, 3.2rem);
-      color: var(--primary-dark);
-      line-height: 1.2;
-      margin-bottom: 0.75rem;
-    }
-
-    .memorial-flame-card {
       max-width: 820px;
       margin: 0 auto;
-      background: radial-gradient(circle at 50% 35%, #182838 0%, #0F1923 75%, #0B131B 100%);
-      border-radius: 20px;
-      padding: clamp(2.5rem, 6vw, 4.5rem) 1.25rem;
-      box-shadow: 0 20px 50px rgba(11, 31, 51, 0.25);
-      border: 1px solid rgba(201, 162, 39, 0.35);
-      text-align: center;
+      box-shadow: 0 0 50px rgba(74, 14, 23, 0.6);
       position: relative;
-      overflow: hidden;
+    }
+
+    .diya-wrapper {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 2rem;
     }
 
     .diya-halo {
       position: absolute;
-      top: 10%;
+      top: -20px;
       left: 50%;
       transform: translateX(-50%);
-      width: 220px;
-      height: 220px;
-      background: radial-gradient(circle, rgba(251, 191, 36, 0.35) 0%, rgba(245, 158, 11, 0.12) 45%, rgba(0,0,0,0) 70%);
+      width: 170px;
+      height: 170px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.45) 0%, rgba(212, 175, 55, 0.12) 50%, transparent 75%);
       border-radius: 50%;
       pointer-events: none;
-      animation: haloPulse 2s infinite alternate ease-in-out;
+      animation: pulseHalo 2s infinite alternate ease-in-out;
     }
 
-    @keyframes haloPulse {
-      0% { transform: translateX(-50%) scale(0.92); opacity: 0.65; }
-      100% { transform: translateX(-50%) scale(1.12); opacity: 1; }
+    @keyframes pulseHalo {
+      0% { transform: translateX(-50%) scale(0.9); opacity: 0.6; }
+      100% { transform: translateX(-50%) scale(1.15); opacity: 1; }
     }
 
-    .diya-container {
-      position: relative;
-      display: inline-block;
-      margin-bottom: 1.75rem;
-      z-index: 2;
-    }
-
-    .flame-element {
-      width: 36px;
-      height: 60px;
+    .flame-core {
+      width: 32px;
+      height: 55px;
       margin: 0 auto;
-      background: linear-gradient(to bottom, #FFFBEB 0%, #FDE047 30%, #F59E0B 70%, #EA580C 100%);
+      background: linear-gradient(to bottom, #FFFBEB 0%, #FDE047 30%, #F59E0B 70%, #DC2626 100%);
       border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
       box-shadow: 0 0 25px #F59E0B, 0 0 50px #EA580C;
-      position: relative;
+      animation: flameWaver 1.3s infinite alternate ease-in-out;
       transform-origin: center bottom;
-      animation: flameWaver 1.2s infinite ease-in-out alternate;
     }
 
     @keyframes flameWaver {
-      0% {
-        transform: scale(1) rotate(-1.5deg);
-        box-shadow: 0 0 24px #F59E0B, 0 0 45px #EA580C;
-        border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
-      }
-      25% {
-        transform: scale(1.04, 0.96) rotate(2deg) skewX(1deg);
-        box-shadow: 0 0 30px #FBBF24, 0 0 52px #F97316;
-        border-radius: 46% 54% 38% 32% / 62% 58% 42% 38%;
-      }
-      50% {
-        transform: scale(0.97, 1.05) rotate(-2.5deg) skewX(-1.5deg);
-        box-shadow: 0 0 26px #F59E0B, 0 0 48px #EA580C;
-        border-radius: 54% 46% 32% 38% / 58% 62% 38% 42%;
-      }
-      75% {
-        transform: scale(1.02, 0.98) rotate(1deg);
-        box-shadow: 0 0 32px #FDE047, 0 0 55px #EA580C;
-        border-radius: 48% 52% 36% 34% / 60% 60% 40% 40%;
-      }
-      100% {
-        transform: scale(0.98, 1.03) rotate(-1deg);
-        box-shadow: 0 0 25px #F59E0B, 0 0 50px #EA580C;
-        border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
-      }
+      0% { transform: scale(1) rotate(-1.5deg); }
+      50% { transform: scale(1.05, 0.95) rotate(2deg) skewX(1deg); }
+      100% { transform: scale(0.98, 1.04) rotate(-2deg); }
     }
 
-    .diya-bowl {
-      width: 130px;
-      height: 36px;
-      background: linear-gradient(180deg, #A16207 0%, #78350F 60%, #451A03 100%);
+    .diya-pot {
+      width: 125px;
+      height: 34px;
+      background: linear-gradient(180deg, #A16207 0%, #78350F 55%, #391402 100%);
       border-radius: 0 0 70px 70px;
       margin: -6px auto 0;
       border-top: 2px solid #D97706;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
     }
 
-    .diya-rim {
-      width: 144px;
-      height: 10px;
-      background: linear-gradient(90deg, #B45309, #F59E0B, #B45309);
-      border-radius: 20px;
-      margin: 0 auto;
-    }
-
-    .diya-stand {
-      width: 48px;
-      height: 8px;
-      background: #78350F;
-      border-radius: 0 0 10px 10px;
-      margin: 0 auto;
-    }
-
-    .tribute-card-title {
-      font-family: var(--font-heading);
-      color: #FFFFFF;
-      font-size: clamp(1.4rem, 4.5vw, 2.35rem);
-      line-height: 1.25;
-      margin-bottom: 0.35rem;
-    }
-
-    .tribute-quote-container {
-      max-width: 620px;
-      margin: 0 auto 2rem;
-      padding: 1rem;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px dashed rgba(201, 162, 39, 0.35);
-      border-radius: 12px;
-    }
-
-    .tribute-quote-text {
-      font-family: var(--font-heading);
-      font-size: clamp(0.95rem, 3.2vw, 1.25rem);
-      letter-spacing: 0.06em;
-      line-height: 1.6;
-      color: #F8FAFC;
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-
-    .tribute-btn-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .btn-pushpanjali {
-      background: #FBBF24;
-      color: #1E1B4B;
-      font-weight: 700;
-      font-size: 0.95rem;
-      padding: 0.8rem 1.6rem;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
+    .tribute-counter-pill {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      box-shadow: 0 4px 18px rgba(251, 191, 36, 0.4);
-    }
-
-    .tributes-count-pill {
       background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      color: #E2E8F0;
-      padding: 0.8rem 1.2rem;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      padding: 0.6rem 1.4rem;
+      border-radius: 40px;
+      font-size: 0.92rem;
+      color: var(--gold-light);
+      margin-top: 1.5rem;
     }
 
-    /* FOOTER */
-    .custom-footer {
-      background: linear-gradient(180deg, #071524 0%, #030A12 100%);
-      color: var(--light-champagne);
-      padding: 4rem 0 2rem;
-      border-top: 2.5px solid var(--heritage-gold);
-      position: relative;
-      width: 100%;
-    }
-
-    .footer-main-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 1.1fr 1.25fr;
-      gap: 2rem;
-      align-items: start;
-      margin-bottom: 2.5rem;
-    }
-
-    .footer-left-col {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1rem;
-    }
-
-    .footer-portrait-box {
-      width: min(220px, 100%);
-      height: 125px;
-      border-radius: 12px;
-      border: 2px solid var(--heritage-gold);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-      overflow: hidden;
-      background: #EAE6DF;
-      display: flex;
+    /* ================= PRINTABLE CERTIFICATE (OFFSCREEN / EXPORT) ================= */
+    .certificate-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 13, 29, 0.92);
+      backdrop-filter: blur(14px);
+      z-index: 100000;
+      display: none;
       align-items: center;
       justify-content: center;
+      padding: 1.5rem;
+      overflow-y: auto;
     }
 
-    .footer-portrait-box img {
+    .certificate-modal-overlay.active {
+      display: flex;
+    }
+
+    .certificate-outer-sheet {
       width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
+      max-width: 880px;
+      background: #FFFFFF;
+      padding: 2.8rem;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8);
+      position: relative;
+      color: #0F172A;
     }
 
-    .footer-math-quote {
-      font-family: var(--font-accent);
-      font-size: 1rem;
-      font-style: italic;
-      color: #E2E8F0;
-      line-height: 1.5;
-      max-width: 260px;
-      border-left: 2px solid var(--heritage-gold);
-      padding-left: 0.75rem;
+    .cert-frame {
+      border: 7px double #D4AF37;
+      padding: 2.5rem 2.2rem;
+      text-align: center;
+      background: radial-gradient(circle, #FFFFFF 0%, #FDFBF7 100%);
+      position: relative;
     }
 
-    .footer-right-card {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(232, 215, 168, 0.35);
-      border-radius: 14px;
-      padding: 1.3rem;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    .cert-watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: var(--font-serif);
+      font-size: 7rem;
+      color: rgba(212, 175, 55, 0.04);
+      pointer-events: none;
+      white-space: nowrap;
+      font-weight: 900;
     }
 
-    .footer-bottom-bar {
-      border-top: 1px solid rgba(232, 215, 168, 0.2);
-      padding-top: 1.5rem;
+    .cert-university-header {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #6B1D2F;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+
+    .cert-series-tag {
+      font-size: 0.8rem;
+      color: #64748B;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .cert-main-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 4.5vw, 2.9rem);
+      color: #B48310;
+      letter-spacing: 0.04em;
+      margin-bottom: 1rem;
+      font-weight: 800;
+    }
+
+    .cert-recipient-name {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 4vw, 2.7rem);
+      color: #0F172A;
+      border-bottom: 2px solid #D4AF37;
+      display: inline-block;
+      padding: 0 2rem 0.3rem;
+      margin: 1.25rem 0;
+      font-weight: 700;
+    }
+
+    .cert-body-p {
+      max-width: 650px;
+      margin: 0 auto 2.2rem;
+      font-size: 0.98rem;
+      color: #334155;
+      line-height: 1.65;
+    }
+
+    .cert-signatures {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .designer-glow-box {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.5rem 1.15rem;
-      border-radius: 50px;
-      background: linear-gradient(135deg, rgba(201, 162, 39, 0.14) 0%, rgba(30, 78, 121, 0.22) 100%);
-      border: 1.5px solid var(--heritage-gold);
-      color: rgba(247, 244, 236, 0.9);
-      font-size: 0.88rem;
-      letter-spacing: 0.02em;
-      box-shadow: 0 0 16px rgba(201, 162, 39, 0.4), inset 0 0 10px rgba(232, 215, 168, 0.2);
-      animation: designerGlowPulse 2.8s infinite alternate ease-in-out;
-      transition: var(--transition-smooth);
-    }
-
-    .designer-glow-box:hover {
-      box-shadow: 0 0 26px rgba(251, 191, 36, 0.75), inset 0 0 14px rgba(232, 215, 168, 0.4);
-      transform: translateY(-2px);
-      border-color: #FDE047;
-    }
-
-    .designer-glow-box strong {
-      color: #FFFFFF;
-      font-weight: 700;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
-    }
-
-    @keyframes designerGlowPulse {
-      0% {
-        box-shadow: 0 0 12px rgba(201, 162, 39, 0.35), inset 0 0 6px rgba(232, 215, 168, 0.15);
-        border-color: rgba(201, 162, 39, 0.85);
-      }
-      50% {
-        box-shadow: 0 0 22px rgba(201, 162, 39, 0.65), 0 0 35px rgba(251, 191, 36, 0.28), inset 0 0 12px rgba(232, 215, 168, 0.3);
-        border-color: #FBBF24;
-      }
-      100% {
-        box-shadow: 0 0 12px rgba(201, 162, 39, 0.35), inset 0 0 6px rgba(232, 215, 168, 0.15);
-        border-color: rgba(201, 162, 39, 0.85);
-      }
-    }
-
-    .footer-dedicated-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: rgba(201, 162, 39, 0.12);
-      border: 1px solid var(--heritage-gold);
-      padding: 0.4rem 1rem;
-      border-radius: 50px;
-      color: #FDE047;
+      align-items: flex-end;
+      border-top: 1px solid rgba(212, 175, 55, 0.4);
+      padding-top: 1.5rem;
+      margin-top: 2rem;
       font-size: 0.85rem;
-      font-weight: 600;
+      color: #64748B;
     }
 
-    /* ==========================================================================
-       RESPONSIVE ADAPTATION (MOBILE & TABLET CLEAN ROWS)
-       ========================================================================== */
-    @media (max-width: 1080px) {
-      .nav-inner {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.75rem;
-        min-height: auto;
-        padding: 0.75rem 0;
-      }
-
-      .brand-block {
-        width: 100%;
-        justify-content: flex-start;
-      }
-
-      .nav-right-cluster {
-        width: 100%;
-        justify-content: space-between;
-        gap: 0.6rem;
-        flex-wrap: wrap;
-        border-top: 1px solid rgba(232, 215, 168, 0.4);
-        padding-top: 0.55rem;
-        margin-left: 0;
-      }
-
-      .nav-links {
-        width: 100%;
-        justify-content: flex-start;
-        overflow-x: auto;
-        padding-bottom: 0.25rem;
-        gap: 0.4rem;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      .nav-link {
-        font-size: 0.78rem;
-        padding: 0.25rem 0.5rem;
-      }
-
-      .header-action-group {
-        width: 100%;
-        justify-content: flex-end;
-      }
+    .sig-block {
+      text-align: center;
     }
 
-    @media (max-width: 768px) {
-      .footer-main-grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
+    .sig-line {
+      width: 140px;
+      height: 1px;
+      background: #CBD5E1;
+      margin: 0 auto 0.4rem;
+    }
 
-      .footer-bottom-bar {
+    /* Mobile Responsive */
+    @media (max-width: 900px) {
+      .nav-links-wrap {
+        display: none;
+      }
+      .hamburger-btn {
+        display: block;
+      }
+      .nav-links-wrap.mobile-open {
+        display: flex;
         flex-direction: column;
-        text-align: center;
-        gap: 1rem;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(11, 19, 43, 0.98);
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.3);
       }
-
-      .feedback-form-grid {
-        grid-template-columns: 1fr;
+      .nav-pill {
+        width: 100%;
+        justify-content: center;
       }
-
-      .timeline-container {
-        padding-left: 2.2rem;
-        padding-right: 0;
-      }
-
-      .timeline-container::before,
-      .timeline-progress-line {
-        left: 12px;
-      }
-
-      .chibi-node {
-        left: -2.2rem;
-        width: 28px;
-        height: 28px;
-        top: 18px;
-      }
-
-      .timeline-card {
-        padding: 0.95rem;
-      }
-
-      .timeline-card h3 {
-        font-size: 1.05rem;
-      }
-
-      .timeline-card p {
-        font-size: 0.88rem;
+      .cert-signatures {
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: center;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- INAUGURAL OVERLAY -->
-  <div id="inauguralOverlay">
-    <div class="inaugural-box">
-      <div class="inaugural-subtitle">An Indian-American Mathematician and Physicist</div>
-      <div class="inaugural-photo-frame">
-        <img src="images.jpg" alt="Dr. Harish-Chandra" />
-      </div>
-      <h1 class="inaugural-name-title">Harish-Chandra</h1>
-      <div class="inaugural-name-sub">(né Harishchandra) FRS</div>
-      <div class="inaugural-dates">11 October 1923 – 16 October 1983</div>
-      <button class="inaugural-enter-btn" onclick="closeInaugural()">Enter Exhibition →</button>
-    </div>
-  </div>
+  <!-- Floating Mathematical Canvas -->
+  <canvas id="mathCanvas"></canvas>
 
-  <!-- HEADER (WITH LEFT WHITE GLOWING PILL BOX) -->
+  <!-- Sticky Header -->
   <header class="site-header">
     <div class="container nav-inner">
-
-      <!-- LEFT: Avatar + Name + Dates + (103rd badge & White Glowing Designer Badge) -->
-      <a href="#home" class="brand-block reveal-from-left">
-        <div class="brand-avatar">
-          <img id="profilePortraitImg" src="images.jpg" alt="Dr. Harish-Chandra" />
-        </div>
-        <div class="brand-texts">
-          <span class="brand-name">Harish-Chandra</span>
-          <span class="brand-lifespan">(11 October 1923 – 16 October 1983)</span>
-          <div class="brand-badges-row">
-            <div class="anniversary-badge-left">
-              <span class="anniversary-dot"></span>
-              <span>103rd Birth Anniversary</span>
-            </div>
-            <!-- WHITE GLOWING DESIGNER BOX ON THE LEFT -->
-            <div class="header-designer-glow">
-              <span>✨</span>
-              <span>Designed by <strong>Anshika Soni, Shikha Singh Gaur</strong></span>
-            </div>
-          </div>
+      <a href="#hero" class="brand-group">
+        <div class="brand-avatar">HC</div>
+        <div class="brand-meta">
+          <span class="brand-title">HARISH-CHANDRA</span>
+          <span class="brand-sub">103rd Birth Anniversary • 1923–1983</span>
         </div>
       </a>
 
-      <!-- RIGHT: Glowing Pillars & Actions Without Overlap -->
-      <div class="nav-right-cluster reveal-from-right">
-        <nav>
-          <ul class="nav-links">
-            <li><a href="#home" class="nav-link"><span>🏠</span> Home</a></li>
-            <li><a href="#timeline" class="nav-link"><span>⏳</span> Timeline</a></li>
-            <li><a href="#quiz-view" class="nav-link"><span>🎯</span> Quiz</a></li>
-            <li><button type="button" class="nav-link" onclick="openLeaderboardModal()"><span>🏆</span> Leaderboard</button></li>
-            <li><a href="#feedbackSection" class="nav-link"><span>💬</span> Feedback</a></li>
-            <li><a href="#tribute" class="nav-link"><span>🪔</span> Memorial Flame</a></li>
-          </ul>
-        </nav>
+      <nav>
+        <ul class="nav-links-wrap" id="navMenu">
+          <li><a href="#hero" class="nav-pill active">🏛️ Heritage</a></li>
+          <li><a href="#timeline" class="nav-pill">⏳ Epochs</a></li>
+          <li><a href="#quiz" class="nav-pill">🎯 3-Tier Quiz</a></li>
+          <li><a href="#memorial" class="nav-pill">🪔 Memorial Flame</a></li>
+        </ul>
+      </nav>
 
-        <div class="header-action-group">
-          <button class="btn-audio-toggle" id="audioToggleBtn" onclick="toggleChimeAudio()" title="Toggle Ambience Sound" aria-label="Toggle Sound">
-            <span id="audioIcon">🔊</span>
-          </button>
-
-          <button class="lang-pill-btn" onclick="toggleLanguage()" title="Change Language / भाषा बदलें">
-            <svg class="lang-icon-svg" viewBox="0 0 24 24">
-              <path d="M12.87 15.07l-2.54-2.51.03-.08c1.37-1.53 2.33-3.29 2.89-5.18H16V5h-6V3H8v2H2v2.3H11.02c-.51 1.54-1.32 2.99-2.42 4.26-.74-.86-1.36-1.83-1.85-2.86h-2.1c.6 1.48 1.48 2.87 2.58 4.1L3.5 18.42l1.62 1.62 3.7-3.7 3.3 3.3 1.75-1.57zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
-            </svg>
-            <span id="langLabel">हिन्दी</span>
-          </button>
-
-          <a href="#tribute" class="btn-offer-tribute-top">
-            <span class="tribute-sparkle">✨</span>
-            <span>Offer Tribute</span>
-          </a>
-        </div>
+      <div class="controls-cluster">
+        <button class="btn-audio" id="audioToggleBtn" title="Toggle Sound Synth" aria-label="Toggle Sound">🔊</button>
+        <button class="hamburger-btn" id="mobileMenuBtn" aria-label="Toggle Navigation">☰</button>
       </div>
-
     </div>
   </header>
 
-  <!-- COMPACT & ELEGANT HERO SECTION -->
-  <section class="hero-section" id="home">
-    <div class="container hero-content">
-      <h1 class="hero-main-title reveal-from-left">HARISH-CHANDRA</h1>
-
-      <div class="hero-legacy-statement-box reveal-from-right">
-        <p class="hero-legacy-statement" id="heroStatementText">
-          “Celebrating 103 Years of <span class="statement-accent">Dr. Harish-Chandra’s Legacy</span> — where curiosity became discovery, and mathematics became a lasting contribution to human knowledge.”
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- TIMELINE SECTION -->
-  <section class="section-padding" id="timeline">
+  <!-- Hero Section -->
+  <section class="hero-section" id="hero">
     <div class="container">
-      <div class="section-header">
-        <span class="badge-pill">Milestone Overview</span>
-        <h2>The Journey & Heritage</h2>
-        <p>Key epochs celebrating Harish-Chandra's life (1923–1983) and mathematical breakthroughs.</p>
-      </div>
-
-      <div class="timeline-container" id="timelineContainer">
-        <div class="timeline-progress-line" id="timelineProgressLine"></div>
-
-        <div class="timeline-card-wrap" data-card="1">
-          <div class="chibi-node" title="Kanpur & Allahabad Days">
-            <img src="images.jpg" alt="Chibi Harish-Chandra" />
-          </div>
-          <div class="timeline-card">
-            <span class="timeline-date">October 11, 1923 • Kanpur</span>
-            <h3>Early Life & Allahabad Education</h3>
-            <p>Born in Kanpur; completed his Master's in theoretical physics at the University of Allahabad under K. S. Krishnan.</p>
-          </div>
-        </div>
-
-        <div class="timeline-card-wrap" data-card="2">
-          <div class="chibi-node" title="Cambridge PhD with Dirac">
-            <img src="images.jpg" alt="Chibi Harish-Chandra" />
-          </div>
-          <div class="timeline-card">
-            <span class="timeline-date">1945 – 1947 • Cambridge</span>
-            <h3>Doctoral Research under Dirac</h3>
-            <p>Earned his PhD at Cambridge under Paul Dirac, studying infinite irreducible representations of the Lorentz group.</p>
-          </div>
-        </div>
-
-        <div class="timeline-card-wrap" data-card="3">
-          <div class="chibi-node" title="Columbia & Semisimple Lie Groups">
-            <img src="images.jpg" alt="Chibi Harish-Chandra" />
-          </div>
-          <div class="timeline-card">
-            <span class="timeline-date">1950 – 1963 • Columbia & IAS</span>
-            <h3>Semisimple Lie Groups & Harmonic Analysis</h3>
-            <p>Formulated character theory, discrete series representations, and harmonic analysis on semisimple Lie groups.</p>
-          </div>
-        </div>
-
-        <div class="timeline-card-wrap" data-card="4">
-          <div class="chibi-node" title="Perpetual Legacy & Modern Synthesis">
-            <img src="images.jpg" alt="Chibi Harish-Chandra" />
-          </div>
-          <div class="timeline-card">
-            <span class="timeline-date">16 October 1983 • Princeton</span>
-            <h3>Synthesis of Modern Mathematics</h3>
-            <p>Cole Prize recipient (1954); unified analysis, algebra, and geometry with lasting influence on the Langlands program.</p>
-          </div>
-        </div>
+      <div class="hero-badge">School of Basic Sciences • CSJM University</div>
+      <h1 class="hero-title">THE ARCHITECT OF HARMONIC ANALYSIS</h1>
+      <p class="hero-quote">
+        “Celebrating 103 Years of Dr. Harish-Chandra FRS — where the Lorentz group met infinite dimensions, and mathematical truth touched the infinite.”
+      </p>
+      <div class="hero-cta-group">
+        <a href="#quiz" class="btn-gold">Begin 3-Tier Challenge →</a>
+        <a href="#memorial" class="btn-burgundy">Offer Sacred Flame 🪔</a>
       </div>
     </div>
   </section>
 
-  <!-- QUIZ INTERFACE SECTION -->
-  <section class="section-padding" id="quiz-view" style="background: rgba(232, 215, 168, 0.15);">
+  <!-- Timeline Section -->
+  <section class="timeline-section" id="timeline">
     <div class="container">
-
-      <!-- Registration Entry -->
-      <div class="quiz-card" id="quizEntryView" style="text-align: center;">
-        <span class="badge-pill">Participant Registration</span>
-        <h2 style="font-family: var(--font-heading); margin: 1rem 0 0.5rem; color: var(--primary-dark);">Enter the Legacy Challenge</h2>
-        <p style="color: var(--text-slate); margin-bottom: 1.8rem;">Enter your name to begin the 15-question challenge across 3 progressive tiers (Easy, Moderate, and Hard).</p>
-        <input type="text" id="participantName" placeholder="Enter your full name" style="width: 100%; max-width: 420px; padding: 0.85rem 1.2rem; border-radius: var(--radius-sm); border: 1.5px solid var(--light-champagne); outline: none; margin-bottom: 1.5rem; font-family: var(--font-body); font-size: 1rem;">
-        <div style="display:flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-          <button class="btn btn-gold" onclick="startQuiz()">Begin Challenge →</button>
-          <button class="btn" style="background: #eef2f6; color: #1e293b;" onclick="openLeaderboardModal()">View Leaderboard 🏆</button>
-        </div>
+      <div class="section-title-wrap">
+        <span class="section-subtitle">Chronicles of a Genius</span>
+        <h2 class="section-title">Milestones of Harish-Chandra</h2>
       </div>
 
-      <!-- Live Quiz Console -->
-      <div class="quiz-card" id="quizConsoleView" style="display: none;">
-        <div class="quiz-bar">
-          <div>
-            <span class="badge-pill" id="levelBadge">Level 1 — Easy</span>
-            <span style="font-size: 0.85rem; color: var(--text-slate); margin-left: 0.5rem;" id="qCounter">Q 1/15</span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 1rem;">
-            <div style="font-size: 0.9rem; font-weight: 600;"><span>Score</span>: <span id="hudScore" style="color: var(--heritage-gold);">0</span></div>
-            <div class="timer-display" id="hudTimer">25s</div>
-          </div>
-        </div>
-
-        <h3 id="questionHeading" style="font-family: var(--font-heading); color: var(--primary-dark); font-size: 1.25rem; line-height: 1.45;">
-          Question goes here
-        </h3>
-
-        <div class="quiz-options" id="optionsContainer"></div>
-
-        <div class="feedback-box" id="feedbackBox">
-          <div id="feedbackTitle" style="font-weight: 700; margin-bottom: 0.35rem;"></div>
-          <p id="feedbackText" style="font-size: 0.95rem; color: var(--text-slate); margin-bottom: 1.2rem;"></p>
-          <button class="btn btn-gold" onclick="nextQuestion()">Continue →</button>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- LEADERBOARD MODAL -->
-  <div class="leaderboard-modal-overlay" id="leaderboardModal">
-    <div class="leaderboard-card">
-      <div class="leaderboard-header">
-        <span class="badge-pill">Hall of Honor</span>
-        <h3>Scholars Leaderboard</h3>
-        <p style="font-size: 0.85rem; color: var(--text-slate); margin-top: 0.25rem;">Rankings for Harish-Chandra Digital Legacy Challenge</p>
-      </div>
-
-      <div class="leaderboard-table-wrap">
-        <table class="leaderboard-table">
-          <thead>
-            <tr>
-              <th style="width: 55px; text-align: center;">Rank</th>
-              <th>Scholar Name</th>
-              <th style="text-align: right;">Score</th>
-              <th style="text-align: center;">Correct</th>
-            </tr>
-          </thead>
-          <tbody id="leaderboardTableBody">
-            <!-- Populated via Javascript -->
-          </tbody>
-        </table>
-      </div>
-
-      <div style="display: flex; justify-content: center; gap: 0.75rem;">
-        <button class="btn btn-gold" style="padding: 0.6rem 1.6rem; font-size: 0.9rem;" onclick="closeLeaderboardModal()">Close</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 3-SECOND LEVEL TRANSITION MODAL -->
-  <div class="transition-modal-overlay" id="transitionModal">
-    <div class="transition-modal-card">
-      <div id="transitionAnimationBox"></div>
-      <h3 id="transitionTitle" style="font-family: var(--font-heading); font-size: 1.6rem; color: var(--primary-dark); margin-bottom: 0.5rem;"></h3>
-      <p id="transitionDesc" style="color: var(--text-slate); font-size: 1rem; line-height: 1.5;"></p>
-      <div class="timer-circle-bar">Advancing in 3 seconds...</div>
-    </div>
-  </div>
-
-  <!-- FINAL VICTORY MODAL -->
-  <div class="victory-modal-overlay" id="victoryModal">
-    <div class="victory-card">
-      <div style="font-size: 3.5rem;">🏆</div>
-      <h2 class="victory-title">You made it through! Bravo!</h2>
-      <p class="victory-subtitle">“Where curiosity became discovery, and intellect touched infinity.”</p>
-      <div style="margin-bottom: 1.5rem; color: var(--text-slate);">
-        You have successfully cleared all 3 tiers of the Harish-Chandra Legacy Challenge.
-      </div>
-      <div style="display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap;">
-        <button class="btn btn-gold" onclick="openCertificateModal()" style="padding: 0.85rem 1.8rem; font-size: 0.95rem;">
-          Get Certificate 📜
-        </button>
-        <button class="btn" style="background: #15324D; color: #FFFDF8; padding: 0.85rem 1.8rem; font-size: 0.95rem;" onclick="openLeaderboardModal()">
-          View Ranking 🏆
-        </button>
-        <button class="btn" style="background: #7C3AED; color: #FFFFFF; padding: 0.85rem 1.8rem; font-size: 0.95rem;" onclick="scrollToFeedback()">
-          Give Feedback 💬
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- CERTIFICATE MODAL & PDF DOWNLOAD -->
-  <div class="certificate-modal-overlay" id="certificateModal">
-    <div class="certificate-container">
-      <div class="certificate-inner-frame">
-        <p style="font-family: var(--font-accent); font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--secondary-blue);">
-          School of Basic Sciences • Presentation Series
-        </p>
-        <h2 style="font-family: var(--font-title); font-size: clamp(1.8rem, 4.5vw, 2.5rem); color: var(--heritage-gold); margin: 0.6rem 0 1rem;">
-          Certificate of Accomplishment
-        </h2>
-        <p style="font-size: 0.95rem; color: var(--text-slate);">This certifies that</p>
-        <h3 id="certParticipantName" style="font-family: var(--font-heading); font-size: clamp(1.6rem, 4vw, 2.2rem); color: var(--primary-dark); margin: 0.6rem 0; border-bottom: 2px solid var(--heritage-gold); display: inline-block; padding: 0 1.5rem 0.2rem;">
-          Participant Name
-        </h3>
-        <p style="max-width: 540px; margin: 1rem auto; font-size: 0.95rem; color: var(--text-charcoal); line-height: 1.6;">
-          has with distinction completed the <strong>Harish-Chandra Digital Legacy Quiz</strong> across Easy, Moderate, and Hard Expert levels in tribute to the pioneering master of representation theory.
-        </p>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(201, 162, 39, 0.4); font-size: 0.85rem; color: var(--text-slate);">
-          <span id="certDateDisplay">Date: October 11, 2026</span>
-          <span>Verified • Track 06</span>
-        </div>
-      </div>
-
-      <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.8rem; flex-wrap: wrap;">
-        <button class="btn btn-gold" onclick="downloadPDFCertificate()">Download as PDF 📥</button>
-        <button class="btn" onclick="scrollToFeedbackFromCert()" style="background: #7C3AED; color: #FFF;">Share Experience 💬</button>
-        <button class="btn" onclick="location.reload()" style="background: #eee; color: #333;">Close & Replay</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- INTERACTIVE FEEDBACK & RATING MODULE SECTION -->
-  <section class="feedback-section" id="feedbackSection">
-    <div class="container feedback-wrapper">
-      <div class="feedback-card">
-        <div style="text-align: center;">
-          <span class="badge-pill">Participant Impressions</span>
-          <h3>Share Your Experience</h3>
-          <p style="color: var(--text-slate); font-size: 0.92rem; margin-top: 0.35rem;">
-            How did you find the Harish-Chandra Digital Legacy Challenge? Your rating shapes future exhibitions!
+      <div class="timeline-container">
+        <!-- Era 1 -->
+        <div class="timeline-card">
+          <div class="timeline-era">1923 – 1945 • Kanpur & Allahabad</div>
+          <h3 class="timeline-heading">Foundations in Theoretical Physics</h3>
+          <p style="color: var(--slate-text); font-size: 0.95rem;">
+            Born on October 11, 1923, in Kanpur, Uttar Pradesh. Completed his Master's under physicist K. S. Krishnan at the University of Allahabad, initially mastering Dirac's quantum mechanics.
           </p>
+          <div class="fact-toggle" onclick="toggleFact(this)">
+            <span>💡 Did you know? (Pauli Seminar Encounter)</span>
+            <span>▼</span>
+          </div>
+          <div class="fact-content">
+            During an advanced seminar, a young Harish-Chandra famously corrected Wolfgang Pauli on a complex blackboard formula, instantly winning Pauli's deep lifelong respect.
+          </div>
         </div>
 
-        <div class="star-rating-container" id="starRatingBox">
-          <span data-star="1" onclick="selectStar(1)" onmouseover="hoverStar(1)" onmouseout="resetStarHover()">★</span>
-          <span data-star="2" onclick="selectStar(2)" onmouseover="hoverStar(2)" onmouseout="resetStarHover()">★</span>
-          <span data-star="3" onclick="selectStar(3)" onmouseover="hoverStar(3)" onmouseout="resetStarHover()">★</span>
-          <span data-star="4" onclick="selectStar(4)" onmouseover="hoverStar(4)" onmouseout="resetStarHover()">★</span>
-          <span data-star="5" onclick="selectStar(5)" onmouseover="hoverStar(5)" onmouseout="resetStarHover()">★</span>
+        <!-- Era 2 -->
+        <div class="timeline-card">
+          <div class="timeline-era">1945 – 1950 • Cambridge & IAS Princeton</div>
+          <h3 class="timeline-heading">Doctorate Under Paul Dirac</h3>
+          <p style="color: var(--slate-text); font-size: 0.95rem;">
+            Studied at the University of Cambridge under Nobel laureate Paul Dirac. Realized that physical intuition lacked mathematical rigour and shifted permanently to pure representation theory.
+          </p>
+          <div class="fact-toggle" onclick="toggleFact(this)">
+            <span>💡 Did you know? (Universal Enveloping Algebras)</span>
+            <span>▼</span>
+          </div>
+          <div class="fact-content">
+            His 1954 Cole Prize from the American Mathematical Society stemmed directly from his breakthrough algebraic theorems on universal enveloping algebras.
+          </div>
         </div>
 
-        <form id="feedbackForm" onsubmit="handleFeedbackSubmit(event)">
-          <div class="feedback-form-grid">
-            <div>
-              <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.35rem; color: var(--primary-dark);">Your Name</label>
-              <input type="text" id="feedbackUserName" class="feedback-input" placeholder="Scholar / Participant" required>
-            </div>
-            <div>
-              <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.35rem; color: var(--primary-dark);">Feedback Category</label>
-              <select id="feedbackCategory" class="feedback-select">
-                <option value="General Experience">General Experience</option>
-                <option value="Quiz Difficulty">Quiz Difficulty</option>
-                <option value="Certificate Design">Certificate Design</option>
-                <option value="Visual Aesthetics">Visual Aesthetics</option>
-                <option value="Bug / Suggestion">Bug / Suggestion</option>
-              </select>
-            </div>
+        <!-- Era 3 -->
+        <div class="timeline-card">
+          <div class="timeline-era">1950 – 1983 • Columbia, Princeton & Global Legacy</div>
+          <h3 class="timeline-heading">Semisimple Lie Groups & The Langlands Program</h3>
+          <p style="color: var(--slate-text); font-size: 0.95rem;">
+            Appointed permanent Professor at the Institute for Advanced Study, Princeton (1963). Constructed character theory for infinite-dimensional representations and laid the groundwork for modern automorphic forms.
+          </p>
+          <div class="fact-toggle" onclick="toggleFact(this)">
+            <span>💡 Did you know? (Discrete Series Discovery)</span>
+            <span>▼</span>
           </div>
-
-          <div>
-            <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.35rem; color: var(--primary-dark);">Your Thoughts / Comments (Max 250 characters)</label>
-            <textarea id="feedbackComment" class="feedback-textarea" maxlength="250" placeholder="Tell us what you loved, what you learned, or how we can improve..." oninput="updateCharCount()" required></textarea>
-            <div class="char-counter"><span id="charCount">0</span> / 250 characters</div>
+          <div class="fact-content">
+            His construction of the discrete series representations on real reductive Lie groups is hailed as one of the monumentally deep peaks of 20th-century mathematical analysis.
           </div>
-
-          <div style="text-align: center;">
-            <button type="submit" class="btn btn-gold" style="padding: 0.85rem 2.2rem; font-size: 0.95rem;">
-              Submit Feedback 💬
-            </button>
-          </div>
-        </form>
-      </div>
-
-      <!-- Recent Reviews Section -->
-      <div>
-        <h4 class="recent-reviews-title">
-          <span>🌟</span> Recent Participant Impressions
-        </h4>
-        <div class="reviews-grid" id="reviewsContainer"></div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- TOAST ALERT -->
-  <div class="feedback-toast" id="feedbackToast">
-    <span>🌟</span>
-    <span id="toastMsg">Thank you for your valuable feedback!</span>
-  </div>
-
-  <!-- MEMORIAL FLAME & DIYA TRIBUTE SECTION -->
-  <section class="tribute-section" id="tribute">
+  <!-- Interactive 3-Tier Quiz -->
+  <section class="quiz-section" id="quiz">
     <div class="container">
-      <div class="tribute-header">
-        <h2 class="tribute-main-title">Birthday Tribute & Memorial Flame</h2>
-        <p style="color: var(--text-slate); font-family: var(--font-accent); font-size: 1.25rem; font-style: italic; max-width: 720px; margin: 0 auto;">
-          “A tribute to the visionary who illuminated the infinite horizons of modern mathematics. Light the flame of intellect, curiosity, and eternal remembrance.”
-        </p>
-      </div>
-
-      <div class="memorial-flame-card" id="flameCard">
-        <div class="diya-halo"></div>
-        <div class="diya-container">
-          <div class="flame-element" id="diyaFlame"></div>
-          <div class="diya-rim"></div>
-          <div class="diya-bowl"></div>
-          <div class="diya-stand"></div>
+      <div class="quiz-card" id="quizCard">
+        
+        <!-- Registration View -->
+        <div id="quizRegView" style="text-align: center;">
+          <span class="section-subtitle">National Challenge 2026</span>
+          <h2 class="section-title" style="margin-bottom: 0.8rem;">Harish-Chandra Legacy Quiz</h2>
+          <p style="color: var(--slate-text); max-width: 580px; margin: 0 auto 2rem; font-size: 0.95rem;">
+            15 progressive academic questions across 3 tiers: Early Life, Semisimple Lie Groups, and Modern Automorphic Forms.
+          </p>
+          <div style="max-width: 440px; margin: 0 auto 1.5rem;">
+            <input type="text" id="participantNameInput" placeholder="Enter Full Name for Certificate" style="width: 100%; padding: 0.9rem 1.2rem; border-radius: 40px; border: 1.5px solid var(--gold); background: rgba(255,255,255,0.06); color: #FFF; outline: none; text-align: center; font-size: 1rem;">
+          </div>
+          <button class="btn-gold" onclick="startChallenge()">Begin Tier 1 Challenge →</button>
         </div>
 
-        <h3 class="tribute-card-title">Harish-Chandra Birth Anniversary</h3>
-        <p style="font-family: var(--font-accent); color: var(--light-champagne); font-size: 1.35rem; font-style: italic; margin-bottom: 1.5rem;">(11 October 1923)</p>
+        <!-- Active Quiz Console -->
+        <div id="quizActiveView" style="display: none;">
+          <div class="quiz-hud">
+            <div class="hud-meta">
+              <span class="tier-badge" id="hudTierBadge">Tier 1 • Foundations</span>
+              <span style="font-size: 0.85rem; color: var(--slate-text);" id="hudCounter">Question 1 of 15</span>
+            </div>
+            
+            <div class="hud-stats">
+              <div style="font-size: 0.95rem; font-weight: 700;">Score: <span id="hudScore" style="color: var(--gold);">0</span></div>
+              
+              <!-- SVG Circular Timer -->
+              <div class="timer-ring-wrap">
+                <svg>
+                  <circle class="timer-ring-bg" cx="29" cy="29" r="25"></circle>
+                  <circle class="timer-ring-progress" id="timerRing" cx="29" cy="29" r="25"></circle>
+                </svg>
+                <div class="timer-ring-text" id="timerCount">25</div>
+              </div>
+            </div>
+          </div>
 
-        <div class="tribute-quote-container">
-          <div class="tribute-quote-text">
-            MATHEMATICS GIVES US <span style="font-family: var(--font-accent); color: var(--heritage-gold); font-size: 1.8rem; text-transform: capitalize;">Hope</span> THAT EVERY PROBLEM HAS A <span style="color: #FBBF24;">SOLUTION</span>
+          <div class="quiz-question-box">
+            <h3 class="question-title" id="questionText">Loading query...</h3>
+          </div>
+
+          <div class="options-grid" id="optionsBox"></div>
+
+          <div class="feedback-drawer" id="feedbackDrawer">
+            <div id="feedbackTitle" style="font-weight: 700; margin-bottom: 0.35rem;"></div>
+            <p id="feedbackExplanation" style="color: var(--slate-text); font-size: 0.9rem; margin-bottom: 1.2rem;"></p>
+            <button class="btn-gold" onclick="handleNextQuestion()">Proceed →</button>
           </div>
         </div>
 
-        <div class="tribute-btn-container">
-          <button class="btn-pushpanjali" onclick="offerFloralPushpanjali()">
-            <span>✨</span> Offer Floral Pushpanjali
+        <!-- Final Victory View -->
+        <div id="quizVictoryView" style="display: none; text-align: center;">
+          <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🏆</div>
+          <span class="section-subtitle">Challenge Completed</span>
+          <h2 class="section-title" style="margin-bottom: 0.5rem;">Academic Distinction Attained</h2>
+          <p style="color: var(--slate-text); max-width: 540px; margin: 0 auto 2rem; font-size: 0.95rem;">
+            Congratulations! You have successfully mastered all 3 tiers of Dr. Harish-Chandra's life, Lie algebras, and representation theory.
+          </p>
+          <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+            <button class="btn-gold" onclick="openCertificateModal()">View Official Certificate 📜</button>
+            <button class="btn-burgundy" onclick="resetQuiz()">Replay Challenge 🔁</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Memorial Tribute Flame -->
+  <section class="memorial-section" id="memorial">
+    <div class="container">
+      <div class="memorial-card">
+        <div class="diya-wrapper">
+          <div class="diya-halo"></div>
+          <div class="flame-core" id="memorialFlame"></div>
+          <div class="diya-pot"></div>
+        </div>
+
+        <h3 style="font-family: var(--font-serif); font-size: clamp(1.6rem, 4vw, 2.3rem); color: #FFF; margin-bottom: 0.5rem;">
+          Akhand Deepam • Memorial Tribute
+        </h3>
+        <p style="font-family: var(--font-quote); font-size: 1.3rem; color: var(--gold-light); font-style: italic; max-width: 600px; margin: 0 auto 2rem;">
+          “Offer a spark of reverence to keep the eternal flame of mathematical discovery alive.”
+        </p>
+
+        <div>
+          <button class="btn-gold" onclick="offerTribute()" style="padding: 0.9rem 2.4rem;">
+            Offer Tribute Spark ✨
           </button>
-          <div class="tributes-count-pill">
-            💖 <span id="tributesCountText">0 Tributes Offered</span>
-          </div>
+        </div>
+
+        <div class="tribute-counter-pill">
+          <span>💖 Sacred Tributes Offered:</span>
+          <strong id="tributeDisplay" style="color: #FFF;">0</strong>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer class="custom-footer">
-    <div class="container">
-      <div class="footer-main-grid">
-        <div class="footer-left-col">
-          <div class="footer-portrait-box">
-            <img src="harish-Chandra footer.jpg.png" alt="Harish-Chandra Tribute" onerror="this.src='images.jpg'" />
-          </div>
-          <p class="footer-math-quote">
-            “The greatest contribution of a mathematician is not simply an answer, but a new way of thinking.”
-          </p>
-        </div>
+  <!-- Modal: Official Printable Certificate -->
+  <div class="certificate-modal-overlay" id="certModal">
+    <div style="width: 100%; max-width: 900px;">
+      
+      <!-- Exportable Element -->
+      <div class="certificate-outer-sheet" id="certificateElement">
+        <div class="cert-frame">
+          <div class="cert-watermark">[X, Y] = XY - YX</div>
+          
+          <div class="cert-university-header">Chhatrapati Shahu Ji Maharaj University, Kanpur</div>
+          <div class="cert-series-tag">School of Basic Sciences • Academic Presentation Series 2026</div>
 
-        <div>
-          <span style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--heritage-gold); font-weight: 700;">Academic Initiative • SBS</span>
-          <h4 style="font-family: var(--font-heading); color: #FFFFFF; font-size: 1.45rem; line-height: 1.3; margin: 0.3rem 0;">School of Basic Sciences</h4>
-          <p style="color: rgba(247, 244, 236, 0.78); font-size: 0.94rem; line-height: 1.65;">
-            This digital challenge is an academic initiative conceived and developed under the School of Basic Sciences (SBS) to design an engaging, modern, and interactive web experience celebrating the scholarly path, discoveries, and heritage of Dr. Harish-Chandra.
-          </p>
-        </div>
+          <h2 class="cert-main-title">CERTIFICATE OF ACCOMPLISHMENT</h2>
+          <p style="font-size: 0.92rem; color: #64748B; text-transform: uppercase; letter-spacing: 0.1em;">This prestigious honor is awarded to</p>
 
-        <div>
-          <div class="footer-right-card">
-            <div style="color: #FBBF24; font-size: 0.98rem; font-weight: 700; margin-bottom: 0.6rem;">
-              ✦ Project Team: Anshika Soni, Shikha Singh Gaur
+          <div class="cert-recipient-name" id="certParticipantName">Scholar Name</div>
+
+          <p class="cert-body-p">
+            for successfully mastering all 3 progressive tiers of the <strong>Harish-Chandra Digital Legacy Challenge</strong>, demonstrating exceptional academic proficiency in the life, representation theory of semisimple Lie groups, and automorphic harmonic analysis of Dr. Harish-Chandra FRS on his 103rd Birth Anniversary.
+          </p>
+
+          <div class="cert-signatures">
+            <div class="sig-block">
+              <div class="sig-line"></div>
+              <span>School of Basic Sciences</span>
             </div>
-            <p style="color: rgba(247, 244, 236, 0.85); font-size: 0.88rem; line-height: 1.55;">
-              Designed and crafted for college presentation for an engaging heartfelt quiz on Harish-Chandra with Timer, levels to clear, score, feedback, leaderboard and certificate-style result.
-            </p>
+            <div class="sig-block">
+              <div style="font-family: monospace; font-weight: 700; color: #D4AF37;" id="certVerifyStamp">VERIFIED • 11-OCT-2026</div>
+              <span>Digital Registry Key</span>
+            </div>
+            <div class="sig-block">
+              <div class="sig-line"></div>
+              <span>Convener & Presentation Lead</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="footer-bottom-bar">
-        <!-- GLOWING PILL BOX FOR DESIGNER NAMES IN FOOTER (AMBER/GOLD GLOW) -->
-        <div class="designer-glow-box">
-          <span>✨</span>
-          <span>Designed by <strong>Anshika Soni, Shikha Singh Gaur</strong></span>
-        </div>
-
-        <div class="footer-dedicated-pill">
-          <span>✨</span>
-          <span>Dedicated to the mathematical legacy of Harish-Chandra</span>
-        </div>
+      <!-- Action Bar -->
+      <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem;">
+        <button class="btn-gold" onclick="downloadCrispPDF()">Download Crisp PDF 📥</button>
+        <button class="btn-burgundy" onclick="closeCertModal()">Close Preview ✕</button>
       </div>
+
     </div>
-  </footer>
+  </div>
 
+  <!-- Audio, Quiz, Particle and Certificate Script -->
   <script>
-    function triggerPageEntrance() {
-      document.body.classList.add('page-revealed');
+    /* ================= 1. MATH FLOATING CANVAS ================= */
+    const canvas = document.getElementById('mathCanvas');
+    const ctx = canvas.getContext('2d');
+    let symbols = ['[X, Y]', '∞', '∇', '∫_G f(x)dx', 'π(g)v', 'SL(2, ℝ)', '𝔤 = 𝔨 ⊕ 𝔭', 'λ(H)', 'SO(n)', 'Tr(π(f))'];
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    for (let i = 0; i < 35; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        text: symbols[Math.floor(Math.random() * symbols.length)],
+        size: Math.random() * 12 + 14,
+        speed: Math.random() * 0.4 + 0.1,
+        alpha: Math.random() * 0.45 + 0.15
+      });
     }
 
-    function closeInaugural() {
-      const overlay = document.getElementById('inauguralOverlay');
-      if (overlay) {
-        overlay.classList.add('fade-out');
-        triggerPageEntrance();
-      }
-    }
-
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        closeInaugural();
-      }, 5500);
-      renderReviews();
-    });
-
-    window.addEventListener('scroll', handleTimelineScroll);
-    window.addEventListener('resize', handleTimelineScroll);
-
-    function handleTimelineScroll() {
-      const container = document.getElementById('timelineContainer');
-      const progressLine = document.getElementById('timelineProgressLine');
-      if (!container || !progressLine) return;
-
-      const rect = container.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      const startTrigger = windowHeight * 0.7;
-      const endTrigger = windowHeight * 0.3;
-
-      let scrollProgress = (startTrigger - rect.top) / (rect.height + (startTrigger - endTrigger));
-      scrollProgress = Math.max(0, Math.min(1, scrollProgress));
-      progressLine.style.height = `${scrollProgress * 100}%`;
-
-      const cardWraps = document.querySelectorAll('.timeline-card-wrap');
-      cardWraps.forEach(wrap => {
-        const wrapRect = wrap.getBoundingClientRect();
-        if (wrapRect.top <= windowHeight * 0.75) {
-          wrap.classList.add('unlocked');
-        } else {
-          wrap.classList.remove('unlocked');
+    function animateMath() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#D4AF37';
+      particles.forEach(p => {
+        ctx.font = `${p.size}px 'Cormorant Garamond', serif`;
+        ctx.fillStyle = `rgba(212, 175, 55, ${p.alpha})`;
+        ctx.fillText(p.text, p.x, p.y);
+        p.y -= p.speed;
+        if (p.y < -20) {
+          p.y = canvas.height + 20;
+          p.x = Math.random() * canvas.width;
         }
       });
+      requestAnimationFrame(animateMath);
     }
-    setTimeout(handleTimelineScroll, 200);
+    animateMath();
 
-    /* PERSISTENT TRIBUTES */
-    let tributeCount = parseInt(localStorage.getItem('hc_tribute_count')) || 0;
-
-    function updateTributeCounter() {
-      const el = document.getElementById('tributesCountText');
-      if (el) {
-        el.innerText = `${tributeCount} Tributes Offered`;
-      }
-    }
-    updateTributeCounter();
-
-    function offerFloralPushpanjali() {
-      tributeCount++;
-      localStorage.setItem('hc_tribute_count', tributeCount.toString());
-      updateTributeCounter();
-      playChimeTune();
-
-      const flame = document.getElementById('diyaFlame');
-      if (flame) {
-        flame.style.filter = "drop-shadow(0 0 35px #FDE047) brightness(1.4)";
-        setTimeout(() => { flame.style.filter = "none"; }, 2000);
-      }
-
-      confetti({
-        particleCount: 40,
-        spread: 60,
-        origin: { y: 0.8 }
-      });
-    }
-
-    /* LEADERBOARD SYSTEM */
-    const DEFAULT_LEADERBOARD = [
-      { name: "Anshika Soni", score: 1850, correct: "15/15" },
-      { name: "Shikha Singh Gaur", score: 1820, correct: "15/15" },
-      { name: "Paul Dirac (Memorial)", score: 1750, correct: "14/15" },
-      { name: "K. S. Krishnan (Scholar)", score: 1680, correct: "14/15" },
-      { name: "Lie Theory Explorer", score: 1540, correct: "13/15" }
-    ];
-
-    function getLeaderboardData() {
-      const stored = localStorage.getItem('hc_quiz_leaderboard');
-      if (!stored) {
-        localStorage.setItem('hc_quiz_leaderboard', JSON.stringify(DEFAULT_LEADERBOARD));
-        return DEFAULT_LEADERBOARD;
-      }
-      try {
-        return JSON.parse(stored);
-      } catch (e) {
-        return DEFAULT_LEADERBOARD;
-      }
-    }
-
-    function saveToLeaderboard(name, finalScore, correctAnswers) {
-      let list = getLeaderboardData();
-      list.push({
-        name: name || "Anonymous Scholar",
-        score: finalScore,
-        correct: `${correctAnswers}/15`
-      });
-      list.sort((a, b) => b.score - a.score);
-      list = list.slice(0, 10);
-      localStorage.setItem('hc_quiz_leaderboard', JSON.stringify(list));
-    }
-
-    function renderLeaderboardTable() {
-      const list = getLeaderboardData();
-      const tbody = document.getElementById('leaderboardTableBody');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-
-      list.forEach((entry, idx) => {
-        const tr = document.createElement('tr');
-        let rankBadge = `${idx + 1}`;
-        if (idx === 0) rankBadge = `<span class="rank-medal rank-1">🥇</span>`;
-        else if (idx === 1) rankBadge = `<span class="rank-medal rank-2">🥈</span>`;
-        else if (idx === 2) rankBadge = `<span class="rank-medal rank-3">🥉</span>`;
-
-        tr.innerHTML = `
-          <td style="text-align: center; font-weight: 700;">${rankBadge}</td>
-          <td style="font-weight: 600;">${entry.name}</td>
-          <td style="text-align: right; color: var(--heritage-gold); font-weight: 700;">${entry.score} pts</td>
-          <td style="text-align: center; font-size: 0.85rem; color: var(--text-slate);">${entry.correct}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function openLeaderboardModal() {
-      renderLeaderboardTable();
-      const modal = document.getElementById('leaderboardModal');
-      if (modal) modal.classList.add('active');
-    }
-
-    function closeLeaderboardModal() {
-      const modal = document.getElementById('leaderboardModal');
-      if (modal) modal.classList.remove('active');
-    }
-
-    /* FEEDBACK & RATING LOGIC */
-    let selectedRating = 5;
-
-    function selectStar(rating) {
-      selectedRating = rating;
-      const stars = document.querySelectorAll('#starRatingBox span');
-      stars.forEach((star, idx) => {
-        if (idx < rating) {
-          star.classList.add('active');
-        } else {
-          star.classList.remove('active');
-        }
-      });
-    }
-
-    function hoverStar(rating) {
-      const stars = document.querySelectorAll('#starRatingBox span');
-      stars.forEach((star, idx) => {
-        if (idx < rating) {
-          star.classList.add('hovered');
-        } else {
-          star.classList.remove('hovered');
-        }
-      });
-    }
-
-    function resetStarHover() {
-      const stars = document.querySelectorAll('#starRatingBox span');
-      stars.forEach(star => star.classList.remove('hovered'));
-    }
-
-    function updateCharCount() {
-      const txt = document.getElementById('feedbackComment').value;
-      document.getElementById('charCount').innerText = txt.length;
-    }
-
-    const DEFAULT_REVIEWS = [
-      { name: "Anshika Soni", rating: 5, category: "Visual Aesthetics", comment: "The continuous diya waver and aesthetic theme gives a genuine tribute feel. Great execution!" },
-      { name: "Shikha Singh Gaur", rating: 5, category: "Quiz Difficulty", comment: "The 3 levels progression is very balanced, and Dirac's questions tested deep historical knowledge!" },
-      { name: "Aditi Sharma", rating: 5, category: "Certificate Design", comment: "Loved the customized PDF certificate download! Very smooth." }
-    ];
-
-    function getStoredReviews() {
-      const stored = localStorage.getItem('hc_user_feedback_list');
-      if (!stored) {
-        localStorage.setItem('hc_user_feedback_list', JSON.stringify(DEFAULT_REVIEWS));
-        return DEFAULT_REVIEWS;
-      }
-      try {
-        return JSON.parse(stored);
-      } catch (e) {
-        return DEFAULT_REVIEWS;
-      }
-    }
-
-    function renderReviews() {
-      const container = document.getElementById('reviewsContainer');
-      if (!container) return;
-      const list = getStoredReviews();
-      container.innerHTML = '';
-
-      list.slice(0, 6).forEach(rev => {
-        const card = document.createElement('div');
-        card.className = 'review-card';
-        card.innerHTML = `
-          <div>
-            <div class="review-header">
-              <span class="review-name">${rev.name}</span>
-              <span class="review-stars">${'★'.repeat(rev.rating)}${'☆'.repeat(5 - rev.rating)}</span>
-            </div>
-            <span class="review-cat-tag">${rev.category || 'General'}</span>
-            <p class="review-comment">“${rev.comment}”</p>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    function showFeedbackToast(msg) {
-      const toast = document.getElementById('feedbackToast');
-      document.getElementById('toastMsg').innerText = msg;
-      toast.classList.add('show');
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 3500);
-    }
-
-    function handleFeedbackSubmit(e) {
-      e.preventDefault();
-      const name = document.getElementById('feedbackUserName').value.trim() || "Scholar";
-      const cat = document.getElementById('feedbackCategory').value;
-      const comment = document.getElementById('feedbackComment').value.trim();
-
-      if (!comment) return;
-
-      let reviews = getStoredReviews();
-      reviews.unshift({
-        name: name,
-        rating: selectedRating,
-        category: cat,
-        comment: comment
-      });
-      localStorage.setItem('hc_user_feedback_list', JSON.stringify(reviews));
-
-      document.getElementById('feedbackComment').value = '';
-      updateCharCount();
-      renderReviews();
-      showFeedbackToast("Thank you for your valuable feedback! 🌟");
-
-      confetti({
-        particleCount: 25,
-        spread: 50,
-        origin: { y: 0.85 }
-      });
-    }
-
-    function scrollToFeedback() {
-      const victory = document.getElementById('victoryModal');
-      if (victory) victory.classList.remove('active');
-      const el = document.getElementById('feedbackSection');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function scrollToFeedbackFromCert() {
-      const cert = document.getElementById('certificateModal');
-      if (cert) cert.classList.remove('active');
-      const el = document.getElementById('feedbackSection');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    /* Sound Synthesizer */
+    /* ================= 2. WEB AUDIO SYNTHESIZER ================= */
     let audioCtx = null;
-    function playChimeTune() {
+    let isMuted = false;
+
+    function getAudioContext() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playTick() {
+      if (isMuted) return;
       try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const now = audioCtx.currentTime;
-        [432, 540, 648, 864].forEach((freq, idx) => {
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.frequency.setValueAtTime(950, ctx.currentTime);
+        gain.gain.setValueAtTime(0.015, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.05);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.06);
+      } catch (e) {}
+    }
+
+    function playChime() {
+      if (isMuted) return;
+      try {
+        const ctx = getAudioContext();
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, now + idx * 0.15);
-          gain.gain.setValueAtTime(0.0001, now + idx * 0.15);
-          gain.gain.linearRampToValueAtTime(0.06, now + idx * 0.15 + 0.08);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.15 + 1.2);
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.08);
+          gain.gain.setValueAtTime(0.0001, ctx.currentTime + idx * 0.08);
+          gain.gain.linearRampToValueAtTime(0.07, ctx.currentTime + idx * 0.08 + 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + idx * 0.08 + 0.8);
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          osc.start(now + idx * 0.15);
-          osc.stop(now + idx * 0.15 + 1.3);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.08);
+          osc.stop(ctx.currentTime + idx * 0.08 + 0.9);
         });
       } catch (e) {}
     }
 
-    function toggleChimeAudio() {
-      playChimeTune();
+    function playBuzz() {
+      if (isMuted) return;
+      try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(140, ctx.currentTime);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.35);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.36);
+      } catch (e) {}
     }
 
-    function toggleLanguage() {
-      alert("Language switched to standard English mode.");
-    }
+    document.getElementById('audioToggleBtn').addEventListener('click', () => {
+      isMuted = !isMuted;
+      document.getElementById('audioToggleBtn').innerText = isMuted ? '🔇' : '🔊';
+    });
 
-    /* QUIZ QUESTIONS */
-    const QUIZ_QUESTIONS = [
+    /* ================= 3. QUIZ SYSTEM (15 QUESTIONS / 3 TIERS) ================= */
+    const QUESTIONS = [
+      // Tier 1: Early Life & Cambridge (1-5)
       {
-        level: "Level 1 — Easy",
-        levelIndex: 1,
-        q: "Harish-Chandra was born in which city in India?",
-        options: ["Allahabad", "Kanpur", "Bangalore", "Varanasi"],
+        tier: "Tier 1 • Foundations",
+        q: "In which city was Harish-Chandra born on October 11, 1923?",
+        options: ["Allahabad", "Kanpur", "Lucknow", "Varanasi"],
         correct: 1,
-        exp: "Harish-Chandra was born in Kanpur, Uttar Pradesh, on October 11, 1923."
+        exp: "Harish-Chandra was born in Kanpur, Uttar Pradesh, where his father was a civil engineer."
       },
       {
-        level: "Level 1 — Easy",
-        levelIndex: 1,
-        q: "Which discipline did Harish-Chandra initially study at the University of Allahabad?",
-        options: ["Theoretical Physics", "Organic Chemistry", "Pure Mathematics", "Civil Engineering"],
+        tier: "Tier 1 • Foundations",
+        q: "Who supervised his master's research at the University of Allahabad?",
+        options: ["C. V. Raman", "K. S. Krishnan", "S. N. Bose", "Homi Bhabha"],
+        correct: 1,
+        exp: "Renowned physicist Sir K. S. Krishnan recognized his mathematical genius and recommended him to Cambridge."
+      },
+      {
+        tier: "Tier 1 • Foundations",
+        q: "Who was Harish-Chandra's formal doctoral advisor at the University of Cambridge?",
+        options: ["Paul Dirac", "G. H. Hardy", "Max Born", "Arthur Eddington"],
         correct: 0,
-        exp: "He earned his Master's degree in theoretical physics at Allahabad under Prof. K. S. Krishnan."
+        exp: "He completed his PhD at Cambridge under Paul Dirac in 1947, investigating representations of the Lorentz group."
       },
       {
-        level: "Level 1 — Easy",
-        levelIndex: 1,
-        q: "Who was Harish-Chandra's doctoral advisor at the University of Cambridge?",
-        options: ["Paul Dirac", "Hermann Weyl", "Albert Einstein", "Niels Bohr"],
-        correct: 0,
-        exp: "He completed his PhD at Cambridge in 1947 under the supervision of Nobel laureate Paul Dirac."
-      },
-      {
-        level: "Level 1 — Easy",
-        levelIndex: 1,
-        q: "In which year did Harish-Chandra earn his PhD degree from Cambridge?",
-        options: ["1943", "1945", "1947", "1951"],
+        tier: "Tier 1 • Foundations",
+        q: "During his European stay, whose lecture mistake did Harish-Chandra famously point out?",
+        options: ["Niels Bohr", "Werner Heisenberg", "Wolfgang Pauli", "Enrico Fermi"],
         correct: 2,
-        exp: "Harish-Chandra completed his doctoral thesis and earned his PhD in 1947."
+        exp: "During a Pauli seminar, Harish-Chandra caught an algebraic error on the blackboard, gaining Pauli's esteem."
       },
       {
-        level: "Level 1 — Easy",
-        levelIndex: 1,
-        q: "What field of mathematics did Harish-Chandra become world-renowned for developing?",
-        options: ["Harmonic analysis & Representation theory", "Numerical differential equations", "Graph theory and networks", "Actuarial probability"],
-        correct: 0,
-        exp: "He is revered as the architect of harmonic analysis and representation theory of semisimple Lie groups."
-      },
-      {
-        level: "Level 2 — Moderate",
-        levelIndex: 2,
-        q: "During a seminar by Wolfgang Pauli in Zurich/Cambridge, what famous intervention did Harish-Chandra make?",
-        options: [
-          "He walked out in protest of the proof",
-          "He pointed out an error in Pauli's blackboard calculation",
-          "He presented an alternative quantum theory",
-          "He asked Pauli to co-author his paper"
-        ],
+        tier: "Tier 1 • Foundations",
+        q: "What prompted Harish-Chandra's decisive transition from physics to pure mathematics?",
+        options: ["Lack of funding in physics", "Aversion to imprecise approximations", "Direct advice from Einstein", "Cambridge curriculum changes"],
         correct: 1,
-        exp: "Harish-Chandra famously pointed out a mathematical mistake on Pauli's blackboard, earning high respect."
+        exp: "He believed theoretical physics relied too heavily on non-rigorous approximations rather than exact structural truths."
+      },
+
+      // Tier 2: Columbia & Semisimple Lie Groups (6-10)
+      {
+        tier: "Tier 2 • Semisimple Lie Groups",
+        q: "Harish-Chandra served as an influential faculty member at which university between 1950 and 1963?",
+        options: ["Harvard University", "Columbia University", "MIT", "Stanford University"],
+        correct: 1,
+        exp: "His Columbia years were among his most productive, generating his monumental papers on Lie algebras."
       },
       {
-        level: "Level 2 — Moderate",
-        levelIndex: 2,
-        q: "Harish-Chandra spent his most fertile early faculty period (1950–1963) primarily at which university?",
-        options: ["Columbia University", "Harvard University", "Stanford University", "Oxford University"],
+        tier: "Tier 2 • Semisimple Lie Groups",
+        q: "For which breakthrough work did he receive the AMS Cole Prize in 1954?",
+        options: ["Representations of semisimple Lie algebras", "Solution to Fermat's Last Theorem", "Calculus of Variations", "Topology of fiber bundles"],
         correct: 0,
-        exp: "He served on the faculty of Columbia University from 1950 to 1963 where he wrote many of his seminal papers."
+        exp: "He won the 1954 Cole Prize in Algebra for foundational theorems on universal enveloping algebras."
       },
       {
-        level: "Level 2 — Moderate",
-        levelIndex: 2,
-        q: "Which major academic institution was Harish-Chandra appointed as permanent Professor in 1963?",
-        options: [
-          "Institute for Advanced Study (IAS), Princeton",
-          "Tata Institute of Fundamental Research (TIFR)",
-          "MIT Department of Mathematics",
-          "Cambridge Trinity College"
-        ],
-        correct: 0,
-        exp: "In 1963, he was appointed permanent professor at the Institute for Advanced Study in Princeton."
+        tier: "Tier 2 • Semisimple Lie Groups",
+        q: "What nature do the characters of infinite-dimensional representations take in Harish-Chandra's theory?",
+        options: ["Continuous scalar functions", "Invariant eigendistributions", "Polynomial invariants", "Discrete Dirac deltas"],
+        correct: 1,
+        exp: "He proved characters exist as locally integrable functions that are invariant eigendistributions."
       },
       {
-        level: "Level 2 — Moderate",
-        levelIndex: 2,
-        q: "Harish-Chandra's 1947 PhD thesis under Dirac investigated which mathematical structure?",
-        options: [
-          "Infinite irreducible representations of the Lorentz group",
-          "Algebraic topology of compact manifolds",
-          "Calculus of prime number distributions",
-          "Thermodynamics of black holes"
-        ],
+        tier: "Tier 2 • Semisimple Lie Groups",
+        q: "Which series of representations on real reductive groups was fundamentally classified by him?",
+        options: ["Discrete series", "Toral cascades", "Nilpotent sequences", "Affine lattices"],
         correct: 0,
-        exp: "His doctoral dissertation analyzed infinite irreducible representations of the Lorentz group."
+        exp: "His discrete series construction solved a massive open problem in noncommutative harmonic analysis."
       },
       {
-        level: "Level 2 — Moderate",
-        levelIndex: 2,
-        q: "For which historic work did Harish-Chandra win the American Mathematical Society's Cole Prize in 1954?",
-        options: [
-          "Representations of semisimple Lie algebras and universal enveloping algebras",
-          "Proof of Poincaré Conjecture",
-          "Foundations of Quantum Electrodynamics",
-          "Classification of Finite Simple Groups"
-        ],
+        tier: "Tier 2 • Semisimple Lie Groups",
+        q: "In 1963, Harish-Chandra was appointed permanent professor at which prestigious institution?",
+        options: ["Institute for Advanced Study, Princeton", "TIFR Mumbai", "Oxford University", "Caltech"],
         correct: 0,
-        exp: "He received the Cole Prize in 1954 for his breakthrough papers on universal enveloping algebras."
+        exp: "He remained Professor at the Institute for Advanced Study (IAS), Princeton, until his passing in 1983."
+      },
+
+      // Tier 3: Langlands Program & Mathematical Synthesis (11-15)
+      {
+        tier: "Tier 3 • The Infinite Synthesis",
+        q: "Harish-Chandra's Eisenstein integrals and harmonic analysis became the analytic foundation for which grand program?",
+        options: ["The Langlands Program", "Hilbert's 10th Problem", "String Topology", "Chaos Theory"],
+        correct: 0,
+        exp: "Robert Langlands famously noted that the analytic pillars of the Langlands program rest upon Harish-Chandra's work."
       },
       {
-        level: "Level 3 — Hard (Expert)",
-        levelIndex: 3,
-        q: "What major conceptual milestone did Harish-Chandra achieve regarding infinite-dimensional representations?",
-        options: [
-          "He proved characters exist as distributions (generalized functions)",
-          "He proved that infinite groups have no representations",
-          "He reduced all Lie groups to commutative rings",
-          "He showed matrix representations cannot be continuous"
-        ],
-        correct: 0,
-        exp: "He proved characters of infinite-dimensional representations exist as invariant eigendistributions."
+        tier: "Tier 3 • The Infinite Synthesis",
+        q: "What principle did Harish-Chandra employ to extend real Lie group analysis to p-adic groups?",
+        options: ["The Lefschetz principle", "The Philosophy of Cusp Forms", "Eulerian summation", "The Plancherel inversion"],
+        correct: 1,
+        exp: "His 'Philosophy of Cusp Forms' bridged real harmonic analysis with reductive groups over non-Archimedean local fields."
       },
       {
-        level: "Level 3 — Hard (Expert)",
-        levelIndex: 3,
-        q: "Which series of representations was fundamentally classified and established by Harish-Chandra?",
-        options: [
-          "Discrete series representations",
-          "Fibonacci spectral sequences",
-          "Hyper-geometric polynomials",
-          "Affine chaotic series"
-        ],
-        correct: 0,
-        exp: "He determined the discrete series representations of real semisimple Lie groups."
+        tier: "Tier 3 • The Infinite Synthesis",
+        q: "Which major national honor was bestowed upon Harish-Chandra by the Government of India in 1974?",
+        options: ["Bharat Ratna", "Padma Vibhushan", "Padma Bhushan", "Shanti Swarup Bhatnagar Prize"],
+        correct: 1,
+        exp: "He was conferred the Padma Vibhushan in 1974 for his stellar mathematical achievements."
       },
       {
-        level: "Level 3 — Hard (Expert)",
-        levelIndex: 3,
-        q: "Harish-Chandra's deep harmonic analysis and Eisenstein integrals laid foundations for which grand modern mathematical framework?",
-        options: [
-          "The Langlands Program & automorphic forms",
-          "String Theory's Calabi-Yau compactification only",
-          "Finite automata complexity theory",
-          "Euclidean differential geometry"
-        ],
+        tier: "Tier 3 • The Infinite Synthesis",
+        q: "Which of the following describes the Harish-Chandra isomorphism?",
+        options: ["Isomorphism between centers of universal enveloping algebras and Weyl invariants", "Equivalence between finite simple groups", "Duality between homology and cohomology", "Mapping between quantum mechanics and gravity"],
         correct: 0,
-        exp: "His work on reductive groups serves as the analytic pillar for the modern Langlands program."
+        exp: "The isomorphism connects the center Z(𝔤) of the universal enveloping algebra with W-invariant polynomials on 𝔥."
       },
       {
-        level: "Level 3 — Hard (Expert)",
-        levelIndex: 3,
-        q: "What mathematical synthesis uniquely characterized Harish-Chandra's intellectual philosophy?",
-        options: [
-          "Synthesis of profound Analysis, Algebra, and Geometry",
-          "Strict focus only on numerical approximation",
-          "Refusal to use infinite-dimensional vector spaces",
-          "Separation of algebraic theory from physics"
-        ],
+        tier: "Tier 3 • The Infinite Synthesis",
+        q: "What renowned research institute in Prayagraj (Allahabad) is named in his honor?",
+        options: ["Harish-Chandra Research Institute (HRI)", "Prayagraj Center for Lie Algebras", "S.N. Bose National Institute", "Krishnan Institute of Sciences"],
         correct: 0,
-        exp: "His genius unified hard real analysis with abstract Lie algebras and differential geometry."
-      },
-      {
-        level: "Level 3 — Hard (Expert)",
-        levelIndex: 3,
-        q: "What was Harish-Chandra's core reason for transitioning from theoretical physics to pure mathematics?",
-        options: [
-          "He felt physical approximations lacked mathematical rigor and deep conceptual clarity",
-          "Universities stopped funding quantum mechanics",
-          "Dirac instructed him to change faculties",
-          "He disliked laboratory apparatus"
-        ],
-        correct: 0,
-        exp: "He reflected that his natural aesthetic demanded complete mathematical rigor and foundational clarity."
+        exp: "The Harish-Chandra Research Institute (HRI) in Prayagraj was dedicated in his memory as a premier center."
       }
     ];
 
-    let currentQ = 0;
-    let score = 0;
-    let correctCount = 0;
-    let timer = 25;
-    let timerId = null;
-    let userName = "Scholar";
-    let answered = false;
+    let currentQIdx = 0;
+    let quizScore = 0;
+    let timerSeconds = 25;
+    let timerInterval = null;
+    let participantName = "Scholar";
+    let questionAnswered = false;
 
-    function startQuiz() {
-      const input = document.getElementById('participantName').value.trim();
-      userName = input || "Honored Scholar";
-      document.getElementById('certParticipantName').innerText = userName;
-      document.getElementById('feedbackUserName').value = userName;
+    const ringCircle = document.getElementById('timerRing');
+    const ringText = document.getElementById('timerCount');
+    const totalDash = 157; // 2 * PI * 25
 
-      document.getElementById('quizEntryView').style.display = 'none';
-      document.getElementById('quizConsoleView').style.display = 'block';
+    function startChallenge() {
+      const nameVal = document.getElementById('participantNameInput').value.trim();
+      if (nameVal) participantName = nameVal;
+      document.getElementById('certParticipantName').innerText = participantName;
+
+      document.getElementById('quizRegView').style.display = 'none';
+      document.getElementById('quizActiveView').style.display = 'block';
       loadQuestion();
     }
 
-    function renderQuestion() {
-      const item = QUIZ_QUESTIONS[currentQ];
-      document.getElementById('levelBadge').innerText = item.level;
-      document.getElementById('qCounter').innerText = `Q ${currentQ + 1}/15`;
-      document.getElementById('questionHeading').innerText = item.q;
-
-      const optsBox = document.getElementById('optionsContainer');
-      optsBox.innerHTML = '';
-      const letters = ["A", "B", "C", "D"];
-
-      item.options.forEach((opt, idx) => {
-        const btn = document.createElement('button');
-        btn.className = 'quiz-btn';
-        btn.innerHTML = `<strong style="color:var(--heritage-gold); margin-right: 0.6rem;">${letters[idx]}.</strong> <span>${opt}</span>`;
-        btn.onclick = () => selectOption(idx);
-        optsBox.appendChild(btn);
-      });
-    }
-
     function loadQuestion() {
-      if (currentQ >= QUIZ_QUESTIONS.length) {
-        showVictoryScreen();
+      if (currentQIdx >= QUESTIONS.length) {
+        finishChallenge();
         return;
       }
 
-      answered = false;
-      document.getElementById('feedbackBox').style.display = 'none';
-      renderQuestion();
-      startCountdown();
+      questionAnswered = false;
+      document.getElementById('feedbackDrawer').style.display = 'none';
+      const item = QUESTIONS[currentQIdx];
+
+      document.getElementById('hudTierBadge').innerText = item.tier;
+      document.getElementById('hudCounter').innerText = `Question ${currentQIdx + 1} of 15`;
+      document.getElementById('questionText').innerText = item.q;
+
+      const optsContainer = document.getElementById('optionsBox');
+      optsContainer.innerHTML = '';
+
+      item.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `<span style="color: var(--gold); font-weight:700;">${String.fromCharCode(65 + idx)}.</span> <span>${opt}</span>`;
+        btn.onclick = () => handleAnswer(idx);
+        optsContainer.appendChild(btn);
+      });
+
+      startTimer();
     }
 
-    function startCountdown() {
-      clearInterval(timerId);
-      timer = 25;
-      document.getElementById('hudTimer').innerText = `${timer}s`;
-      timerId = setInterval(() => {
-        timer--;
-        document.getElementById('hudTimer').innerText = `${timer}s`;
-        if (timer <= 0) {
-          clearInterval(timerId);
-          if (!answered) selectOption(-1);
+    function startTimer() {
+      clearInterval(timerInterval);
+      timerSeconds = 25;
+      updateTimerUI();
+
+      timerInterval = setInterval(() => {
+        timerSeconds--;
+        updateTimerUI();
+        if (timerSeconds <= 5 && timerSeconds > 0) playTick();
+
+        if (timerSeconds <= 0) {
+          clearInterval(timerInterval);
+          if (!questionAnswered) handleAnswer(-1);
         }
       }, 1000);
     }
 
-    function selectOption(selectedIdx) {
-      if (answered) return;
-      answered = true;
-      clearInterval(timerId);
+    function updateTimerUI() {
+      ringText.innerText = timerSeconds;
+      const progress = (timerSeconds / 25);
+      const offset = totalDash - (progress * totalDash);
+      ringCircle.style.strokeDashoffset = offset;
 
-      const item = QUIZ_QUESTIONS[currentQ];
-      const buttons = document.querySelectorAll('.quiz-btn');
+      if (timerSeconds > 10) {
+        ringCircle.style.stroke = '#D4AF37';
+      } else if (timerSeconds > 5) {
+        ringCircle.style.stroke = '#F59E0B';
+      } else {
+        ringCircle.style.stroke = '#EF4444';
+      }
+    }
+
+    function handleAnswer(selectedIdx) {
+      if (questionAnswered) return;
+      questionAnswered = true;
+      clearInterval(timerInterval);
+
+      const item = QUESTIONS[currentQIdx];
+      const buttons = document.querySelectorAll('.option-btn');
+      buttons.forEach(b => b.disabled = true);
+
       const isCorrect = (selectedIdx === item.correct);
 
-      buttons.forEach(b => b.disabled = true);
       if (selectedIdx !== -1) {
         buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'incorrect');
       }
@@ -2621,155 +1390,116 @@
       }
 
       if (isCorrect) {
-        correctCount++;
-        score += 100 + (timer * 2);
-        document.getElementById('hudScore').innerText = score;
+        playChime();
+        quizScore += 100 + (timerSeconds * 4);
+        document.getElementById('hudScore').innerText = quizScore;
+      } else {
+        playBuzz();
       }
 
-      const fbBox = document.getElementById('feedbackBox');
-      const fbTitle = document.getElementById('feedbackTitle');
-      const fbText = document.getElementById('feedbackText');
-      fbBox.style.display = 'block';
-      fbTitle.innerText = isCorrect ? "✓ Correct Answer!" : "✕ Incorrect";
-      fbTitle.style.color = isCorrect ? "var(--success-green)" : "var(--error-crimson)";
-      fbText.innerText = item.exp;
+      const drawer = document.getElementById('feedbackDrawer');
+      const fTitle = document.getElementById('feedbackTitle');
+      const fExp = document.getElementById('feedbackExplanation');
+
+      drawer.style.display = 'block';
+      fTitle.innerText = isCorrect ? "✓ Exact & Rigorous Solution!" : (selectedIdx === -1 ? "⏱️ Time Elapsed!" : "✕ Structural Discrepancy");
+      fTitle.style.color = isCorrect ? "var(--success)" : "var(--crimson)";
+      fExp.innerText = item.exp;
     }
 
-    function nextQuestion() {
-      currentQ++;
-
-      if (currentQ === 5) {
-        showTransitionModal("kitty", "Easy Mode Cleared! 🐱", "A leaping smiling kitty celebrates your brilliant start! Get ready for Moderate Mode.", () => {
-          loadQuestion();
-        });
-        return;
-      }
-
-      if (currentQ === 10) {
-        showTransitionModal("goodwork", "Good Work! 🌟", "You have successfully navigated through the Moderate tier. Superb execution!", () => {
-          showTransitionModal("caution", "Realm of Experts Ahead! ⚠️", "Now you are stepping into the realm of Experts - Be cautious!", () => {
-            loadQuestion();
-          });
-        });
-        return;
-      }
-
+    function handleNextQuestion() {
+      currentQIdx++;
       loadQuestion();
     }
 
-    function showTransitionModal(type, title, desc, callback) {
-      const modal = document.getElementById('transitionModal');
-      const animBox = document.getElementById('transitionAnimationBox');
-      const titleEl = document.getElementById('transitionTitle');
-      const descEl = document.getElementById('transitionDesc');
+    function finishChallenge() {
+      document.getElementById('quizActiveView').style.display = 'none';
+      document.getElementById('quizVictoryView').style.display = 'block';
 
-      if (type === "kitty") {
-        animBox.innerHTML = `<div class="jumping-kitty">🐱</div>`;
-      } else if (type === "goodwork") {
-        animBox.innerHTML = `<div style="font-size: 3.8rem; animation: kittyJump 0.5s infinite alternate;">🎉</div>`;
-      } else if (type === "caution") {
-        animBox.innerHTML = `<div style="font-size: 3.8rem; color: #DC2626;">⚠️</div>`;
-      }
-
-      titleEl.innerText = title;
-      descEl.innerText = desc;
-      modal.classList.add('active');
-
-      setTimeout(() => {
-        modal.classList.remove('active');
-        if (callback) callback();
-      }, 3000);
+      // Confetti burst
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ['#D4AF37', '#F3E5AB', '#4A0E17', '#10B981']
+      });
     }
 
-    function triggerFourCornerFireworks() {
-      const end = Date.now() + 2500;
-      const colors = ['#C9A227', '#E8D7A8', '#FF2E63', '#2563EB', '#10B981'];
-
-      (function frame() {
-        confetti({ particleCount: 4, angle: 315, spread: 55, origin: { x: 0, y: 0 }, colors: colors });
-        confetti({ particleCount: 4, angle: 225, spread: 55, origin: { x: 1, y: 0 }, colors: colors });
-        confetti({ particleCount: 4, angle: 45, spread: 55, origin: { x: 0, y: 1 }, colors: colors });
-        confetti({ particleCount: 4, angle: 135, spread: 55, origin: { x: 1, y: 1 }, colors: colors });
-
-        if (Date.now() < end) {
-          requestAnimationFrame(frame);
-        }
-      }());
+    function resetQuiz() {
+      currentQIdx = 0;
+      quizScore = 0;
+      document.getElementById('hudScore').innerText = '0';
+      document.getElementById('quizVictoryView').style.display = 'none';
+      document.getElementById('quizRegView').style.display = 'block';
     }
 
-    function showVictoryScreen() {
-      document.getElementById('quizConsoleView').style.display = 'none';
-      saveToLeaderboard(userName, score, correctCount);
-      const victory = document.getElementById('victoryModal');
-      victory.classList.add('active');
-      triggerFourCornerFireworks();
+    /* ================= 4. MEMORIAL FLAME TRIBUTE ================= */
+    let tributeCount = parseInt(localStorage.getItem('hc_tributes_2026')) || 103;
+    document.getElementById('tributeDisplay').innerText = tributeCount;
+
+    function offerTribute() {
+      tributeCount++;
+      localStorage.setItem('hc_tributes_2026', tributeCount.toString());
+      document.getElementById('tributeDisplay').innerText = tributeCount;
+
+      playChime();
+
+      // Flame glow surge
+      const flame = document.getElementById('memorialFlame');
+      flame.style.filter = 'drop-shadow(0 0 35px #FDE047) brightness(1.6)';
+      setTimeout(() => flame.style.filter = 'none', 1600);
+
+      confetti({
+        particleCount: 45,
+        spread: 60,
+        origin: { y: 0.8 },
+        colors: ['#F59E0B', '#D4AF37', '#EF4444']
+      });
     }
 
+    /* ================= 5. CERTIFICATE EXPORT (jsPDF & html2canvas) ================= */
     function openCertificateModal() {
-      document.getElementById('victoryModal').classList.remove('active');
-      document.getElementById('certificateModal').classList.add('active');
+      document.getElementById('certVerifyStamp').innerText = `VERIFIED • SCORE: ${quizScore} • ${new Date().toLocaleDateString('en-GB')}`;
+      document.getElementById('certModal').classList.add('active');
     }
 
-    function downloadPDFCertificate() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF({
-        orientation: 'landscape',
-        unit: 'pt',
-        format: 'a4'
+    function closeCertModal() {
+      document.getElementById('certModal').classList.remove('active');
+    }
+
+    async function downloadCrispPDF() {
+      const element = document.getElementById('certificateElement');
+      const canvasObj = await html2canvas(element, {
+        scale: 2.5,
+        useCORS: true,
+        backgroundColor: '#FFFFFF'
       });
 
-      const width = doc.internal.pageSize.getWidth();
-      const height = doc.internal.pageSize.getHeight();
+      const imgData = canvasObj.toDataURL('image/jpeg', 0.98);
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'pt',
+        format: [canvasObj.width / 2.5, canvasObj.height / 2.5]
+      });
 
-      doc.setFillColor(254, 253, 248);
-      doc.rect(0, 0, width, height, 'F');
-
-      doc.setDrawColor(201, 162, 39);
-      doc.setLineWidth(6);
-      doc.rect(20, 20, width - 40, height - 40);
-
-      doc.setDrawColor(11, 31, 51);
-      doc.setLineWidth(1.5);
-      doc.rect(28, 28, width - 56, height - 56);
-
-      doc.setFont('times', 'italic');
-      doc.setFontSize(16);
-      doc.setTextColor(30, 78, 121);
-      doc.text("School of Basic Sciences • Academic Presentation", width / 2, 85, { align: 'center' });
-
-      doc.setFont('times', 'bold');
-      doc.setFontSize(30);
-      doc.setTextColor(201, 162, 39);
-      doc.text("CERTIFICATE OF ACCOMPLISHMENT", width / 2, 130, { align: 'center' });
-
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(13);
-      doc.setTextColor(100, 116, 139);
-      doc.text("This prestigious credential is proudly awarded to", width / 2, 175, { align: 'center' });
-
-      doc.setFont('times', 'bold');
-      doc.setFontSize(32);
-      doc.setTextColor(11, 31, 51);
-      doc.text(userName, width / 2, 230, { align: 'center' });
-
-      doc.setDrawColor(201, 162, 39);
-      doc.setLineWidth(1);
-      doc.line(width / 2 - 160, 240, width / 2 + 160, 240);
-
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(13);
-      doc.setTextColor(32, 37, 43);
-      const certDesc = "For demonstrating intellectual mastery and completing all tiers (Easy, Moderate, and Expert Hard)\nof the Harish-Chandra Digital Legacy Challenge in honor of his 103rd Birth Anniversary.";
-      doc.text(certDesc, width / 2, 285, { align: 'center', lineHeightFactor: 1.5 });
-
-      doc.setFontSize(11);
-      doc.setTextColor(100, 116, 139);
-      doc.text("Date: October 11, 2026", 80, 480);
-      doc.text("Track 06: Knowledge Exhibition", width / 2, 480, { align: 'center' });
-      doc.text("Authorized Signature", width - 80, 480, { align: 'right' });
-
-      doc.save(`Harish_Chandra_Certificate_${userName.replace(/\s+/g, '_')}.pdf`);
+      pdf.addImage(imgData, 'JPEG', 0, 0, canvasObj.width / 2.5, canvasObj.height / 2.5);
+      pdf.save(`Harish_Chandra_Certificate_${participantName.replace(/\s+/g, '_')}.pdf`);
     }
+
+    /* ================= 6. UI UTILITIES ================= */
+    function toggleFact(el) {
+      const content = el.nextElementSibling;
+      content.classList.toggle('open');
+      const arrow = el.querySelector('span:last-child');
+      arrow.innerText = content.classList.contains('open') ? '▲' : '▼';
+    }
+
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const navMenu = document.getElementById('navMenu');
+    mobileBtn.addEventListener('click', () => {
+      navMenu.classList.toggle('mobile-open');
+    });
   </script>
 </body>
 </html>
