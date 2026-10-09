@@ -17,8 +17,8 @@
 
   <style>
     :root {
-      --bg-dark: #040914;
-      --bg-card: rgba(8, 16, 32, 0.9);
+      --bg-dark: #070D18;
+      --bg-card: rgba(13, 22, 38, 0.88);
       --burgundy: #4A0E17;
       --gold: #D4AF37;
       --gold-light: #F6E6B4;
@@ -78,7 +78,7 @@
     }
 
     /* ==========================================================================
-       1. INAUGURAL SPLASH SCREEN (RICH DARK BLUE THEME)
+       1. INAUGURAL SPLASH SCREEN (NON-DESTRUCTIVE LUXURY OVERLAY)
        ========================================================================== */
     #inaugural-screen {
       position: fixed;
@@ -86,7 +86,7 @@
       width: 100vw;
       height: 100vh;
       z-index: 999999;
-      background: radial-gradient(circle at 50% 40%, #0F203D 0%, #081326 50%, #030712 100%);
+      background: radial-gradient(circle at 50% 38%, #152542 0%, #0B132B 55%, #050811 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -117,12 +117,12 @@
     /* Curved Text SVG and Portrait Frame Wrap */
     .portrait-curved-wrapper {
       position: relative;
-      width: clamp(310px, 82vw, 380px);
-      height: clamp(310px, 82vw, 380px);
+      width: clamp(280px, 75vw, 360px);
+      height: clamp(280px, 75vw, 360px);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 1.2rem;
+      margin-bottom: 1.4rem;
     }
 
     .curved-svg-text {
@@ -136,29 +136,29 @@
 
     .curved-svg-text text {
       font-family: var(--font-serif);
-      font-size: 13.5px;
+      font-size: 15.5px;
       font-weight: 800;
-      letter-spacing: 2.2px;
+      letter-spacing: 4.8px;
       fill: url(#goldGradientShine);
-      filter: drop-shadow(0 2px 6px rgba(212, 175, 55, 0.6));
+      filter: drop-shadow(0 2px 8px rgba(212, 175, 55, 0.6));
       text-transform: uppercase;
     }
 
     .inaugural-portrait-frame {
-      width: clamp(145px, 40vw, 190px);
-      height: clamp(145px, 40vw, 190px);
+      width: clamp(140px, 38vw, 185px);
+      height: clamp(140px, 38vw, 185px);
       border-radius: 50%;
       border: 3.5px solid var(--gold);
-      box-shadow: 0 0 35px var(--gold-glow), 0 0 70px rgba(11, 25, 48, 0.9);
+      box-shadow: 0 0 35px var(--gold-glow), 0 0 70px rgba(74, 14, 23, 0.8);
       overflow: hidden;
-      background: #081426;
+      background: #0B132B;
       position: relative;
       z-index: 2;
       animation: frameBreathe 3.5s infinite alternate ease-in-out;
     }
 
     @keyframes frameBreathe {
-      from { box-shadow: 0 0 25px rgba(212, 175, 55, 0.4), 0 0 50px rgba(15, 32, 61, 0.6); }
+      from { box-shadow: 0 0 25px rgba(212, 175, 55, 0.4), 0 0 50px rgba(74, 14, 23, 0.6); }
       to { box-shadow: 0 0 45px rgba(212, 175, 55, 0.8), 0 0 85px rgba(212, 175, 55, 0.3); }
     }
 
@@ -217,7 +217,7 @@
       position: sticky;
       top: 0;
       z-index: 1000;
-      background: rgba(4, 9, 20, 0.95);
+      background: rgba(7, 13, 24, 0.94);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid rgba(212, 175, 55, 0.25);
     }
@@ -303,7 +303,7 @@
       gap: 0.35rem;
       padding: 0.18rem 0.6rem;
       border-radius: 50px;
-      background: #081326;
+      background: #0B1F33;
       border: 1.5px solid #FFFFFF;
       color: #F8FAFC;
       font-size: 0.65rem;
@@ -383,7 +383,7 @@
     .hero-section {
       padding: clamp(2.8rem, 6vw, 4.4rem) 0;
       text-align: center;
-      background: radial-gradient(circle at 50% 35%, #0E1D36 0%, #040914 80%);
+      background: radial-gradient(circle at 50% 35%, #152542 0%, #070D18 75%);
       border-bottom: 1.5px solid rgba(212, 175, 55, 0.2);
     }
 
@@ -396,7 +396,6 @@
       line-height: 1.15;
       background: linear-gradient(135deg, #FFFFFF 20%, #F6E6B4 55%, #D4AF37 100%);
       -webkit-background-clip: text;
-      background-clip: text;
       -webkit-text-fill-color: transparent;
       filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.5));
     }
@@ -452,7 +451,7 @@
       top: 0;
       bottom: 0;
       width: 3px;
-      background: linear-gradient(180deg, var(--gold) 0%, rgba(14, 29, 54, 0.8) 100%);
+      background: linear-gradient(180deg, var(--gold) 0%, rgba(74, 14, 23, 0.5) 100%);
     }
 
     .timeline-card {
@@ -529,7 +528,7 @@
       gap: 0.35rem;
       padding: 0.25rem 0.75rem;
       border-radius: 20px;
-      background: rgba(15, 32, 61, 0.85);
+      background: rgba(74, 14, 23, 0.65);
       border: 1px solid var(--gold);
       font-family: var(--font-serif);
       font-size: 0.72rem;
@@ -568,7 +567,7 @@
       stroke: var(--gold);
       stroke-width: 5;
       stroke-linecap: round;
-      stroke-dasharray: 182.2;
+      stroke-dasharray: 182.2; /* 2 * PI * 29 */
       stroke-dashoffset: 0;
       transition: stroke-dashoffset 1s linear, stroke 0.3s ease;
     }
@@ -679,10 +678,11 @@
       padding: 1.25rem 1.4rem;
       border-radius: var(--radius-sm);
       border: 1px solid var(--gold);
-      background: rgba(8, 16, 32, 0.96);
+      background: rgba(11, 20, 36, 0.95);
       display: none;
     }
 
+    /* Buttons */
     .btn-gold {
       background: linear-gradient(135deg, #F6E6B4 0%, #D4AF37 55%, #AA820A 100%);
       color: #070D18;
@@ -721,12 +721,12 @@
     }
 
     /* ==========================================================================
-       3. CUSTOM LEVEL TRANSITION POPUPS
+       3. CUSTOM LEVEL TRANSITION POPUPS (EXACTLY 3 SECONDS AUTO-DISMISS)
        ========================================================================== */
     .transition-popup-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(4, 9, 20, 0.9);
+      background: rgba(7, 13, 24, 0.88);
       backdrop-filter: blur(14px);
       z-index: 100000;
       display: none;
@@ -740,7 +740,7 @@
     }
 
     .transition-popup-card {
-      background: linear-gradient(145deg, #102038 0%, #081224 100%);
+      background: linear-gradient(145deg, #16243D 0%, #0D1626 100%);
       border: 2px solid var(--gold);
       border-radius: var(--radius-lg);
       padding: 2.6rem 2.2rem;
@@ -756,6 +756,7 @@
       to { transform: scale(1); opacity: 1; }
     }
 
+    /* Cute Bouncing Smiling Kitty Animation */
     .bouncing-kitty-box {
       font-size: clamp(3.5rem, 12vw, 4.6rem);
       margin-bottom: 0.75rem;
@@ -817,14 +818,14 @@
        4. MEMORIAL FLAME (DIYAA)
        ========================================================================== */
     .memorial-card {
-      background: radial-gradient(circle at 50% 35%, #182845 0%, #060D1A 85%);
+      background: radial-gradient(circle at 50% 35%, #250A10 0%, #0B132B 80%);
       border: 1.5px solid var(--gold);
       border-radius: var(--radius-lg);
       padding: clamp(2.5rem, 6vw, 4.5rem) 1.5rem;
       text-align: center;
       max-width: 820px;
       margin: 0 auto;
-      box-shadow: 0 0 50px rgba(15, 32, 61, 0.8);
+      box-shadow: 0 0 50px rgba(74, 14, 23, 0.6);
     }
 
     .diya-wrapper {
@@ -883,7 +884,7 @@
     .cert-modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(4, 9, 20, 0.94);
+      background: rgba(7, 13, 24, 0.94);
       backdrop-filter: blur(14px);
       z-index: 100005;
       display: none;
@@ -916,6 +917,7 @@
       text-align: center;
     }
 
+    /* Landscape Sheet */
     .certificate-sheet {
       width: 880px;
       min-width: 880px;
@@ -1043,7 +1045,7 @@
     .leaderboard-modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(4, 9, 20, 0.9);
+      background: rgba(7, 13, 24, 0.88);
       backdrop-filter: blur(10px);
       z-index: 100002;
       display: none;
@@ -1073,7 +1075,7 @@
     }
 
     .honor-table th {
-      background: rgba(15, 32, 61, 0.8);
+      background: rgba(74, 14, 23, 0.7);
       color: var(--gold-light);
       padding: 0.75rem 0.9rem;
       text-align: left;
@@ -1085,14 +1087,14 @@
     }
 
     .custom-footer {
-      background: linear-gradient(180deg, #050B18 0%, #02050D 100%);
+      background: linear-gradient(180deg, #071524 0%, #030A12 100%);
       color: var(--gold-light);
       padding: 3.5rem 0 2rem;
       border-top: 2px solid var(--gold);
     }
 
     /* ==========================================================================
-       7. RESPONSIVE MEDIA QUERIES
+       7. MOBILE VIEWPORT OVERRIDES (320px–480px)
        ========================================================================== */
     @media (max-width: 900px) {
       .nav-inner {
@@ -1125,7 +1127,10 @@
         text-align: center;
         gap: 0.8rem;
       }
-      .hud-meta-block, .hud-score-block {
+      .hud-meta-block {
+        align-items: center;
+      }
+      .hud-score-block {
         align-items: center;
       }
     }
@@ -1137,21 +1142,21 @@
   <canvas id="mathCanvas"></canvas>
 
   <!-- ==========================================================================
-       1. INAUGURAL SPLASH SCREEN (NON-DESTRUCTIVE OVERLAY WITH FIXED ARC)
-       ========================================================================== */
+       1. INAUGURAL SPLASH SCREEN OVERLAY
+       ========================================================================== -->
   <div id="inaugural-screen">
     <div class="inaugural-content">
       <div class="portrait-curved-wrapper">
-        <!-- SVG Curved Top Semi-Circle Arc with Expanded Radius and Tight Kerning -->
-        <svg class="curved-svg-text" viewBox="0 0 360 360">
+        <!-- SVG Curved Top Semi-Circle Arc -->
+        <svg class="curved-svg-text" viewBox="0 0 300 300">
           <defs>
             <linearGradient id="goldGradientShine" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stop-color="#F6E6B4" />
               <stop offset="50%" stop-color="#D4AF37" />
               <stop offset="100%" stop-color="#F6E6B4" />
             </linearGradient>
-            <!-- Perfect circular arc ensuring full visibility of text -->
-            <path id="curvePath" d="M 32,180 A 148,148 0 0,1 328,180" fill="none" />
+            <!-- Semi-circle upper path -->
+            <path id="curvePath" d="M 30,150 A 120,120 0 0,1 270,150" fill="none" />
           </defs>
           <text>
             <textPath href="#curvePath" startOffset="50%" text-anchor="middle">
@@ -1160,7 +1165,7 @@
           </text>
         </svg>
 
-        <!-- Golden Frame holding images.jpg -->
+        <!-- Golden Frame with images.jpg -->
         <div class="inaugural-portrait-frame">
           <img src="images.jpg" alt="Dr. Harish-Chandra" onerror="this.src='images.jpg'" />
         </div>
@@ -1352,8 +1357,8 @@
   </section>
 
   <!-- ==========================================================================
-       3. CUSTOM LEVEL TRANSITION POPUPS
-       ========================================================================== -->
+       3. CUSTOM LEVEL TRANSITION POPUPS (EXACTLY 3 SECONDS AUTO-DISMISS)
+       ========================================================================== */
   <div class="transition-popup-overlay" id="transitionPopup">
     <div class="transition-popup-card">
       <div id="transitionAnimationSlot"></div>
@@ -1948,6 +1953,7 @@
 
       // Custom 3-Second Transition Popups
       if (currentQIdx === 5) {
+        // After Easy Mode (Post Q5) -> Jumping Kitty
         showTransitionModal(
           '<div class="bouncing-kitty-box">🐱</div>',
           'Easy Mode Cleared! 🐱',
@@ -1956,11 +1962,13 @@
         );
         return;
       } else if (currentQIdx === 10) {
+        // After Moderate Mode (Post Q10) -> Good Work
         showTransitionModal(
           '<div class="celebrate-badge-star">🌟</div>',
           'Good Work! 🌟',
           'You have successfully mastered the Moderate concepts. Outstanding execution!',
           () => {
+            // Immediate Pre-Hard Warning before Question 11
             showTransitionModal(
               '<div class="caution-alert-icon">⚠️</div>',
               'Caution: Realm of Experts Ahead!',
@@ -2001,6 +2009,8 @@
       document.getElementById('certScoreDisplay').innerText = totalScore;
 
       saveLeaderboardEntry(participantName, totalScore);
+
+      // 4-Corner Cannon Burst via canvas-confetti
       triggerFourCornerCannons();
     }
 
@@ -2009,8 +2019,10 @@
       const colors = ['#D4AF37', '#F6E6B4', '#4A0E17', '#10B981', '#F59E0B'];
 
       (function frame() {
+        // Top-Left & Top-Right
         confetti({ particleCount: 5, angle: 315, spread: 60, origin: { x: 0, y: 0 }, colors: colors });
         confetti({ particleCount: 5, angle: 225, spread: 60, origin: { x: 1, y: 0 }, colors: colors });
+        // Bottom-Left & Bottom-Right
         confetti({ particleCount: 5, angle: 45, spread: 60, origin: { x: 0, y: 1 }, colors: colors });
         confetti({ particleCount: 5, angle: 135, spread: 60, origin: { x: 1, y: 1 }, colors: colors });
 
@@ -2042,6 +2054,7 @@
       soundSynth.click();
       const certNode = document.getElementById('certificateNode');
 
+      // Snapshot with html2canvas at scale 2 (Crisp High-DPI landscape capture)
       const canvasSnap = await html2canvas(certNode, {
         scale: 2,
         useCORS: true,
@@ -2054,6 +2067,7 @@
       const imgData = canvasSnap.toDataURL('image/jpeg', 0.98);
       const { jsPDF } = window.jspdf;
 
+      // Landscape A4 proportions matching the element dimensions exactly
       const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'pt',
