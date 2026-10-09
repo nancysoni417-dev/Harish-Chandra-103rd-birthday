@@ -57,7 +57,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Math Background Canvas */
     #mathCanvas {
       position: fixed;
       top: 0;
@@ -236,6 +235,7 @@
       line-height: 1.15;
       background: linear-gradient(135deg, #FFFFFF 20%, #F3E5AB 55%, #D4AF37 100%);
       -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
       filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.7));
       margin-bottom: 1.25rem;
@@ -661,7 +661,7 @@
       margin-top: 1.5rem;
     }
 
-    /* ================= PRINTABLE CERTIFICATE (OFFSCREEN / EXPORT) ================= */
+    /* ================= PRINTABLE CERTIFICATE & RESPONSIVE MODAL FIX ================= */
     .certificate-modal-overlay {
       position: fixed;
       inset: 0;
@@ -671,7 +671,7 @@
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 1.5rem;
+      padding: 1.5rem 1rem;
       overflow-y: auto;
     }
 
@@ -679,14 +679,27 @@
       display: flex;
     }
 
-    .certificate-outer-sheet {
+    .cert-scroll-container {
       width: 100%;
-      max-width: 880px;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: auto;
+      padding-bottom: 1rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .certificate-outer-sheet {
+      width: 880px;
+      min-width: 880px; /* Locks proportion so text never squeezes on mobile */
       background: #FFFFFF;
       padding: 2.8rem;
       box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8);
       position: relative;
       color: #0F172A;
+      margin: 0 auto;
+      transform-origin: top center;
     }
 
     .cert-frame {
@@ -730,7 +743,7 @@
 
     .cert-main-title {
       font-family: var(--font-serif);
-      font-size: clamp(2rem, 4.5vw, 2.9rem);
+      font-size: 2.5rem;
       color: #B48310;
       letter-spacing: 0.04em;
       margin-bottom: 1rem;
@@ -739,7 +752,7 @@
 
     .cert-recipient-name {
       font-family: var(--font-heading);
-      font-size: clamp(1.8rem, 4vw, 2.7rem);
+      font-size: 2.4rem;
       color: #0F172A;
       border-bottom: 2px solid #D4AF37;
       display: inline-block;
@@ -778,7 +791,15 @@
       margin: 0 auto 0.4rem;
     }
 
-    /* Mobile Responsive */
+    .mobile-scroll-hint {
+      display: none;
+      font-size: 0.8rem;
+      color: var(--gold-light);
+      margin-bottom: 0.6rem;
+      text-align: center;
+    }
+
+    /* Mobile Responsive Rules */
     @media (max-width: 900px) {
       .nav-links-wrap {
         display: none;
@@ -801,10 +822,8 @@
         width: 100%;
         justify-content: center;
       }
-      .cert-signatures {
-        flex-direction: column;
-        gap: 1.5rem;
-        align-items: center;
+      .mobile-scroll-hint {
+        display: block;
       }
     }
   </style>
@@ -1020,7 +1039,8 @@
 
   <!-- Modal: Official Printable Certificate -->
   <div class="certificate-modal-overlay" id="certModal">
-    <div style="width: 100%; max-width: 900px;">
+    <div class="cert-scroll-container">
+      <div class="mobile-scroll-hint">⇄ Swipe horizontally to inspect full landscape certificate</div>
       
       <!-- Exportable Element -->
       <div class="certificate-outer-sheet" id="certificateElement">
@@ -1057,7 +1077,7 @@
       </div>
 
       <!-- Action Bar -->
-      <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem;">
+      <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap;">
         <button class="btn-gold" onclick="downloadCrispPDF()">Download Crisp PDF 📥</button>
         <button class="btn-burgundy" onclick="closeCertModal()">Close Preview ✕</button>
       </div>
@@ -1299,7 +1319,7 @@
 
     const ringCircle = document.getElementById('timerRing');
     const ringText = document.getElementById('timerCount');
-    const totalDash = 157; // 2 * PI * 25
+    const totalDash = 157;
 
     function startChallenge() {
       const nameVal = document.getElementById('participantNameInput').value.trim();
@@ -1416,7 +1436,6 @@
       document.getElementById('quizActiveView').style.display = 'none';
       document.getElementById('quizVictoryView').style.display = 'block';
 
-      // Confetti burst
       confetti({
         particleCount: 120,
         spread: 80,
@@ -1444,7 +1463,6 @@
 
       playChime();
 
-      // Flame glow surge
       const flame = document.getElementById('memorialFlame');
       flame.style.filter = 'drop-shadow(0 0 35px #FDE047) brightness(1.6)';
       setTimeout(() => flame.style.filter = 'none', 1600);
@@ -1457,7 +1475,7 @@
       });
     }
 
-    /* ================= 5. CERTIFICATE EXPORT (jsPDF & html2canvas) ================= */
+    /* ================= 5. CERTIFICATE EXPORT (RESPONSIVE PDF) ================= */
     function openCertificateModal() {
       document.getElementById('certVerifyStamp').innerText = `VERIFIED • SCORE: ${quizScore} • ${new Date().toLocaleDateString('en-GB')}`;
       document.getElementById('certModal').classList.add('active');
@@ -1469,11 +1487,20 @@
 
     async function downloadCrispPDF() {
       const element = document.getElementById('certificateElement');
+      
+      // Ensure element renders in pristine desktop dimension during capture
+      const prevTransform = element.style.transform;
+      element.style.transform = 'none';
+
       const canvasObj = await html2canvas(element, {
         scale: 2.5,
         useCORS: true,
-        backgroundColor: '#FFFFFF'
+        backgroundColor: '#FFFFFF',
+        width: 880,
+        windowWidth: 1200
       });
+
+      element.style.transform = prevTransform;
 
       const imgData = canvasObj.toDataURL('image/jpeg', 0.98);
       const { jsPDF } = window.jspdf;
