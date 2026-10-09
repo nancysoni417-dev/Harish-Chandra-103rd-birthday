@@ -3,42 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Harish-Chandra — 103rd Birth Anniversary Academic Exhibition</title>
+  <title>Dr. Harish-Chandra — 103rd Birth Anniversary Digital Challenge</title>
 
-  <!-- Google Fonts: Playfair Display, Cinzel, Inter & Cormorant Garamond -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600&display=swap" rel="stylesheet">
 
-  <!-- External Production CDNs -->
+  <!-- Production CDNs: Canvas Confetti, html2canvas, and jsPDF -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
     :root {
-      --bg-dark: #0B132B;
-      --bg-card: rgba(15, 23, 42, 0.78);
+      --bg-dark: #070D18;
+      --bg-card: rgba(13, 22, 38, 0.88);
       --burgundy: #4A0E17;
-      --burgundy-light: #6B1D2F;
       --gold: #D4AF37;
-      --gold-light: #F3E5AB;
+      --gold-light: #F6E6B4;
       --gold-glow: rgba(212, 175, 55, 0.45);
-      --slate-text: #94A3B8;
-      --ivory-text: #F8FAFC;
+      --text-ivory: #F8FAFC;
+      --text-muted: #94A3B8;
       --success: #10B981;
-      --crimson: #EF4444;
+      --danger: #EF4444;
+      --amber: #F59E0B;
 
-      --font-serif: 'Cinzel', 'Playfair Display', Georgia, serif;
+      --font-serif: 'Cinzel', Georgia, serif;
       --font-heading: 'Playfair Display', Georgia, serif;
       --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-quote: 'Cormorant Garamond', serif;
+      --font-accent: 'Cormorant Garamond', Georgia, serif;
 
       --radius-sm: 8px;
       --radius-md: 14px;
-      --radius-lg: 22px;
+      --radius-lg: 24px;
       --border-gold: 1px solid rgba(212, 175, 55, 0.35);
-      --transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     *, *::before, *::after {
@@ -47,20 +47,29 @@
       padding: 0;
     }
 
-    body {
+    html, body {
+      width: 100%;
+      max-width: 100vw;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
       background-color: var(--bg-dark);
-      color: var(--ivory-text);
+      color: var(--text-ivory);
       font-family: var(--font-body);
       line-height: 1.6;
-      overflow-x: hidden;
-      position: relative;
       -webkit-font-smoothing: antialiased;
     }
 
+    .container {
+      width: min(1200px, 94%);
+      margin-inline: auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Ambient Math Background Canvas */
     #mathCanvas {
       position: fixed;
-      top: 0;
-      left: 0;
+      inset: 0;
       width: 100vw;
       height: 100vh;
       pointer-events: none;
@@ -68,19 +77,147 @@
       opacity: 0.16;
     }
 
-    .container {
-      width: min(1200px, 92%);
-      margin-inline: auto;
-      position: relative;
-      z-index: 2;
+    /* ==========================================================================
+       1. INAUGURAL SPLASH SCREEN (NON-DESTRUCTIVE LUXURY OVERLAY)
+       ========================================================================== */
+    #inaugural-screen {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 999999;
+      background: radial-gradient(circle at 50% 38%, #152542 0%, #0B132B 55%, #050811 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s ease, transform 0.8s ease;
+      overflow: hidden;
     }
 
-    /* ================= HEADER & NAV ================= */
+    #inaugural-screen.dismissed {
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(1.04);
+      pointer-events: none;
+    }
+
+    .inaugural-content {
+      width: 100%;
+      max-width: 650px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    /* Curved Text SVG and Portrait Frame Wrap */
+    .portrait-curved-wrapper {
+      position: relative;
+      width: clamp(280px, 75vw, 360px);
+      height: clamp(280px, 75vw, 360px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.4rem;
+    }
+
+    .curved-svg-text {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .curved-svg-text text {
+      font-family: var(--font-serif);
+      font-size: 15.5px;
+      font-weight: 800;
+      letter-spacing: 4.8px;
+      fill: url(#goldGradientShine);
+      filter: drop-shadow(0 2px 8px rgba(212, 175, 55, 0.6));
+      text-transform: uppercase;
+    }
+
+    .inaugural-portrait-frame {
+      width: clamp(140px, 38vw, 185px);
+      height: clamp(140px, 38vw, 185px);
+      border-radius: 50%;
+      border: 3.5px solid var(--gold);
+      box-shadow: 0 0 35px var(--gold-glow), 0 0 70px rgba(74, 14, 23, 0.8);
+      overflow: hidden;
+      background: #0B132B;
+      position: relative;
+      z-index: 2;
+      animation: frameBreathe 3.5s infinite alternate ease-in-out;
+    }
+
+    @keyframes frameBreathe {
+      from { box-shadow: 0 0 25px rgba(212, 175, 55, 0.4), 0 0 50px rgba(74, 14, 23, 0.6); }
+      to { box-shadow: 0 0 45px rgba(212, 175, 55, 0.8), 0 0 85px rgba(212, 175, 55, 0.3); }
+    }
+
+    .inaugural-portrait-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+
+    .inaugural-tagline {
+      font-family: var(--font-accent);
+      font-size: clamp(1.15rem, 3.8vw, 1.7rem);
+      font-style: italic;
+      color: var(--gold-light);
+      max-width: 580px;
+      margin: 0 auto 1.8rem;
+      line-height: 1.45;
+      text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8);
+      animation: fadeUp 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn-inaugural-enter {
+      background: linear-gradient(135deg, #F6E6B4 0%, #D4AF37 55%, #AA820A 100%);
+      color: #070D18;
+      border: none;
+      padding: 0.95rem 2.4rem;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 8px 30px rgba(212, 175, 55, 0.55);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .btn-inaugural-enter:hover {
+      transform: scale(1.03) translateY(-2px);
+      box-shadow: 0 12px 40px rgba(212, 175, 55, 0.8);
+    }
+
+    /* ==========================================================================
+       HEADER & NAVIGATION PILLARS
+       ========================================================================== */
     .site-header {
       position: sticky;
       top: 0;
       z-index: 1000;
-      background: rgba(11, 19, 43, 0.92);
+      background: rgba(7, 13, 24, 0.94);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid rgba(212, 175, 55, 0.25);
     }
@@ -89,15 +226,17 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      min-height: 80px;
+      min-height: 82px;
       padding: 0.5rem 0;
+      gap: 1.2rem;
     }
 
-    .brand-group {
-      display: flex;
+    .brand-block {
+      display: inline-flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.85rem;
       text-decoration: none;
+      flex-shrink: 0;
     }
 
     .brand-avatar {
@@ -105,219 +244,185 @@
       height: 48px;
       border-radius: 50%;
       border: 2px solid var(--gold);
-      box-shadow: 0 0 16px var(--gold-glow);
-      background: radial-gradient(circle, #D4AF37 0%, #4A0E17 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-serif);
-      font-size: 1.25rem;
-      color: #FFF;
-      font-weight: 700;
+      box-shadow: 0 0 14px var(--gold-glow);
+      overflow: hidden;
+      flex-shrink: 0;
     }
 
-    .brand-meta {
+    .brand-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .brand-texts {
       display: flex;
       flex-direction: column;
+      white-space: nowrap;
     }
 
-    .brand-title {
-      font-family: var(--font-serif);
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: var(--ivory-text);
-      letter-spacing: 0.04em;
+    .brand-name {
+      font-family: var(--font-heading);
+      font-size: 1.22rem;
+      font-weight: 700;
+      color: #FFF;
+      line-height: 1.15;
     }
 
-    .brand-sub {
+    .brand-lifespan {
       font-size: 0.72rem;
-      color: var(--gold-light);
-      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-top: 1px;
     }
 
-    .nav-links-wrap {
+    .brand-badges-row {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
-      list-style: none;
+      gap: 0.45rem;
+      margin-top: 0.2rem;
     }
 
-    .nav-pill {
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--ivory-text);
-      text-decoration: none;
-      padding: 0.4rem 0.85rem;
-      border-radius: 30px;
-      border: 1px solid rgba(212, 175, 55, 0.25);
-      background: rgba(255, 255, 255, 0.03);
-      transition: var(--transition);
+    .anniversary-badge-left {
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
-      cursor: pointer;
-    }
-
-    .nav-pill:hover, .nav-pill.active {
-      border-color: var(--gold);
+      padding: 0.15rem 0.55rem;
+      border-radius: 50px;
       background: rgba(212, 175, 55, 0.15);
+      border: 1px solid var(--gold);
       color: var(--gold-light);
-      box-shadow: 0 0 14px var(--gold-glow);
-      transform: translateY(-2px);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
 
-    .controls-cluster {
+    .header-designer-glow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.18rem 0.6rem;
+      border-radius: 50px;
+      background: #0B1F33;
+      border: 1.5px solid #FFFFFF;
+      color: #F8FAFC;
+      font-size: 0.65rem;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      animation: whiteNeonPulse 2.4s infinite alternate ease-in-out;
+    }
+
+    @keyframes whiteNeonPulse {
+      0% { box-shadow: 0 0 8px rgba(255, 255, 255, 0.5); }
+      100% { box-shadow: 0 0 18px rgba(255, 255, 255, 1); }
+    }
+
+    .nav-right-cluster {
       display: flex;
       align-items: center;
       gap: 0.75rem;
+      margin-left: auto;
     }
 
-    .btn-audio {
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      list-style: none;
+    }
+
+    .nav-link {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-ivory);
+      text-decoration: none;
+      padding: 0.32rem 0.65rem;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1.4px solid rgba(212, 175, 55, 0.4);
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover {
+      color: var(--gold-light);
+      border-color: var(--gold);
+      background: rgba(212, 175, 55, 0.16);
+      box-shadow: 0 0 16px var(--gold-glow);
+      transform: translateY(-2px);
+    }
+
+    .header-ctrl-btn {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(212, 175, 55, 0.4);
       color: var(--gold-light);
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       cursor: pointer;
-      font-size: 1.1rem;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 1rem;
       transition: var(--transition);
     }
 
-    .btn-audio:hover {
+    .header-ctrl-btn:hover {
       background: var(--gold);
       color: var(--bg-dark);
-      box-shadow: 0 0 16px var(--gold-glow);
+      box-shadow: 0 0 12px var(--gold-glow);
     }
 
-    .hamburger-btn {
-      display: none;
-      background: none;
-      border: none;
-      color: var(--gold-light);
-      font-size: 1.6rem;
-      cursor: pointer;
-    }
-
-    /* ================= HERO SECTION ================= */
+    /* ==========================================================================
+       HERO & SECTIONS
+       ========================================================================== */
     .hero-section {
-      padding: clamp(4rem, 8vw, 7rem) 0 3.5rem;
+      padding: clamp(2.8rem, 6vw, 4.4rem) 0;
       text-align: center;
-      position: relative;
+      background: radial-gradient(circle at 50% 35%, #152542 0%, #070D18 75%);
+      border-bottom: 1.5px solid rgba(212, 175, 55, 0.2);
     }
 
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.4rem 1.2rem;
-      border-radius: 50px;
-      border: 1px solid var(--gold);
-      background: rgba(74, 14, 23, 0.45);
-      box-shadow: 0 0 20px rgba(74, 14, 23, 0.8), inset 0 0 10px rgba(212, 175, 55, 0.2);
+    .hero-main-title {
       font-family: var(--font-serif);
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--gold-light);
-      margin-bottom: 1.5rem;
-    }
-
-    .hero-title {
-      font-family: var(--font-serif);
-      font-size: clamp(2.4rem, 7vw, 4.8rem);
+      font-size: clamp(2rem, 5.5vw, 3.8rem);
       font-weight: 900;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.9rem;
       line-height: 1.15;
-      background: linear-gradient(135deg, #FFFFFF 20%, #F3E5AB 55%, #D4AF37 100%);
+      background: linear-gradient(135deg, #FFFFFF 20%, #F6E6B4 55%, #D4AF37 100%);
       -webkit-background-clip: text;
-      background-clip: text;
       -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.7));
-      margin-bottom: 1.25rem;
+      filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.5));
     }
 
-    .hero-quote {
-      font-family: var(--font-quote);
-      font-size: clamp(1.15rem, 3.4vw, 1.85rem);
+    .hero-legacy-statement {
+      font-family: var(--font-accent);
+      font-size: clamp(1.05rem, 3.4vw, 1.6rem);
       font-style: italic;
       color: var(--gold-light);
-      max-width: 820px;
-      margin: 0 auto 2.5rem;
-      line-height: 1.5;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      max-width: 780px;
+      margin: 0 auto 1.8rem;
+      line-height: 1.55;
     }
 
-    .hero-cta-group {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      flex-wrap: wrap;
+    .section-padding {
+      padding: clamp(3rem, 7vw, 5rem) 0;
     }
 
-    .btn-gold {
-      background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 60%, #AA820A 100%);
-      color: #070D1D;
-      border: none;
-      padding: 0.85rem 2rem;
-      border-radius: 40px;
-      font-size: 0.92rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      cursor: pointer;
-      box-shadow: 0 6px 24px rgba(212, 175, 55, 0.45);
-      transition: var(--transition);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      text-decoration: none;
-    }
-
-    .btn-gold:hover {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 10px 30px rgba(212, 175, 55, 0.65);
-    }
-
-    .btn-burgundy {
-      background: linear-gradient(135deg, #6B1D2F 0%, #4A0E17 100%);
-      color: #FFF;
-      border: 1px solid var(--gold);
-      padding: 0.85rem 2rem;
-      border-radius: 40px;
-      font-size: 0.92rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      text-decoration: none;
-    }
-
-    .btn-burgundy:hover {
-      background: #842339;
-      box-shadow: 0 0 20px rgba(74, 14, 23, 0.8);
-      transform: translateY(-3px);
-    }
-
-    /* ================= TIMELINE SECTION ================= */
-    .timeline-section {
-      padding: 4.5rem 0;
-      position: relative;
-    }
-
-    .section-title-wrap {
+    .section-header {
       text-align: center;
-      margin-bottom: 3.5rem;
+      max-width: 650px;
+      margin: 0 auto 2.5rem;
     }
 
     .section-subtitle {
       font-family: var(--font-serif);
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       letter-spacing: 0.15em;
       color: var(--gold);
       text-transform: uppercase;
@@ -326,14 +431,15 @@
 
     .section-title {
       font-family: var(--font-heading);
-      font-size: clamp(1.8rem, 4.5vw, 2.7rem);
+      font-size: clamp(1.6rem, 4.5vw, 2.4rem);
       margin-top: 0.35rem;
       color: #FFF;
     }
 
+    /* TIMELINE */
     .timeline-container {
       position: relative;
-      max-width: 860px;
+      max-width: 820px;
       margin: 0 auto;
       padding-left: 2.5rem;
     }
@@ -341,11 +447,11 @@
     .timeline-container::before {
       content: '';
       position: absolute;
-      left: 8px;
+      left: 10px;
       top: 0;
       bottom: 0;
       width: 3px;
-      background: linear-gradient(180deg, var(--gold) 0%, rgba(74, 14, 23, 0.4) 100%);
+      background: linear-gradient(180deg, var(--gold) 0%, rgba(74, 14, 23, 0.5) 100%);
     }
 
     .timeline-card {
@@ -353,238 +459,364 @@
       background: var(--bg-card);
       border: var(--border-gold);
       border-radius: var(--radius-md);
-      padding: 1.6rem 1.8rem;
-      margin-bottom: 2.2rem;
+      padding: 1.4rem 1.6rem;
+      margin-bottom: 2rem;
       backdrop-filter: blur(10px);
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-      transition: var(--transition);
     }
 
     .timeline-card::before {
       content: '';
       position: absolute;
       left: calc(-2.5rem - 1px);
-      top: 24px;
-      width: 17px;
-      height: 17px;
+      top: 22px;
+      width: 15px;
+      height: 15px;
       border-radius: 50%;
       background: var(--bg-dark);
-      border: 3.5px solid var(--gold);
-      box-shadow: 0 0 12px var(--gold);
+      border: 3px solid var(--gold);
+      box-shadow: 0 0 10px var(--gold);
     }
 
-    .timeline-card:hover {
-      border-color: var(--gold);
-      transform: translateY(-4px);
-      box-shadow: 0 14px 40px rgba(212, 175, 55, 0.15);
-    }
-
-    .timeline-era {
-      font-family: var(--font-serif);
-      color: var(--gold);
-      font-size: 0.85rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      margin-bottom: 0.35rem;
-    }
-
-    .timeline-heading {
-      font-family: var(--font-heading);
-      font-size: 1.35rem;
-      margin-bottom: 0.6rem;
-      color: #FFF;
-    }
-
-    .fact-toggle {
-      margin-top: 1rem;
-      background: rgba(212, 175, 55, 0.08);
-      border: 1px dashed rgba(212, 175, 55, 0.4);
-      border-radius: var(--radius-sm);
-      padding: 0.6rem 1rem;
-      font-size: 0.85rem;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: var(--gold-light);
-    }
-
-    .fact-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease-out;
-      font-size: 0.85rem;
-      color: var(--slate-text);
-      padding-inline: 0.5rem;
-    }
-
-    .fact-content.open {
-      max-height: 140px;
-      padding-top: 0.75rem;
-    }
-
-    /* ================= QUIZ & TIMER UPGRADE ================= */
-    .quiz-section {
-      padding: 5rem 0;
-      position: relative;
-    }
-
+    /* ==========================================================================
+       2. GAMIFIED QUIZ ENGINE & CIRCULAR TIMER
+       ========================================================================== */
     .quiz-card {
       background: var(--bg-card);
       border: var(--border-gold);
       border-radius: var(--radius-lg);
-      padding: clamp(1.5rem, 5vw, 3rem);
+      padding: clamp(1.4rem, 4.5vw, 2.8rem);
       max-width: 820px;
       margin: 0 auto;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.65);
       position: relative;
     }
 
-    .quiz-hud {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-      padding-bottom: 1.5rem;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-      gap: 1rem;
+    .quiz-view-panel {
+      display: none;
+      animation: fadeIn 0.35s ease forwards;
     }
 
-    .hud-meta {
+    .quiz-view-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .quiz-hud {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 1.2rem;
+      padding-bottom: 1.3rem;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      margin-bottom: 1.8rem;
+    }
+
+    .hud-meta-block {
       display: flex;
       flex-direction: column;
       gap: 0.3rem;
     }
 
-    .tier-badge {
-      display: inline-block;
+    .tier-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
       padding: 0.25rem 0.75rem;
       border-radius: 20px;
-      background: rgba(74, 14, 23, 0.6);
+      background: rgba(74, 14, 23, 0.65);
       border: 1px solid var(--gold);
       font-family: var(--font-serif);
       font-size: 0.72rem;
       font-weight: 700;
       color: var(--gold-light);
-      letter-spacing: 0.08em;
       text-transform: uppercase;
+      letter-spacing: 0.06em;
       width: fit-content;
     }
 
-    .hud-stats {
+    /* Dynamic Circular SVG Timer (25s) */
+    .timer-ring-wrapper {
+      position: relative;
+      width: 66px;
+      height: 66px;
       display: flex;
       align-items: center;
-      gap: 1.5rem;
+      justify-content: center;
+      margin: 0 auto;
     }
 
-    /* SVG Circular Timer */
-    .timer-ring-wrap {
-      position: relative;
-      width: 58px;
-      height: 58px;
-    }
-
-    .timer-ring-wrap svg {
+    .timer-ring-wrapper svg {
+      width: 66px;
+      height: 66px;
       transform: rotate(-90deg);
-      width: 58px;
-      height: 58px;
     }
 
     .timer-ring-bg {
       fill: none;
       stroke: rgba(255, 255, 255, 0.08);
-      stroke-width: 4.5;
+      stroke-width: 5;
     }
 
     .timer-ring-progress {
       fill: none;
       stroke: var(--gold);
-      stroke-width: 4.5;
+      stroke-width: 5;
       stroke-linecap: round;
-      stroke-dasharray: 157;
+      stroke-dasharray: 182.2; /* 2 * PI * 29 */
       stroke-dashoffset: 0;
-      transition: stroke-dashoffset 1s linear, stroke 0.4s ease;
+      transition: stroke-dashoffset 1s linear, stroke 0.3s ease;
     }
 
-    .timer-ring-text {
+    .timer-ring-num {
       position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 0.88rem;
-      color: #FFF;
       font-family: monospace;
-    }
-
-    .quiz-question-box {
-      margin-bottom: 2rem;
-    }
-
-    .question-title {
-      font-family: var(--font-heading);
-      font-size: clamp(1.2rem, 3vw, 1.55rem);
-      line-height: 1.45;
+      font-size: 1.15rem;
+      font-weight: 700;
       color: #FFF;
+    }
+
+    .timer-pulse-danger {
+      animation: dangerPulse 0.7s infinite alternate ease-in-out;
+    }
+
+    @keyframes dangerPulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.08); }
+    }
+
+    .hud-score-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .hud-score-val {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--gold-light);
     }
 
     .options-grid {
       display: grid;
       gap: 0.85rem;
+      margin-top: 1.4rem;
     }
 
-    .option-btn {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(212, 175, 55, 0.25);
+    .opt-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1.5px solid rgba(212, 175, 55, 0.25);
       border-radius: var(--radius-sm);
-      padding: 0.95rem 1.25rem;
+      min-height: 50px;
+      padding: 0.85rem 1.2rem;
       text-align: left;
-      color: var(--ivory-text);
+      color: var(--text-ivory);
       font-size: 0.95rem;
       cursor: pointer;
-      transition: var(--transition);
       display: flex;
       align-items: center;
       gap: 0.85rem;
-      width: 100%;
+      transition: var(--transition);
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .option-btn:hover:not(:disabled) {
-      border-color: var(--gold);
+    .opt-btn:hover:not(:disabled) {
       background: rgba(212, 175, 55, 0.12);
+      border-color: var(--gold);
       transform: translateX(4px);
     }
 
-    .option-btn.correct {
-      background: rgba(16, 185, 129, 0.25) !important;
+    .opt-btn:active:not(:disabled) {
+      transform: scale(0.985);
+    }
+
+    .opt-letter {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--gold-light);
+      flex-shrink: 0;
+    }
+
+    .opt-btn.correct {
+      background: rgba(16, 185, 129, 0.22) !important;
       border-color: var(--success) !important;
       color: #6EE7B7 !important;
     }
 
-    .option-btn.incorrect {
-      background: rgba(239, 68, 68, 0.25) !important;
-      border-color: var(--crimson) !important;
+    .opt-btn.correct .opt-letter {
+      background: var(--success);
+      color: #FFF;
+      border-color: var(--success);
+    }
+
+    .opt-btn.wrong {
+      background: rgba(239, 68, 68, 0.22) !important;
+      border-color: var(--danger) !important;
       color: #FCA5A5 !important;
+    }
+
+    .opt-btn.wrong .opt-letter {
+      background: var(--danger);
+      color: #FFF;
+      border-color: var(--danger);
     }
 
     .feedback-drawer {
       margin-top: 1.5rem;
-      padding: 1.25rem;
+      padding: 1.25rem 1.4rem;
       border-radius: var(--radius-sm);
       border: 1px solid var(--gold);
-      background: rgba(11, 19, 43, 0.9);
+      background: rgba(11, 20, 36, 0.95);
       display: none;
     }
 
-    /* ================= MEMORIAL TRIBUTE FLAME ================= */
-    .memorial-section {
-      padding: 5rem 0;
-      position: relative;
+    /* Buttons */
+    .btn-gold {
+      background: linear-gradient(135deg, #F6E6B4 0%, #D4AF37 55%, #AA820A 100%);
+      color: #070D18;
+      border: none;
+      padding: 0.85rem 2rem;
+      border-radius: 40px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(212, 175, 55, 0.35);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      text-decoration: none;
     }
 
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(212, 175, 55, 0.55);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid rgba(212, 175, 55, 0.5);
+      color: var(--gold-light);
+      padding: 0.85rem 1.8rem;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    /* ==========================================================================
+       3. CUSTOM LEVEL TRANSITION POPUPS (EXACTLY 3 SECONDS AUTO-DISMISS)
+       ========================================================================== */
+    .transition-popup-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 13, 24, 0.88);
+      backdrop-filter: blur(14px);
+      z-index: 100000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .transition-popup-overlay.active {
+      display: flex;
+    }
+
+    .transition-popup-card {
+      background: linear-gradient(145deg, #16243D 0%, #0D1626 100%);
+      border: 2px solid var(--gold);
+      border-radius: var(--radius-lg);
+      padding: 2.6rem 2.2rem;
+      max-width: 460px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+      animation: popZoom 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes popZoom {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* Cute Bouncing Smiling Kitty Animation */
+    .bouncing-kitty-box {
+      font-size: clamp(3.5rem, 12vw, 4.6rem);
+      margin-bottom: 0.75rem;
+      display: inline-block;
+      animation: kittyBounce 0.55s infinite alternate ease-in-out;
+      transform-origin: center bottom;
+    }
+
+    @keyframes kittyBounce {
+      0% { transform: translateY(0) scale(1, 0.92) rotate(0deg); }
+      50% { transform: translateY(-28px) scale(1.05, 1.05) rotate(-5deg); }
+      100% { transform: translateY(-40px) scale(1.1, 1.1) rotate(5deg); }
+    }
+
+    .celebrate-badge-star {
+      font-size: clamp(3.2rem, 10vw, 4.2rem);
+      margin-bottom: 0.75rem;
+      animation: starRotatePulse 0.8s infinite alternate ease-in-out;
+    }
+
+    @keyframes starRotatePulse {
+      0% { transform: scale(0.9) rotate(-10deg); filter: drop-shadow(0 0 10px #F59E0B); }
+      100% { transform: scale(1.15) rotate(10deg); filter: drop-shadow(0 0 25px #FDE047); }
+    }
+
+    .caution-alert-icon {
+      font-size: clamp(3.2rem, 10vw, 4.2rem);
+      margin-bottom: 0.75rem;
+      color: #EF4444;
+      animation: dangerFlash 0.5s infinite alternate ease-in-out;
+    }
+
+    @keyframes dangerFlash {
+      from { transform: scale(0.95); filter: drop-shadow(0 0 10px #EF4444); }
+      to { transform: scale(1.1); filter: drop-shadow(0 0 28px #EF4444); }
+    }
+
+    .auto-dismiss-bar {
+      height: 3.5px;
+      background: rgba(212, 175, 55, 0.2);
+      border-radius: 4px;
+      margin-top: 1.5rem;
+      overflow: hidden;
+    }
+
+    .auto-dismiss-fill {
+      height: 100%;
+      width: 100%;
+      background: var(--gold);
+      animation: shrinkBar 3s linear forwards;
+    }
+
+    @keyframes shrinkBar {
+      from { width: 100%; }
+      to { width: 0%; }
+    }
+
+    /* ==========================================================================
+       4. MEMORIAL FLAME (DIYAA)
+       ========================================================================== */
     .memorial-card {
       background: radial-gradient(circle at 50% 35%, #250A10 0%, #0B132B 80%);
       border: 1.5px solid var(--gold);
@@ -594,7 +826,6 @@
       max-width: 820px;
       margin: 0 auto;
       box-shadow: 0 0 50px rgba(74, 14, 23, 0.6);
-      position: relative;
     }
 
     .diya-wrapper {
@@ -617,8 +848,8 @@
     }
 
     @keyframes pulseHalo {
-      0% { transform: translateX(-50%) scale(0.9); opacity: 0.6; }
-      100% { transform: translateX(-50%) scale(1.15); opacity: 1; }
+      from { transform: translateX(-50%) scale(0.9); opacity: 0.6; }
+      to { transform: translateX(-50%) scale(1.15); opacity: 1; }
     }
 
     .flame-core {
@@ -645,29 +876,17 @@
       border-radius: 0 0 70px 70px;
       margin: -6px auto 0;
       border-top: 2px solid #D97706;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
     }
 
-    .tribute-counter-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(212, 175, 55, 0.4);
-      padding: 0.6rem 1.4rem;
-      border-radius: 40px;
-      font-size: 0.92rem;
-      color: var(--gold-light);
-      margin-top: 1.5rem;
-    }
-
-    /* ================= PRINTABLE CERTIFICATE & RESPONSIVE MODAL FIX ================= */
-    .certificate-modal-overlay {
+    /* ==========================================================================
+       5. CERTIFICATE PREVIEW & PDF DOWNLOAD ENGINE
+       ========================================================================== */
+    .cert-modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(7, 13, 29, 0.92);
+      background: rgba(7, 13, 24, 0.94);
       backdrop-filter: blur(14px);
-      z-index: 100000;
+      z-index: 100005;
       display: none;
       align-items: center;
       justify-content: center;
@@ -675,13 +894,13 @@
       overflow-y: auto;
     }
 
-    .certificate-modal-overlay.active {
+    .cert-modal-overlay.active {
       display: flex;
     }
 
-    .cert-scroll-container {
+    .cert-scroll-viewport {
       width: 100%;
-      max-width: 900px;
+      max-width: 940px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -690,21 +909,29 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    .certificate-outer-sheet {
+    .mobile-scroll-hint {
+      display: none;
+      font-size: 0.8rem;
+      color: var(--gold-light);
+      margin-bottom: 0.6rem;
+      text-align: center;
+    }
+
+    /* Landscape Sheet */
+    .certificate-sheet {
       width: 880px;
-      min-width: 880px; /* Locks proportion so text never squeezes on mobile */
+      min-width: 880px;
       background: #FFFFFF;
       padding: 2.8rem;
-      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85);
       position: relative;
       color: #0F172A;
       margin: 0 auto;
-      transform-origin: top center;
     }
 
-    .cert-frame {
+    .cert-double-border {
       border: 7px double #D4AF37;
-      padding: 2.5rem 2.2rem;
+      padding: 2.2rem 2.4rem;
       text-align: center;
       background: radial-gradient(circle, #FFFFFF 0%, #FDFBF7 100%);
       position: relative;
@@ -716,114 +943,195 @@
       left: 50%;
       transform: translate(-50%, -50%);
       font-family: var(--font-serif);
-      font-size: 7rem;
-      color: rgba(212, 175, 55, 0.04);
+      font-size: 6.5rem;
+      color: rgba(212, 175, 55, 0.035);
       pointer-events: none;
       white-space: nowrap;
       font-weight: 900;
     }
 
-    .cert-university-header {
+    .cert-univ-title {
       font-family: var(--font-serif);
-      font-size: 1.05rem;
-      font-weight: 700;
+      font-size: 1.15rem;
+      font-weight: 800;
       color: #6B1D2F;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.25rem;
     }
 
-    .cert-series-tag {
-      font-size: 0.8rem;
+    .cert-school-title {
+      font-size: 0.85rem;
       color: #64748B;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
+      font-weight: 600;
     }
 
-    .cert-main-title {
+    .cert-award-title {
       font-family: var(--font-serif);
-      font-size: 2.5rem;
+      font-size: 2.35rem;
       color: #B48310;
       letter-spacing: 0.04em;
-      margin-bottom: 1rem;
+      margin-bottom: 0.6rem;
       font-weight: 800;
     }
 
-    .cert-recipient-name {
+    .cert-participant-name {
       font-family: var(--font-heading);
       font-size: 2.4rem;
       color: #0F172A;
       border-bottom: 2px solid #D4AF37;
       display: inline-block;
-      padding: 0 2rem 0.3rem;
-      margin: 1.25rem 0;
+      padding: 0 2rem 0.2rem;
+      margin: 1rem 0;
       font-weight: 700;
     }
 
-    .cert-body-p {
-      max-width: 650px;
-      margin: 0 auto 2.2rem;
-      font-size: 0.98rem;
+    .cert-verbiage {
+      max-width: 680px;
+      margin: 0 auto 2rem;
+      font-size: 0.96rem;
       color: #334155;
       line-height: 1.65;
     }
 
-    .cert-signatures {
-      display: flex;
-      justify-content: space-between;
+    .cert-bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
       align-items: flex-end;
       border-top: 1px solid rgba(212, 175, 55, 0.4);
-      padding-top: 1.5rem;
-      margin-top: 2rem;
-      font-size: 0.85rem;
-      color: #64748B;
+      padding-top: 1.4rem;
     }
 
-    .sig-block {
-      text-align: center;
-    }
-
-    .sig-line {
-      width: 140px;
-      height: 1px;
-      background: #CBD5E1;
+    .seal-circle {
+      width: 66px;
+      height: 66px;
+      border-radius: 50%;
+      border: 2px solid #D4AF37;
+      background: radial-gradient(circle, #F6E6B4 0%, #D4AF37 100%);
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
       margin: 0 auto 0.4rem;
-    }
-
-    .mobile-scroll-hint {
-      display: none;
-      font-size: 0.8rem;
-      color: var(--gold-light);
-      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 0.62rem;
+      font-weight: 800;
+      color: #4A0E17;
       text-align: center;
+      line-height: 1.2;
     }
 
-    /* Mobile Responsive Rules */
+    .cert-signature-img {
+      max-height: 52px;
+      max-width: 170px;
+      object-fit: contain;
+      filter: contrast(1.2);
+      margin-bottom: 0.3rem;
+    }
+
+    .signature-line {
+      width: 150px;
+      height: 1px;
+      background: #94A3B8;
+      margin: 0 auto 0.35rem;
+    }
+
+    /* ==========================================================================
+       6. LEADERBOARD & FOOTER
+       ========================================================================== */
+    .leaderboard-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 13, 24, 0.88);
+      backdrop-filter: blur(10px);
+      z-index: 100002;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .leaderboard-modal-overlay.active {
+      display: flex;
+    }
+
+    .leaderboard-card {
+      background: var(--bg-card);
+      border: var(--border-gold);
+      border-radius: var(--radius-lg);
+      padding: clamp(1.4rem, 4vw, 2.4rem);
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .honor-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin: 1.2rem 0;
+    }
+
+    .honor-table th {
+      background: rgba(74, 14, 23, 0.7);
+      color: var(--gold-light);
+      padding: 0.75rem 0.9rem;
+      text-align: left;
+    }
+
+    .honor-table td {
+      padding: 0.75rem 0.9rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .custom-footer {
+      background: linear-gradient(180deg, #071524 0%, #030A12 100%);
+      color: var(--gold-light);
+      padding: 3.5rem 0 2rem;
+      border-top: 2px solid var(--gold);
+    }
+
+    /* ==========================================================================
+       7. MOBILE VIEWPORT OVERRIDES (320px–480px)
+       ========================================================================== */
     @media (max-width: 900px) {
-      .nav-links-wrap {
-        display: none;
-      }
-      .hamburger-btn {
-        display: block;
-      }
-      .nav-links-wrap.mobile-open {
-        display: flex;
+      .nav-inner {
         flex-direction: column;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: rgba(11, 19, 43, 0.98);
-        padding: 1.5rem;
-        border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        align-items: stretch;
+        gap: 0.75rem;
+        min-height: auto;
       }
-      .nav-pill {
+      .nav-right-cluster {
         width: 100%;
-        justify-content: center;
+        justify-content: space-between;
+        margin-left: 0;
+        border-top: 1px solid rgba(212, 175, 55, 0.3);
+        padding-top: 0.5rem;
+      }
+      .nav-links {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 0.2rem;
+        -webkit-overflow-scrolling: touch;
       }
       .mobile-scroll-hint {
         display: block;
+      }
+    }
+
+    @media (max-width: 580px) {
+      .hud-header {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 0.8rem;
+      }
+      .hud-meta-block {
+        align-items: center;
+      }
+      .hud-score-block {
+        align-items: center;
       }
     }
   </style>
@@ -833,172 +1141,214 @@
   <!-- Floating Mathematical Canvas -->
   <canvas id="mathCanvas"></canvas>
 
-  <!-- Sticky Header -->
+  <!-- ==========================================================================
+       1. INAUGURAL SPLASH SCREEN OVERLAY
+       ========================================================================== -->
+  <div id="inaugural-screen">
+    <div class="inaugural-content">
+      <div class="portrait-curved-wrapper">
+        <!-- SVG Curved Top Semi-Circle Arc -->
+        <svg class="curved-svg-text" viewBox="0 0 300 300">
+          <defs>
+            <linearGradient id="goldGradientShine" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#F6E6B4" />
+              <stop offset="50%" stop-color="#D4AF37" />
+              <stop offset="100%" stop-color="#F6E6B4" />
+            </linearGradient>
+            <!-- Semi-circle upper path -->
+            <path id="curvePath" d="M 30,150 A 120,120 0 0,1 270,150" fill="none" />
+          </defs>
+          <text>
+            <textPath href="#curvePath" startOffset="50%" text-anchor="middle">
+              HARISH-CHANDRA • 11 OCTOBER 1923
+            </textPath>
+          </text>
+        </svg>
+
+        <!-- Golden Frame with images.jpg -->
+        <div class="inaugural-portrait-frame">
+          <img src="images.jpg" alt="Dr. Harish-Chandra" onerror="this.src='images.jpg'" />
+        </div>
+      </div>
+
+      <p class="inaugural-tagline">
+        “The Indian Mathematician Who Reshaped Modern Physics and Challenged Scientific Giants”
+      </p>
+
+      <button class="btn-inaugural-enter" onclick="dismissInaugural()">
+        <span>Enter Tribute & Legacy Challenge</span>
+        <span>→</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       HEADER & NAVIGATION
+       ========================================================================== -->
   <header class="site-header">
     <div class="container nav-inner">
-      <a href="#hero" class="brand-group">
-        <div class="brand-avatar">HC</div>
-        <div class="brand-meta">
-          <span class="brand-title">HARISH-CHANDRA</span>
-          <span class="brand-sub">103rd Birth Anniversary • 1923–1983</span>
+      <a href="#hero" class="brand-block">
+        <div class="brand-avatar">
+          <img src="images.jpg" alt="Dr. Harish-Chandra" onerror="this.src='images.jpg'" />
+        </div>
+        <div class="brand-texts">
+          <span class="brand-name">Harish-Chandra</span>
+          <span class="brand-lifespan">(11 October 1923 – 16 October 1983)</span>
+          <div class="brand-badges-row">
+            <span class="anniversary-badge-left">103rd Birth Anniversary</span>
+            <span class="header-designer-glow">Designed by <strong>Anshika & Shikha</strong></span>
+          </div>
         </div>
       </a>
 
-      <nav>
-        <ul class="nav-links-wrap" id="navMenu">
-          <li><a href="#hero" class="nav-pill active">🏛️ Heritage</a></li>
-          <li><a href="#timeline" class="nav-pill">⏳ Epochs</a></li>
-          <li><a href="#quiz" class="nav-pill">🎯 3-Tier Quiz</a></li>
-          <li><a href="#memorial" class="nav-pill">🪔 Memorial Flame</a></li>
-        </ul>
-      </nav>
+      <div class="nav-right-cluster">
+        <nav>
+          <ul class="nav-links">
+            <li><a href="#hero" class="nav-link"><span>🏠</span> Home</a></li>
+            <li><a href="#timeline" class="nav-link"><span>⏳</span> Timeline</a></li>
+            <li><a href="#quiz" class="nav-link"><span>🎯</span> Quiz</a></li>
+            <li><button type="button" class="nav-link" onclick="openLeaderboardModal()"><span>🏆</span> Leaderboard</button></li>
+            <li><a href="#memorial" class="nav-link"><span>🪔</span> Memorial Flame</a></li>
+            <li><button type="button" class="nav-link" onclick="replayInaugural()" title="Replay Intro Overlay"><span>🎬</span> Intro</button></li>
+          </ul>
+        </nav>
 
-      <div class="controls-cluster">
-        <button class="btn-audio" id="audioToggleBtn" title="Toggle Sound Synth" aria-label="Toggle Sound">🔊</button>
-        <button class="hamburger-btn" id="mobileMenuBtn" aria-label="Toggle Navigation">☰</button>
+        <button class="header-ctrl-btn" id="audioToggleBtn" title="Toggle Sound Synth" aria-label="Toggle Sound">🔊</button>
       </div>
     </div>
   </header>
 
-  <!-- Hero Section -->
+  <!-- ==========================================================================
+       HERO SECTION
+       ========================================================================== -->
   <section class="hero-section" id="hero">
     <div class="container">
-      <div class="hero-badge">School of Basic Sciences • CSJM University</div>
-      <h1 class="hero-title">THE ARCHITECT OF HARMONIC ANALYSIS</h1>
-      <p class="hero-quote">
-        “Celebrating 103 Years of Dr. Harish-Chandra FRS — where the Lorentz group met infinite dimensions, and mathematical truth touched the infinite.”
+      <h1 class="hero-main-title">HARISH-CHANDRA</h1>
+      <p class="hero-legacy-statement">
+        “Celebrating 103 Years of Dr. Harish-Chandra’s Legacy — where curiosity became discovery, and mathematics became a lasting contribution to human knowledge.”
       </p>
-      <div class="hero-cta-group">
-        <a href="#quiz" class="btn-gold">Begin 3-Tier Challenge →</a>
-        <a href="#memorial" class="btn-burgundy">Offer Sacred Flame 🪔</a>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="#quiz" class="btn-gold">Begin Legacy Challenge →</a>
+        <a href="#memorial" class="btn-outline">Offer Sacred Flame 🪔</a>
       </div>
     </div>
   </section>
 
-  <!-- Timeline Section -->
-  <section class="timeline-section" id="timeline">
+  <!-- ==========================================================================
+       TIMELINE SECTION
+       ========================================================================== -->
+  <section class="section-padding" id="timeline">
     <div class="container">
-      <div class="section-title-wrap">
+      <div class="section-header">
         <span class="section-subtitle">Chronicles of a Genius</span>
-        <h2 class="section-title">Milestones of Harish-Chandra</h2>
+        <h2 class="section-title">The Journey & Heritage</h2>
       </div>
 
       <div class="timeline-container">
-        <!-- Era 1 -->
         <div class="timeline-card">
-          <div class="timeline-era">1923 – 1945 • Kanpur & Allahabad</div>
-          <h3 class="timeline-heading">Foundations in Theoretical Physics</h3>
-          <p style="color: var(--slate-text); font-size: 0.95rem;">
-            Born on October 11, 1923, in Kanpur, Uttar Pradesh. Completed his Master's under physicist K. S. Krishnan at the University of Allahabad, initially mastering Dirac's quantum mechanics.
+          <span style="color: var(--gold); font-size: 0.8rem; font-weight: 700;">1923 – 1945 • KANPUR & ALLAHABAD</span>
+          <h3 style="font-family: var(--font-heading); margin: 0.35rem 0;">Early Education & Master's Research</h3>
+          <p style="color: var(--text-muted); font-size: 0.94rem;">
+            Born in Kanpur; completed his Master's under physicist Sir K. S. Krishnan at the University of Allahabad, initially mastering Dirac's quantum mechanics.
           </p>
-          <div class="fact-toggle" onclick="toggleFact(this)">
-            <span>💡 Did you know? (Pauli Seminar Encounter)</span>
-            <span>▼</span>
-          </div>
-          <div class="fact-content">
-            During an advanced seminar, a young Harish-Chandra famously corrected Wolfgang Pauli on a complex blackboard formula, instantly winning Pauli's deep lifelong respect.
-          </div>
         </div>
 
-        <!-- Era 2 -->
         <div class="timeline-card">
-          <div class="timeline-era">1945 – 1950 • Cambridge & IAS Princeton</div>
-          <h3 class="timeline-heading">Doctorate Under Paul Dirac</h3>
-          <p style="color: var(--slate-text); font-size: 0.95rem;">
-            Studied at the University of Cambridge under Nobel laureate Paul Dirac. Realized that physical intuition lacked mathematical rigour and shifted permanently to pure representation theory.
+          <span style="color: var(--gold); font-size: 0.8rem; font-weight: 700;">1945 – 1950 • CAMBRIDGE & DIRAC</span>
+          <h3 style="font-family: var(--font-heading); margin: 0.35rem 0;">Doctorate Under Paul Dirac</h3>
+          <p style="color: var(--text-muted); font-size: 0.94rem;">
+            Earned his PhD at Cambridge under Paul Dirac. Realized that theoretical physics lacked structural rigor and transitioned permanently to pure mathematics.
           </p>
-          <div class="fact-toggle" onclick="toggleFact(this)">
-            <span>💡 Did you know? (Universal Enveloping Algebras)</span>
-            <span>▼</span>
-          </div>
-          <div class="fact-content">
-            His 1954 Cole Prize from the American Mathematical Society stemmed directly from his breakthrough algebraic theorems on universal enveloping algebras.
-          </div>
         </div>
 
-        <!-- Era 3 -->
         <div class="timeline-card">
-          <div class="timeline-era">1950 – 1983 • Columbia, Princeton & Global Legacy</div>
-          <h3 class="timeline-heading">Semisimple Lie Groups & The Langlands Program</h3>
-          <p style="color: var(--slate-text); font-size: 0.95rem;">
-            Appointed permanent Professor at the Institute for Advanced Study, Princeton (1963). Constructed character theory for infinite-dimensional representations and laid the groundwork for modern automorphic forms.
+          <span style="color: var(--gold); font-size: 0.8rem; font-weight: 700;">1950 – 1983 • COLUMBIA & IAS PRINCETON</span>
+          <h3 style="font-family: var(--font-heading); margin: 0.35rem 0;">Semisimple Lie Groups & The Langlands Program</h3>
+          <p style="color: var(--text-muted); font-size: 0.94rem;">
+            Constructed character theory for infinite-dimensional representations and harmonic analysis on reductive Lie groups, becoming the analytic bedrock of the Langlands program.
           </p>
-          <div class="fact-toggle" onclick="toggleFact(this)">
-            <span>💡 Did you know? (Discrete Series Discovery)</span>
-            <span>▼</span>
-          </div>
-          <div class="fact-content">
-            His construction of the discrete series representations on real reductive Lie groups is hailed as one of the monumentally deep peaks of 20th-century mathematical analysis.
-          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Interactive 3-Tier Quiz -->
-  <section class="quiz-section" id="quiz">
+  <!-- ==========================================================================
+       2. GAMIFIED 3-TIER QUIZ CONTAINER (#quiz)
+       ========================================================================== -->
+  <section class="section-padding" id="quiz">
     <div class="container">
-      <div class="quiz-card" id="quizCard">
-        
-        <!-- Registration View -->
-        <div id="quizRegView" style="text-align: center;">
-          <span class="section-subtitle">National Challenge 2026</span>
-          <h2 class="section-title" style="margin-bottom: 0.8rem;">Harish-Chandra Legacy Quiz</h2>
-          <p style="color: var(--slate-text); max-width: 580px; margin: 0 auto 2rem; font-size: 0.95rem;">
-            15 progressive academic questions across 3 tiers: Early Life, Semisimple Lie Groups, and Modern Automorphic Forms.
-          </p>
-          <div style="max-width: 440px; margin: 0 auto 1.5rem;">
-            <input type="text" id="participantNameInput" placeholder="Enter Full Name for Certificate" style="width: 100%; padding: 0.9rem 1.2rem; border-radius: 40px; border: 1.5px solid var(--gold); background: rgba(255,255,255,0.06); color: #FFF; outline: none; text-align: center; font-size: 1rem;">
+      <div class="quiz-card" id="quizEngineRoot">
+
+        <!-- Panel A: Participant Registration -->
+        <div class="quiz-view-panel active" id="quizPanelReg">
+          <div style="text-align: center; max-width: 580px; margin: 0 auto;">
+            <span class="section-subtitle">National Challenge 2026</span>
+            <h2 class="section-title" style="margin: 0.4rem 0 0.8rem;">Harish-Chandra Legacy Quiz</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem;">
+              15 progressive questions across 3 tiers (Easy, Moderate, and Hard). Earn +50 points per question (Max: 750 points) to achieve official certification.
+            </p>
+
+            <form onsubmit="handleStartQuiz(event)" style="display: flex; flex-direction: column; gap: 1rem; max-width: 420px; margin: 0 auto;">
+              <input type="text" id="participantInput" placeholder="Enter Full Scholar Name" required style="width: 100%; padding: 0.95rem 1.4rem; border-radius: 40px; background: rgba(255,255,255,0.05); border: 1.5px solid var(--gold); color: #FFF; outline: none; font-size: 1rem; text-align: center;" />
+              <button type="submit" class="btn-gold">Begin Challenge →</button>
+            </form>
           </div>
-          <button class="btn-gold" onclick="startChallenge()">Begin Tier 1 Challenge →</button>
         </div>
 
-        <!-- Active Quiz Console -->
-        <div id="quizActiveView" style="display: none;">
+        <!-- Panel B: Active Question HUD & Choices -->
+        <div class="quiz-view-panel" id="quizPanelActive">
           <div class="quiz-hud">
-            <div class="hud-meta">
-              <span class="tier-badge" id="hudTierBadge">Tier 1 • Foundations</span>
-              <span style="font-size: 0.85rem; color: var(--slate-text);" id="hudCounter">Question 1 of 15</span>
+            <div class="hud-meta-block">
+              <span class="tier-indicator" id="tierIndicator">Tier 1 • Easy</span>
+              <span style="font-size: 0.82rem; color: var(--text-muted);" id="qCountText">Question 1 of 15</span>
             </div>
-            
-            <div class="hud-stats">
-              <div style="font-size: 0.95rem; font-weight: 700;">Score: <span id="hudScore" style="color: var(--gold);">0</span></div>
-              
-              <!-- SVG Circular Timer -->
-              <div class="timer-ring-wrap">
-                <svg>
-                  <circle class="timer-ring-bg" cx="29" cy="29" r="25"></circle>
-                  <circle class="timer-ring-progress" id="timerRing" cx="29" cy="29" r="25"></circle>
-                </svg>
-                <div class="timer-ring-text" id="timerCount">25</div>
-              </div>
+
+            <!-- Dynamic Circular SVG Timer (25s) -->
+            <div class="timer-ring-wrapper" id="timerRingBox">
+              <svg>
+                <circle class="timer-ring-bg" cx="33" cy="33" r="29"></circle>
+                <circle class="timer-ring-progress" id="timerRingPath" cx="33" cy="33" r="29"></circle>
+              </svg>
+              <span class="timer-ring-num" id="timerNumber">25</span>
+            </div>
+
+            <div class="hud-score-block">
+              <span style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Score</span>
+              <span class="hud-score-val"><span id="scoreVal">0</span> / 750</span>
             </div>
           </div>
 
-          <div class="quiz-question-box">
-            <h3 class="question-title" id="questionText">Loading query...</h3>
+          <div style="margin-bottom: 1.5rem;">
+            <h3 style="font-family: var(--font-heading); font-size: clamp(1.15rem, 3.2vw, 1.45rem); line-height: 1.45; color: #FFF;" id="questionTitle">
+              Loading question...
+            </h3>
           </div>
 
           <div class="options-grid" id="optionsBox"></div>
 
+          <!-- Instant Verified Fact Drawer -->
           <div class="feedback-drawer" id="feedbackDrawer">
-            <div id="feedbackTitle" style="font-weight: 700; margin-bottom: 0.35rem;"></div>
-            <p id="feedbackExplanation" style="color: var(--slate-text); font-size: 0.9rem; margin-bottom: 1.2rem;"></p>
-            <button class="btn-gold" onclick="handleNextQuestion()">Proceed →</button>
+            <div id="feedbackHeading" style="font-weight: 700; margin-bottom: 0.35rem;"></div>
+            <p id="feedbackFact" style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.2rem; line-height: 1.5;"></p>
+            <div style="text-align: right;">
+              <button class="btn-gold" style="padding: 0.7rem 1.8rem; font-size: 0.88rem;" onclick="handleNextQuestionStep()">Continue →</button>
+            </div>
           </div>
         </div>
 
-        <!-- Final Victory View -->
-        <div id="quizVictoryView" style="display: none; text-align: center;">
-          <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🏆</div>
-          <span class="section-subtitle">Challenge Completed</span>
-          <h2 class="section-title" style="margin-bottom: 0.5rem;">Academic Distinction Attained</h2>
-          <p style="color: var(--slate-text); max-width: 540px; margin: 0 auto 2rem; font-size: 0.95rem;">
-            Congratulations! You have successfully mastered all 3 tiers of Dr. Harish-Chandra's life, Lie algebras, and representation theory.
-          </p>
-          <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-            <button class="btn-gold" onclick="openCertificateModal()">View Official Certificate 📜</button>
-            <button class="btn-burgundy" onclick="resetQuiz()">Replay Challenge 🔁</button>
+        <!-- Panel C: Final Victory Screen -->
+        <div class="quiz-view-panel" id="quizPanelVictory">
+          <div style="text-align: center; max-width: 600px; margin: 0 auto;">
+            <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🏆</div>
+            <h2 class="section-title" style="color: var(--gold-light); margin-bottom: 0.5rem;">You made it through! Bravo!</h2>
+            <p style="color: var(--text-muted); font-size: 1.05rem; margin-bottom: 1.5rem;" id="victoryFinalBreakdown">
+              Final Score: 750 / 750 Points
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+              <button class="btn-gold" onclick="openCertificateModal()">Get Certificate 🎓</button>
+              <button class="btn-outline" onclick="openLeaderboardModal()">View Leaderboard 🏆</button>
+              <button class="btn-outline" onclick="resetQuizEngine()">Replay Challenge 🔁</button>
+            </div>
           </div>
         </div>
 
@@ -1006,91 +1356,161 @@
     </div>
   </section>
 
-  <!-- Memorial Tribute Flame -->
-  <section class="memorial-section" id="memorial">
+  <!-- ==========================================================================
+       3. CUSTOM LEVEL TRANSITION POPUPS (EXACTLY 3 SECONDS AUTO-DISMISS)
+       ========================================================================== */
+  <div class="transition-popup-overlay" id="transitionPopup">
+    <div class="transition-popup-card">
+      <div id="transitionAnimationSlot"></div>
+      <h3 style="font-family: var(--font-serif); font-size: 1.55rem; color: var(--gold-light); margin-bottom: 0.4rem;" id="transitionTitle"></h3>
+      <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.45;" id="transitionMessage"></p>
+      <div class="auto-dismiss-bar"><div class="auto-dismiss-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       4. MEMORIAL FLAME TRIBUTE SECTION
+       ========================================================================== -->
+  <section class="section-padding" id="memorial">
     <div class="container">
       <div class="memorial-card">
         <div class="diya-wrapper">
           <div class="diya-halo"></div>
-          <div class="flame-core" id="memorialFlame"></div>
+          <div class="flame-core" id="diyaFlame"></div>
           <div class="diya-pot"></div>
         </div>
 
         <h3 style="font-family: var(--font-serif); font-size: clamp(1.6rem, 4vw, 2.3rem); color: #FFF; margin-bottom: 0.5rem;">
           Akhand Deepam • Memorial Tribute
         </h3>
-        <p style="font-family: var(--font-quote); font-size: 1.3rem; color: var(--gold-light); font-style: italic; max-width: 600px; margin: 0 auto 2rem;">
+        <p style="font-family: var(--font-accent); font-size: 1.35rem; color: var(--gold-light); font-style: italic; max-width: 600px; margin: 0 auto 1.8rem;">
           “Offer a spark of reverence to keep the eternal flame of mathematical discovery alive.”
         </p>
 
         <div>
-          <button class="btn-gold" onclick="offerTribute()" style="padding: 0.9rem 2.4rem;">
-            Offer Tribute Spark ✨
+          <button class="btn-gold" onclick="offerFloralTribute()" style="padding: 0.9rem 2.4rem;">
+            Offer Floral Tribute ✨
           </button>
         </div>
 
-        <div class="tribute-counter-pill">
-          <span>💖 Sacred Tributes Offered:</span>
-          <strong id="tributeDisplay" style="color: #FFF;">0</strong>
+        <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.06); border: 1px solid rgba(212,175,55,0.4); padding: 0.6rem 1.4rem; border-radius: 40px; margin-top: 1.5rem; color: var(--gold-light);">
+          💖 Sacred Tributes Offered: <strong id="tributeDisplay" style="color: #FFF;">0</strong>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Modal: Official Printable Certificate -->
-  <div class="certificate-modal-overlay" id="certModal">
-    <div class="cert-scroll-container">
+  <!-- ==========================================================================
+       5. CERTIFICATE MODAL WITH AUTHENTIC SIGNATURE & jsPDF EXPORT
+       ========================================================================== -->
+  <div class="cert-modal-overlay" id="certModal">
+    <div class="cert-scroll-viewport">
       <div class="mobile-scroll-hint">⇄ Swipe horizontally to inspect full landscape certificate</div>
-      
-      <!-- Exportable Element -->
-      <div class="certificate-outer-sheet" id="certificateElement">
-        <div class="cert-frame">
+
+      <!-- High-DPI Exportable Sheet -->
+      <div class="certificate-sheet" id="certificateNode">
+        <div class="cert-double-border">
           <div class="cert-watermark">[X, Y] = XY - YX</div>
-          
-          <div class="cert-university-header">Chhatrapati Shahu Ji Maharaj University, Kanpur</div>
-          <div class="cert-series-tag">School of Basic Sciences • Academic Presentation Series 2026</div>
 
-          <h2 class="cert-main-title">CERTIFICATE OF ACCOMPLISHMENT</h2>
-          <p style="font-size: 0.92rem; color: #64748B; text-transform: uppercase; letter-spacing: 0.1em;">This prestigious honor is awarded to</p>
+          <div class="cert-univ-title">Chhatrapati Shahu Ji Maharaj University, Kanpur</div>
+          <div class="cert-school-title">School of Basic Sciences • Presentation Series 2026</div>
 
-          <div class="cert-recipient-name" id="certParticipantName">Scholar Name</div>
+          <h1 class="cert-award-title">Harish Chandra Quiz - Certificate of Accomplishment</h1>
+          <div style="font-size: 0.88rem; color: #64748B; text-transform: uppercase; letter-spacing: 0.1em;">This credential certifies that</div>
 
-          <p class="cert-body-p">
-            for successfully mastering all 3 progressive tiers of the <strong>Harish-Chandra Digital Legacy Challenge</strong>, demonstrating exceptional academic proficiency in the life, representation theory of semisimple Lie groups, and automorphic harmonic analysis of Dr. Harish-Chandra FRS on his 103rd Birth Anniversary.
+          <div class="cert-participant-name" id="certScholarName">Scholar Name</div>
+
+          <p class="cert-verbiage">
+            has demonstrated academic rigor and successfully cleared all 3 tiers of the <strong>Harish-Chandra Digital Legacy Challenge</strong>, mastering foundational concepts in infinite-dimensional representations, universal enveloping algebras, and harmonic analysis on semisimple Lie groups in celebration of Dr. Harish-Chandra FRS on his 103rd Birth Anniversary.
           </p>
 
-          <div class="cert-signatures">
-            <div class="sig-block">
-              <div class="sig-line"></div>
-              <span>School of Basic Sciences</span>
+          <div class="cert-bottom-grid">
+            <!-- Left: Official Seal -->
+            <div style="text-align: center;">
+              <div class="seal-circle">CSJMU<br>SBS<br>SEAL</div>
+              <span style="font-size: 0.78rem; color: #64748B; font-weight: 600; text-transform: uppercase;">Official Academic Seal</span>
             </div>
-            <div class="sig-block">
-              <div style="font-family: monospace; font-weight: 700; color: #D4AF37;" id="certVerifyStamp">VERIFIED • 11-OCT-2026</div>
-              <span>Digital Registry Key</span>
+
+            <!-- Center: Verification ID & Date -->
+            <div style="text-align: center;">
+              <div style="font-family: monospace; font-size: 0.85rem; font-weight: 700; color: #B48310; margin-bottom: 0.2rem;" id="certVerifyCode">HC-CSJMU-2026-OK</div>
+              <div style="font-size: 0.78rem; color: #64748B;">Date: October 11, 2026</div>
+              <div style="font-size: 0.75rem; color: #10B981; font-weight: 600;">Score: <span id="certScoreDisplay">750</span> / 750 Verified</div>
             </div>
-            <div class="sig-block">
-              <div class="sig-line"></div>
-              <span>Convener & Presentation Lead</span>
+
+            <!-- Right: Authentic Signature -->
+            <div style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+              <img src="harish-chandra-signature.png" alt="Harish-Chandra Signature" class="cert-signature-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+              <div style="display: none; font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-style: italic; color: #0F172A; margin-bottom: 0.2rem;">Harish-Chandra</div>
+              <div class="signature-line"></div>
+              <span style="font-size: 0.8rem; color: #64748B; font-family: var(--font-body); font-weight: 600;">Dr. Harish-Chandra, FRS (1923–1983)</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Action Bar -->
-      <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap;">
-        <button class="btn-gold" onclick="downloadCrispPDF()">Download Crisp PDF 📥</button>
-        <button class="btn-burgundy" onclick="closeCertModal()">Close Preview ✕</button>
+      <!-- Action Cluster -->
+      <div style="display: flex; gap: 1rem; margin-top: 1.4rem; flex-wrap: wrap; justify-content: center;">
+        <button class="btn-gold" onclick="downloadCertificatePDF()">Download as PDF 📥</button>
+        <button class="btn-outline" onclick="closeCertModal()">Close Preview ✕</button>
       </div>
-
     </div>
   </div>
 
-  <!-- Audio, Quiz, Particle and Certificate Script -->
+  <!-- ==========================================================================
+       6. LEADERBOARD MODAL (HALL OF HONOR)
+       ========================================================================== -->
+  <div class="leaderboard-modal-overlay" id="leaderboardModal">
+    <div class="leaderboard-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); padding-bottom: 0.8rem;">
+        <div>
+          <h3 style="font-family: var(--font-serif); font-size: 1.3rem; color: var(--gold-light);">HALL OF HONOR</h3>
+          <span style="font-size: 0.78rem; color: var(--text-muted);">Scholars Leaderboard • Top Records</span>
+        </div>
+        <button class="header-ctrl-btn" style="width: 32px; height: 32px; font-size: 0.9rem;" onclick="closeLeaderboardModal()">✕</button>
+      </div>
+
+      <table class="honor-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Scholar</th>
+            <th>Tier</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody id="honorTableBody"></tbody>
+      </table>
+
+      <div style="text-align: center;">
+        <button class="btn-outline" style="padding: 0.5rem 1.4rem; font-size: 0.82rem;" onclick="closeLeaderboardModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer class="custom-footer">
+    <div class="container" style="text-align: center;">
+      <h4 style="font-family: var(--font-heading); color: #FFF; font-size: 1.3rem; margin-bottom: 0.4rem;">School of Basic Sciences</h4>
+      <p style="color: var(--text-muted); font-size: 0.9rem; max-width: 600px; margin: 0 auto 1.5rem;">
+        Chhatrapati Shahu Ji Maharaj University, Kanpur. An academic commemoration initiative celebrating the profound legacy of Dr. Harish-Chandra.
+      </p>
+      <div style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">
+        Project Team: <strong>Anshika Soni & Shikha Singh Gaur</strong> • Dedicated to Mathematical Truth
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       JAVASCRIPT ARCHITECTURE
+       ========================================================================== -->
   <script>
     /* ================= 1. MATH FLOATING CANVAS ================= */
     const canvas = document.getElementById('mathCanvas');
     const ctx = canvas.getContext('2d');
-    let symbols = ['[X, Y]', '∞', '∇', '∫_G f(x)dx', 'π(g)v', 'SL(2, ℝ)', '𝔤 = 𝔨 ⊕ 𝔭', 'λ(H)', 'SO(n)', 'Tr(π(f))'];
+    const symbols = ['[X, Y]', '∞', '∇', '∫_G f(x)dx', 'SL(2, ℝ)', '𝔤 = 𝔨 ⊕ 𝔭', 'SO(n)', 'Z(𝔤)', 'π(g)v', 'Tr(π(f))'];
     let particles = [];
 
     function resizeCanvas() {
@@ -1100,27 +1520,26 @@
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    for (let i = 0; i < 35; i++) {
+    for (let i = 0; i < 30; i++) {
       particles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        text: symbols[Math.floor(Math.random() * symbols.length)],
-        size: Math.random() * 12 + 14,
-        speed: Math.random() * 0.4 + 0.1,
-        alpha: Math.random() * 0.45 + 0.15
+        symbol: symbols[Math.floor(Math.random() * symbols.length)],
+        size: Math.random() * 12 + 13,
+        speed: Math.random() * 0.35 + 0.15,
+        alpha: Math.random() * 0.35 + 0.12
       });
     }
 
     function animateMath() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#D4AF37';
       particles.forEach(p => {
-        ctx.font = `${p.size}px 'Cormorant Garamond', serif`;
+        ctx.font = `${p.size}px 'Cormorant Garamond', Georgia, serif`;
         ctx.fillStyle = `rgba(212, 175, 55, ${p.alpha})`;
-        ctx.fillText(p.text, p.x, p.y);
+        ctx.fillText(p.symbol, p.x, p.y);
         p.y -= p.speed;
-        if (p.y < -20) {
-          p.y = canvas.height + 20;
+        if (p.y < -30) {
+          p.y = canvas.height + 30;
           p.x = Math.random() * canvas.width;
         }
       });
@@ -1129,237 +1548,330 @@
     animateMath();
 
     /* ================= 2. WEB AUDIO SYNTHESIZER ================= */
-    let audioCtx = null;
-    let isMuted = false;
+    let audioContext = null;
+    let isSoundMuted = false;
 
-    function getAudioContext() {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      return audioCtx;
+    function getAudioCtx() {
+      if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioContext.state === 'suspended') audioContext.resume();
+      return audioContext;
     }
 
-    function playTick() {
-      if (isMuted) return;
-      try {
-        const ctx = getAudioContext();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.frequency.setValueAtTime(950, ctx.currentTime);
-        gain.gain.setValueAtTime(0.015, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.05);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.06);
-      } catch (e) {}
-    }
-
-    function playChime() {
-      if (isMuted) return;
-      try {
-        const ctx = getAudioContext();
-        [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.08);
-          gain.gain.setValueAtTime(0.0001, ctx.currentTime + idx * 0.08);
-          gain.gain.linearRampToValueAtTime(0.07, ctx.currentTime + idx * 0.08 + 0.04);
-          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + idx * 0.08 + 0.8);
+    const soundSynth = {
+      click() {
+        if (isSoundMuted) return;
+        try {
+          const actx = getAudioCtx();
+          const osc = actx.createOscillator();
+          const gain = actx.createGain();
+          osc.frequency.setValueAtTime(800, actx.currentTime);
+          gain.gain.setValueAtTime(0.04, actx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.05);
           osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(ctx.currentTime + idx * 0.08);
-          osc.stop(ctx.currentTime + idx * 0.08 + 0.9);
-        });
-      } catch (e) {}
-    }
-
-    function playBuzz() {
-      if (isMuted) return;
-      try {
-        const ctx = getAudioContext();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(140, ctx.currentTime);
-        gain.gain.setValueAtTime(0.08, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.35);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.36);
-      } catch (e) {}
-    }
+          gain.connect(actx.destination);
+          osc.start();
+          osc.stop(actx.currentTime + 0.05);
+        } catch(e) {}
+      },
+      correct() {
+        if (isSoundMuted) return;
+        try {
+          const actx = getAudioCtx();
+          [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+            const osc = actx.createOscillator();
+            const gain = actx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, actx.currentTime + idx * 0.07);
+            gain.gain.setValueAtTime(0.001, actx.currentTime + idx * 0.07);
+            gain.gain.linearRampToValueAtTime(0.08, actx.currentTime + idx * 0.07 + 0.03);
+            gain.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + idx * 0.07 + 0.7);
+            osc.connect(gain);
+            gain.connect(actx.destination);
+            osc.start(actx.currentTime + idx * 0.07);
+            osc.stop(actx.currentTime + idx * 0.07 + 0.75);
+          });
+        } catch(e) {}
+      },
+      wrong() {
+        if (isSoundMuted) return;
+        try {
+          const actx = getAudioCtx();
+          const osc = actx.createOscillator();
+          const gain = actx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(130, actx.currentTime);
+          gain.gain.setValueAtTime(0.09, actx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.32);
+          osc.connect(gain);
+          gain.connect(actx.destination);
+          osc.start();
+          osc.stop(actx.currentTime + 0.33);
+        } catch(e) {}
+      },
+      fanfare() {
+        if (isSoundMuted) return;
+        try {
+          const actx = getAudioCtx();
+          [440, 554.37, 659.25, 880].forEach((f, i) => {
+            const osc = actx.createOscillator();
+            const gain = actx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(f, actx.currentTime + i * 0.12);
+            gain.gain.setValueAtTime(0.09, actx.currentTime + i * 0.12);
+            gain.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + i * 0.12 + 0.8);
+            osc.connect(gain);
+            gain.connect(actx.destination);
+            osc.start(actx.currentTime + i * 0.12);
+            osc.stop(actx.currentTime + i * 0.12 + 0.85);
+          });
+        } catch(e) {}
+      }
+    };
 
     document.getElementById('audioToggleBtn').addEventListener('click', () => {
-      isMuted = !isMuted;
-      document.getElementById('audioToggleBtn').innerText = isMuted ? '🔇' : '🔊';
+      isSoundMuted = !isSoundMuted;
+      document.getElementById('audioToggleBtn').innerText = isSoundMuted ? '🔇' : '🔊';
     });
 
-    /* ================= 3. QUIZ SYSTEM (15 QUESTIONS / 3 TIERS) ================= */
-    const QUESTIONS = [
-      // Tier 1: Early Life & Cambridge (1-5)
+    /* ================= 3. INAUGURAL OVERLAY CONTROLLERS ================= */
+    function dismissInaugural() {
+      soundSynth.click();
+      document.getElementById('inaugural-screen').classList.add('dismissed');
+    }
+
+    function replayInaugural() {
+      soundSynth.click();
+      document.getElementById('inaugural-screen').classList.remove('dismissed');
+    }
+
+    /* ================= 4. ACADEMIC 15-QUESTION BANK (3 TIERS) ================= */
+    const QUIZ_QUESTIONS = [
+      // TIER 1: EASY (Questions 1 - 5)
       {
-        tier: "Tier 1 • Foundations",
+        tier: "Easy",
+        tierLabel: "Tier 1 • Easy",
         q: "In which city was Harish-Chandra born on October 11, 1923?",
-        options: ["Allahabad", "Kanpur", "Lucknow", "Varanasi"],
+        options: ["Allahabad (Prayagraj)", "Kanpur", "Varanasi", "Lucknow"],
         correct: 1,
-        exp: "Harish-Chandra was born in Kanpur, Uttar Pradesh, where his father was a civil engineer."
+        fact: "Harish-Chandra was born in Kanpur, where his father Chandrakishore was an executive civil engineer."
       },
       {
-        tier: "Tier 1 • Foundations",
-        q: "Who supervised his master's research at the University of Allahabad?",
-        options: ["C. V. Raman", "K. S. Krishnan", "S. N. Bose", "Homi Bhabha"],
-        correct: 1,
-        exp: "Renowned physicist Sir K. S. Krishnan recognized his mathematical genius and recommended him to Cambridge."
-      },
-      {
-        tier: "Tier 1 • Foundations",
-        q: "Who was Harish-Chandra's formal doctoral advisor at the University of Cambridge?",
-        options: ["Paul Dirac", "G. H. Hardy", "Max Born", "Arthur Eddington"],
+        tier: "Easy",
+        tierLabel: "Tier 1 • Easy",
+        q: "Which renowned Indian physicist supervised his Master's degree at Allahabad?",
+        options: ["Sir K. S. Krishnan", "Sir C. V. Raman", "S. N. Bose", "Homi Bhabha"],
         correct: 0,
-        exp: "He completed his PhD at Cambridge under Paul Dirac in 1947, investigating representations of the Lorentz group."
+        fact: "Sir K. S. Krishnan recognized his mathematical genius and recommended him directly to Paul Dirac at Cambridge."
       },
       {
-        tier: "Tier 1 • Foundations",
-        q: "During his European stay, whose lecture mistake did Harish-Chandra famously point out?",
+        tier: "Easy",
+        tierLabel: "Tier 1 • Easy",
+        q: "Who was Harish-Chandra's formal doctoral advisor at the University of Cambridge?",
+        options: ["G. H. Hardy", "Paul Dirac", "Max Born", "Arthur Eddington"],
+        correct: 1,
+        fact: "He completed his PhD at Cambridge under Paul Dirac in 1947, investigating representations of the Lorentz group."
+      },
+      {
+        tier: "Easy",
+        tierLabel: "Tier 1 • Easy",
+        q: "In which year did Harish-Chandra complete his PhD thesis at Cambridge?",
+        options: ["1943", "1945", "1947", "1951"],
+        correct: 2,
+        fact: "He submitted his doctoral thesis on infinite irreducible representations of the Lorentz group in 1947."
+      },
+      {
+        tier: "Easy",
+        tierLabel: "Tier 1 • Easy",
+        q: "Which discipline did Harish-Chandra establish as the master architect of modern mathematics?",
+        options: [
+          "Harmonic analysis & representation theory of Lie groups",
+          "Numerical fluid simulation",
+          "Actuarial probability",
+          "Graph network optimization"
+        ],
+        correct: 0,
+        fact: "He is universally revered as the architect of harmonic analysis and representation theory of semisimple Lie groups."
+      },
+
+      // TIER 2: MODERATE (Questions 6 - 10)
+      {
+        tier: "Moderate",
+        tierLabel: "Tier 2 • Moderate",
+        q: "During a seminar in Europe, whose blackboard calculation did Harish-Chandra famously correct?",
         options: ["Niels Bohr", "Werner Heisenberg", "Wolfgang Pauli", "Enrico Fermi"],
         correct: 2,
-        exp: "During a Pauli seminar, Harish-Chandra caught an algebraic error on the blackboard, gaining Pauli's esteem."
+        fact: "Harish-Chandra famously corrected Wolfgang Pauli during a lecture, winning Pauli's deep lifelong esteem."
       },
       {
-        tier: "Tier 1 • Foundations",
-        q: "What prompted Harish-Chandra's decisive transition from physics to pure mathematics?",
-        options: ["Lack of funding in physics", "Aversion to imprecise approximations", "Direct advice from Einstein", "Cambridge curriculum changes"],
-        correct: 1,
-        exp: "He believed theoretical physics relied too heavily on non-rigorous approximations rather than exact structural truths."
-      },
-
-      // Tier 2: Columbia & Semisimple Lie Groups (6-10)
-      {
-        tier: "Tier 2 • Semisimple Lie Groups",
-        q: "Harish-Chandra served as an influential faculty member at which university between 1950 and 1963?",
+        tier: "Moderate",
+        tierLabel: "Tier 2 • Moderate",
+        q: "Harish-Chandra served on the faculty of which university during his most fertile era (1950–1963)?",
         options: ["Harvard University", "Columbia University", "MIT", "Stanford University"],
         correct: 1,
-        exp: "His Columbia years were among his most productive, generating his monumental papers on Lie algebras."
+        fact: "His Columbia years were among his most productive, generating his foundational papers on Lie algebras."
       },
       {
-        tier: "Tier 2 • Semisimple Lie Groups",
-        q: "For which breakthrough work did he receive the AMS Cole Prize in 1954?",
-        options: ["Representations of semisimple Lie algebras", "Solution to Fermat's Last Theorem", "Calculus of Variations", "Topology of fiber bundles"],
+        tier: "Moderate",
+        tierLabel: "Tier 2 • Moderate",
+        q: "For which monumental research did he win the AMS Cole Prize in Algebra in 1954?",
+        options: [
+          "Universal enveloping algebras and semisimple Lie algebras",
+          "Resolution of the Poincaré Conjecture",
+          "Calculus of variations on spheres",
+          "Quantum electrodynamics renormalization"
+        ],
         correct: 0,
-        exp: "He won the 1954 Cole Prize in Algebra for foundational theorems on universal enveloping algebras."
+        fact: "He received the 1954 Cole Prize in Algebra for his structural theorems on universal enveloping algebras."
       },
       {
-        tier: "Tier 2 • Semisimple Lie Groups",
-        q: "What nature do the characters of infinite-dimensional representations take in Harish-Chandra's theory?",
-        options: ["Continuous scalar functions", "Invariant eigendistributions", "Polynomial invariants", "Discrete Dirac deltas"],
+        tier: "Moderate",
+        tierLabel: "Tier 2 • Moderate",
+        q: "What nature do characters of infinite-dimensional representations take in Harish-Chandra's theory?",
+        options: [
+          "Continuous scalar traces",
+          "Invariant eigendistributions",
+          "Finite polynomial rings",
+          "Constant eigenvalues"
+        ],
         correct: 1,
-        exp: "He proved characters exist as locally integrable functions that are invariant eigendistributions."
+        fact: "He proved that characters of infinite-dimensional representations exist as invariant eigendistributions."
       },
       {
-        tier: "Tier 2 • Semisimple Lie Groups",
-        q: "Which series of representations on real reductive groups was fundamentally classified by him?",
-        options: ["Discrete series", "Toral cascades", "Nilpotent sequences", "Affine lattices"],
+        tier: "Moderate",
+        tierLabel: "Tier 2 • Moderate",
+        q: "In 1963, Harish-Chandra was appointed permanent Professor at which world-renowned institution?",
+        options: [
+          "Institute for Advanced Study (IAS), Princeton",
+          "TIFR Mumbai",
+          "Cambridge Trinity College",
+          "Caltech"
+        ],
         correct: 0,
-        exp: "His discrete series construction solved a massive open problem in noncommutative harmonic analysis."
-      },
-      {
-        tier: "Tier 2 • Semisimple Lie Groups",
-        q: "In 1963, Harish-Chandra was appointed permanent professor at which prestigious institution?",
-        options: ["Institute for Advanced Study, Princeton", "TIFR Mumbai", "Oxford University", "Caltech"],
-        correct: 0,
-        exp: "He remained Professor at the Institute for Advanced Study (IAS), Princeton, until his passing in 1983."
+        fact: "He remained Professor at the Institute for Advanced Study, Princeton, until his passing in October 1983."
       },
 
-      // Tier 3: Langlands Program & Mathematical Synthesis (11-15)
+      // TIER 3: HARD (Questions 11 - 15)
       {
-        tier: "Tier 3 • The Infinite Synthesis",
-        q: "Harish-Chandra's Eisenstein integrals and harmonic analysis became the analytic foundation for which grand program?",
-        options: ["The Langlands Program", "Hilbert's 10th Problem", "String Topology", "Chaos Theory"],
+        tier: "Hard",
+        tierLabel: "Tier 3 • Hard (Expert)",
+        q: "Which fundamental series of representations on real reductive Lie groups was established by him?",
+        options: [
+          "Discrete series representations",
+          "Toral cascades",
+          "Fibonacci lattices",
+          "Affine modular rings"
+        ],
         correct: 0,
-        exp: "Robert Langlands famously noted that the analytic pillars of the Langlands program rest upon Harish-Chandra's work."
+        fact: "His construction of the discrete series solved a monumental open question in noncommutative harmonic analysis."
       },
       {
-        tier: "Tier 3 • The Infinite Synthesis",
-        q: "What principle did Harish-Chandra employ to extend real Lie group analysis to p-adic groups?",
-        options: ["The Lefschetz principle", "The Philosophy of Cusp Forms", "Eulerian summation", "The Plancherel inversion"],
-        correct: 1,
-        exp: "His 'Philosophy of Cusp Forms' bridged real harmonic analysis with reductive groups over non-Archimedean local fields."
-      },
-      {
-        tier: "Tier 3 • The Infinite Synthesis",
-        q: "Which major national honor was bestowed upon Harish-Chandra by the Government of India in 1974?",
-        options: ["Bharat Ratna", "Padma Vibhushan", "Padma Bhushan", "Shanti Swarup Bhatnagar Prize"],
-        correct: 1,
-        exp: "He was conferred the Padma Vibhushan in 1974 for his stellar mathematical achievements."
-      },
-      {
-        tier: "Tier 3 • The Infinite Synthesis",
-        q: "Which of the following describes the Harish-Chandra isomorphism?",
-        options: ["Isomorphism between centers of universal enveloping algebras and Weyl invariants", "Equivalence between finite simple groups", "Duality between homology and cohomology", "Mapping between quantum mechanics and gravity"],
+        tier: "Hard",
+        tierLabel: "Tier 3 • Hard (Expert)",
+        q: "Harish-Chandra's harmonic analysis and Eisenstein integrals serve as the analytic bedrock for which grand framework?",
+        options: [
+          "The Langlands Program & automorphic forms",
+          "Algorithmic Complexity Theory",
+          "String compactification manifolds only",
+          "Deterministic Chaos Theory"
+        ],
         correct: 0,
-        exp: "The isomorphism connects the center Z(𝔤) of the universal enveloping algebra with W-invariant polynomials on 𝔥."
+        fact: "Robert Langlands stated that the analytic pillar of automorphic forms and the Langlands program rests upon Harish-Chandra's work."
       },
       {
-        tier: "Tier 3 • The Infinite Synthesis",
-        q: "What renowned research institute in Prayagraj (Allahabad) is named in his honor?",
-        options: ["Harish-Chandra Research Institute (HRI)", "Prayagraj Center for Lie Algebras", "S.N. Bose National Institute", "Krishnan Institute of Sciences"],
+        tier: "Hard",
+        tierLabel: "Tier 3 • Hard (Expert)",
+        q: "Which doctrine did Harish-Chandra pioneer to extend real Lie group analysis to p-adic groups?",
+        options: [
+          "The Philosophy of Cusp Forms",
+          "The Lefschetz Axiom",
+          "The Cohomological Sieve",
+          "The Quantum Equivalence Postulate"
+        ],
         correct: 0,
-        exp: "The Harish-Chandra Research Institute (HRI) in Prayagraj was dedicated in his memory as a premier center."
+        fact: "His 'Philosophy of Cusp Forms' bridged real harmonic analysis with reductive algebraic groups over non-Archimedean local fields."
+      },
+      {
+        tier: "Hard",
+        tierLabel: "Tier 3 • Hard (Expert)",
+        q: "What does the Harish-Chandra isomorphism identify?",
+        options: [
+          "Center Z(𝔤) of universal enveloping algebra with Weyl-invariant polynomials",
+          "Lie groups with finite simple groups",
+          "Topological manifolds with algebraic varieties",
+          "Quantum mechanics with general relativity"
+        ],
+        correct: 0,
+        fact: "The isomorphism identifies the center Z(𝔤) with W-invariant symmetric algebra elements on the Cartan subalgebra."
+      },
+      {
+        tier: "Hard",
+        tierLabel: "Tier 3 • Hard (Expert)",
+        q: "Which premier civilian honor was conferred upon Harish-Chandra by the Government of India in 1974?",
+        options: ["Padma Vibhushan", "Bharat Ratna", "Padma Shri", "Shanti Swarup Bhatnagar Prize"],
+        correct: 0,
+        fact: "He was conferred the Padma Vibhushan in 1974 for his stellar services to mathematical science."
       }
     ];
 
+    /* ================= 5. QUIZ ENGINE RUNTIME ================= */
+    let participantName = "Honored Scholar";
     let currentQIdx = 0;
-    let quizScore = 0;
+    let totalScore = 0; // +50 per question -> Max: 750
     let timerSeconds = 25;
     let timerInterval = null;
-    let participantName = "Scholar";
-    let questionAnswered = false;
+    let isAnswered = false;
 
-    const ringCircle = document.getElementById('timerRing');
-    const ringText = document.getElementById('timerCount');
-    const totalDash = 157;
+    const ringPath = document.getElementById('timerRingPath');
+    const ringNumber = document.getElementById('timerNumber');
+    const timerRingBox = document.getElementById('timerRingBox');
+    const totalCircumference = 182.2;
 
-    function startChallenge() {
-      const nameVal = document.getElementById('participantNameInput').value.trim();
-      if (nameVal) participantName = nameVal;
-      document.getElementById('certParticipantName').innerText = participantName;
+    function handleStartQuiz(e) {
+      e.preventDefault();
+      soundSynth.click();
+      const input = document.getElementById('participantInput').value.trim();
+      if (input) participantName = input;
+      document.getElementById('certScholarName').innerText = participantName;
 
-      document.getElementById('quizRegView').style.display = 'none';
-      document.getElementById('quizActiveView').style.display = 'block';
-      loadQuestion();
+      currentQIdx = 0;
+      totalScore = 0;
+      document.getElementById('scoreVal').innerText = totalScore;
+
+      document.getElementById('quizPanelReg').classList.remove('active');
+      document.getElementById('quizPanelActive').classList.add('active');
+      renderCurrentQuestion();
     }
 
-    function loadQuestion() {
-      if (currentQIdx >= QUESTIONS.length) {
-        finishChallenge();
+    function renderCurrentQuestion() {
+      if (currentQIdx >= QUIZ_QUESTIONS.length) {
+        handleFinalVictory();
         return;
       }
 
-      questionAnswered = false;
+      isAnswered = false;
       document.getElementById('feedbackDrawer').style.display = 'none';
-      const item = QUESTIONS[currentQIdx];
 
-      document.getElementById('hudTierBadge').innerText = item.tier;
-      document.getElementById('hudCounter').innerText = `Question ${currentQIdx + 1} of 15`;
-      document.getElementById('questionText').innerText = item.q;
+      const q = QUIZ_QUESTIONS[currentQIdx];
+      document.getElementById('tierIndicator').innerText = q.tierLabel;
+      document.getElementById('qCountText').innerText = `Question ${currentQIdx + 1} of 15`;
+      document.getElementById('questionTitle').innerText = q.q;
 
-      const optsContainer = document.getElementById('optionsBox');
-      optsContainer.innerHTML = '';
+      const optsBox = document.getElementById('optionsBox');
+      optsBox.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
 
-      item.options.forEach((opt, idx) => {
+      q.options.forEach((opt, idx) => {
         const btn = document.createElement('button');
-        btn.className = 'option-btn';
-        btn.innerHTML = `<span style="color: var(--gold); font-weight:700;">${String.fromCharCode(65 + idx)}.</span> <span>${opt}</span>`;
-        btn.onclick = () => handleAnswer(idx);
-        optsContainer.appendChild(btn);
+        btn.className = 'opt-btn';
+        btn.innerHTML = `<span class="opt-letter">${letters[idx]}</span><span>${opt}</span>`;
+        btn.onclick = () => handleOptionSelected(idx);
+        optsBox.appendChild(btn);
       });
 
-      startTimer();
+      startQuestionTimer();
     }
 
-    function startTimer() {
+    function startQuestionTimer() {
       clearInterval(timerInterval);
       timerSeconds = 25;
       updateTimerUI();
@@ -1367,117 +1879,170 @@
       timerInterval = setInterval(() => {
         timerSeconds--;
         updateTimerUI();
-        if (timerSeconds <= 5 && timerSeconds > 0) playTick();
 
         if (timerSeconds <= 0) {
           clearInterval(timerInterval);
-          if (!questionAnswered) handleAnswer(-1);
+          if (!isAnswered) handleOptionSelected(-1);
         }
       }, 1000);
     }
 
     function updateTimerUI() {
-      ringText.innerText = timerSeconds;
-      const progress = (timerSeconds / 25);
-      const offset = totalDash - (progress * totalDash);
-      ringCircle.style.strokeDashoffset = offset;
+      ringNumber.innerText = timerSeconds;
+      const progress = timerSeconds / 25;
+      const offset = totalCircumference - (progress * totalCircumference);
+      ringPath.style.strokeDashoffset = offset;
 
       if (timerSeconds > 10) {
-        ringCircle.style.stroke = '#D4AF37';
+        ringPath.style.stroke = '#D4AF37'; // Gold
+        timerRingBox.classList.remove('timer-pulse-danger');
       } else if (timerSeconds > 5) {
-        ringCircle.style.stroke = '#F59E0B';
+        ringPath.style.stroke = '#F59E0B'; // Amber
+        timerRingBox.classList.remove('timer-pulse-danger');
       } else {
-        ringCircle.style.stroke = '#EF4444';
+        ringPath.style.stroke = '#EF4444'; // Crimson
+        timerRingBox.classList.add('timer-pulse-danger');
       }
     }
 
-    function handleAnswer(selectedIdx) {
-      if (questionAnswered) return;
-      questionAnswered = true;
+    function handleOptionSelected(selectedIdx) {
+      if (isAnswered) return;
+      isAnswered = true;
       clearInterval(timerInterval);
 
-      const item = QUESTIONS[currentQIdx];
-      const buttons = document.querySelectorAll('.option-btn');
+      const q = QUIZ_QUESTIONS[currentQIdx];
+      const buttons = document.querySelectorAll('.opt-btn');
       buttons.forEach(b => b.disabled = true);
 
-      const isCorrect = (selectedIdx === item.correct);
+      const isCorrect = (selectedIdx === q.correct);
 
       if (selectedIdx !== -1) {
-        buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'incorrect');
+        buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
       }
-      if (!isCorrect && buttons[item.correct]) {
-        buttons[item.correct].classList.add('correct');
+      if (!isCorrect && buttons[q.correct]) {
+        buttons[q.correct].classList.add('correct');
       }
 
       if (isCorrect) {
-        playChime();
-        quizScore += 100 + (timerSeconds * 4);
-        document.getElementById('hudScore').innerText = quizScore;
+        soundSynth.correct();
+        totalScore += 50; // Exact +50 points
+        document.getElementById('scoreVal').innerText = totalScore;
       } else {
-        playBuzz();
+        soundSynth.wrong();
       }
 
+      // Expand Fact Drawer
       const drawer = document.getElementById('feedbackDrawer');
-      const fTitle = document.getElementById('feedbackTitle');
-      const fExp = document.getElementById('feedbackExplanation');
+      const heading = document.getElementById('feedbackHeading');
+      const fact = document.getElementById('feedbackFact');
 
       drawer.style.display = 'block';
-      fTitle.innerText = isCorrect ? "✓ Exact & Rigorous Solution!" : (selectedIdx === -1 ? "⏱️ Time Elapsed!" : "✕ Structural Discrepancy");
-      fTitle.style.color = isCorrect ? "var(--success)" : "var(--crimson)";
-      fExp.innerText = item.exp;
+      if (isCorrect) {
+        heading.innerHTML = `<span style="color: var(--success);">✓ Exact & Rigorous Solution! (+50 pts)</span>`;
+      } else if (selectedIdx === -1) {
+        heading.innerHTML = `<span style="color: var(--danger);">⏱️ Time Elapsed! (0 pts)</span>`;
+      } else {
+        heading.innerHTML = `<span style="color: var(--danger);">✕ Incorrect (0 pts)</span>`;
+      }
+      fact.innerText = q.fact;
     }
 
-    function handleNextQuestion() {
+    function handleNextQuestionStep() {
+      soundSynth.click();
       currentQIdx++;
-      loadQuestion();
+
+      // Custom 3-Second Transition Popups
+      if (currentQIdx === 5) {
+        // After Easy Mode (Post Q5) -> Jumping Kitty
+        showTransitionModal(
+          '<div class="bouncing-kitty-box">🐱</div>',
+          'Easy Mode Cleared! 🐱',
+          'Awesome job! Jumping into the next stage! Get ready for Moderate concepts.',
+          () => renderCurrentQuestion()
+        );
+        return;
+      } else if (currentQIdx === 10) {
+        // After Moderate Mode (Post Q10) -> Good Work
+        showTransitionModal(
+          '<div class="celebrate-badge-star">🌟</div>',
+          'Good Work! 🌟',
+          'You have successfully mastered the Moderate concepts. Outstanding execution!',
+          () => {
+            // Immediate Pre-Hard Warning before Question 11
+            showTransitionModal(
+              '<div class="caution-alert-icon">⚠️</div>',
+              'Caution: Realm of Experts Ahead!',
+              'Now you are stepping into the realm of Experts - Be cautious!',
+              () => renderCurrentQuestion()
+            );
+          }
+        );
+        return;
+      }
+
+      renderCurrentQuestion();
     }
 
-    function finishChallenge() {
-      document.getElementById('quizActiveView').style.display = 'none';
-      document.getElementById('quizVictoryView').style.display = 'block';
+    function showTransitionModal(iconHtml, title, message, onComplete) {
+      soundSynth.fanfare();
+      const overlay = document.getElementById('transitionPopup');
+      document.getElementById('transitionAnimationSlot').innerHTML = iconHtml;
+      document.getElementById('transitionTitle').innerText = title;
+      document.getElementById('transitionMessage').innerText = message;
 
-      confetti({
-        particleCount: 120,
-        spread: 80,
-        origin: { y: 0.6 },
-        colors: ['#D4AF37', '#F3E5AB', '#4A0E17', '#10B981']
-      });
+      overlay.classList.add('active');
+
+      setTimeout(() => {
+        overlay.classList.remove('active');
+        if (onComplete) onComplete();
+      }, 3000);
     }
 
-    function resetQuiz() {
-      currentQIdx = 0;
-      quizScore = 0;
-      document.getElementById('hudScore').innerText = '0';
-      document.getElementById('quizVictoryView').style.display = 'none';
-      document.getElementById('quizRegView').style.display = 'block';
+    /* ================= 6. FINAL VICTORY & 4-CORNER CONFETTI ================= */
+    function handleFinalVictory() {
+      soundSynth.fanfare();
+      document.getElementById('quizPanelActive').classList.remove('active');
+      document.getElementById('quizPanelVictory').classList.add('active');
+
+      document.getElementById('victoryFinalBreakdown').innerText = 
+        `Participant: ${participantName} • Final Score: ${totalScore} / 750 Points (${Math.round((totalScore/750)*100)}% Mastery)`;
+      document.getElementById('certScoreDisplay').innerText = totalScore;
+
+      saveLeaderboardEntry(participantName, totalScore);
+
+      // 4-Corner Cannon Burst via canvas-confetti
+      triggerFourCornerCannons();
     }
 
-    /* ================= 4. MEMORIAL FLAME TRIBUTE ================= */
-    let tributeCount = parseInt(localStorage.getItem('hc_tributes_2026')) || 103;
-    document.getElementById('tributeDisplay').innerText = tributeCount;
+    function triggerFourCornerCannons() {
+      const end = Date.now() + 3000;
+      const colors = ['#D4AF37', '#F6E6B4', '#4A0E17', '#10B981', '#F59E0B'];
 
-    function offerTribute() {
-      tributeCount++;
-      localStorage.setItem('hc_tributes_2026', tributeCount.toString());
-      document.getElementById('tributeDisplay').innerText = tributeCount;
+      (function frame() {
+        // Top-Left & Top-Right
+        confetti({ particleCount: 5, angle: 315, spread: 60, origin: { x: 0, y: 0 }, colors: colors });
+        confetti({ particleCount: 5, angle: 225, spread: 60, origin: { x: 1, y: 0 }, colors: colors });
+        // Bottom-Left & Bottom-Right
+        confetti({ particleCount: 5, angle: 45, spread: 60, origin: { x: 0, y: 1 }, colors: colors });
+        confetti({ particleCount: 5, angle: 135, spread: 60, origin: { x: 1, y: 1 }, colors: colors });
 
-      playChime();
-
-      const flame = document.getElementById('memorialFlame');
-      flame.style.filter = 'drop-shadow(0 0 35px #FDE047) brightness(1.6)';
-      setTimeout(() => flame.style.filter = 'none', 1600);
-
-      confetti({
-        particleCount: 45,
-        spread: 60,
-        origin: { y: 0.8 },
-        colors: ['#F59E0B', '#D4AF37', '#EF4444']
-      });
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      }());
     }
 
-    /* ================= 5. CERTIFICATE EXPORT (RESPONSIVE PDF) ================= */
+    function resetQuizEngine() {
+      soundSynth.click();
+      document.getElementById('quizPanelVictory').classList.remove('active');
+      document.getElementById('quizPanelReg').classList.add('active');
+    }
+
+    /* ================= 7. CERTIFICATE EXPORT ENGINE (HIGH-DPI PDF) ================= */
     function openCertificateModal() {
-      document.getElementById('certVerifyStamp').innerText = `VERIFIED • SCORE: ${quizScore} • ${new Date().toLocaleDateString('en-GB')}`;
+      soundSynth.click();
+      const code = 'HC-CSJMU-' + Math.random().toString(36).substring(2, 8).toUpperCase() + '-2026';
+      document.getElementById('certVerifyCode').innerText = code;
       document.getElementById('certModal').classList.add('active');
     }
 
@@ -1485,48 +2050,116 @@
       document.getElementById('certModal').classList.remove('active');
     }
 
-    async function downloadCrispPDF() {
-      const element = document.getElementById('certificateElement');
-      
-      // Ensure element renders in pristine desktop dimension during capture
-      const prevTransform = element.style.transform;
-      element.style.transform = 'none';
+    async function downloadCertificatePDF() {
+      soundSynth.click();
+      const certNode = document.getElementById('certificateNode');
 
-      const canvasObj = await html2canvas(element, {
-        scale: 2.5,
+      // Snapshot with html2canvas at scale 2 (Crisp High-DPI landscape capture)
+      const canvasSnap = await html2canvas(certNode, {
+        scale: 2,
         useCORS: true,
+        allowTaint: true,
         backgroundColor: '#FFFFFF',
         width: 880,
         windowWidth: 1200
       });
 
-      element.style.transform = prevTransform;
-
-      const imgData = canvasObj.toDataURL('image/jpeg', 0.98);
+      const imgData = canvasSnap.toDataURL('image/jpeg', 0.98);
       const { jsPDF } = window.jspdf;
+
+      // Landscape A4 proportions matching the element dimensions exactly
       const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'pt',
-        format: [canvasObj.width / 2.5, canvasObj.height / 2.5]
+        format: [canvasSnap.width / 2, canvasSnap.height / 2]
       });
 
-      pdf.addImage(imgData, 'JPEG', 0, 0, canvasObj.width / 2.5, canvasObj.height / 2.5);
+      pdf.addImage(imgData, 'JPEG', 0, 0, canvasSnap.width / 2, canvasSnap.height / 2);
       pdf.save(`Harish_Chandra_Certificate_${participantName.replace(/\s+/g, '_')}.pdf`);
     }
 
-    /* ================= 6. UI UTILITIES ================= */
-    function toggleFact(el) {
-      const content = el.nextElementSibling;
-      content.classList.toggle('open');
-      const arrow = el.querySelector('span:last-child');
-      arrow.innerText = content.classList.contains('open') ? '▲' : '▼';
+    /* ================= 8. MEMORIAL DIYA TRIBUTES (LOCALSTORAGE) ================= */
+    let tributes = parseInt(localStorage.getItem('hc_tributes_103rd')) || 103;
+    document.getElementById('tributeDisplay').innerText = tributes;
+
+    function offerFloralTribute() {
+      tributes++;
+      localStorage.setItem('hc_tributes_103rd', tributes.toString());
+      document.getElementById('tributeDisplay').innerText = tributes;
+
+      soundSynth.correct();
+
+      const flame = document.getElementById('diyaFlame');
+      flame.style.filter = 'drop-shadow(0 0 40px #FDE047) brightness(1.7)';
+      setTimeout(() => flame.style.filter = 'none', 1600);
+
+      confetti({
+        particleCount: 50,
+        spread: 70,
+        origin: { y: 0.8 },
+        colors: ['#F59E0B', '#D4AF37', '#EF4444']
+      });
     }
 
-    const mobileBtn = document.getElementById('mobileMenuBtn');
-    const navMenu = document.getElementById('navMenu');
-    mobileBtn.addEventListener('click', () => {
-      navMenu.classList.toggle('mobile-open');
-    });
+    /* ================= 9. HALL OF HONOR (LEADERBOARD) ================= */
+    const DEFAULT_LEADERBOARD = [
+      { name: "Anshika Soni", tier: "Tier 3 (Hard)", score: 750 },
+      { name: "Shikha Singh Gaur", tier: "Tier 3 (Hard)", score: 750 },
+      { name: "Paul Dirac (Memorial)", tier: "Tier 3 (Hard)", score: 700 },
+      { name: "Sir K. S. Krishnan", tier: "Tier 3 (Hard)", score: 650 },
+      { name: "Lie Group Scholar", tier: "Tier 2 (Moderate)", score: 500 }
+    ];
+
+    function getLeaderboard() {
+      const stored = localStorage.getItem('hc_honor_records');
+      if (!stored) {
+        localStorage.setItem('hc_honor_records', JSON.stringify(DEFAULT_LEADERBOARD));
+        return DEFAULT_LEADERBOARD;
+      }
+      try {
+        return JSON.parse(stored);
+      } catch(e) {
+        return DEFAULT_LEADERBOARD;
+      }
+    }
+
+    function saveLeaderboardEntry(name, scoreVal) {
+      let list = getLeaderboard();
+      list.push({
+        name: name,
+        tier: "Tier 3 (Hard)",
+        score: scoreVal
+      });
+      list.sort((a, b) => b.score - a.score);
+      list = list.slice(0, 5);
+      localStorage.setItem('hc_honor_records', JSON.stringify(list));
+    }
+
+    function openLeaderboardModal() {
+      soundSynth.click();
+      const list = getLeaderboard();
+      const tbody = document.getElementById('honorTableBody');
+      tbody.innerHTML = '';
+
+      const medals = ['🥇', '🥈', '🥉', '4', '5'];
+      list.forEach((item, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="font-weight: 700;">${medals[idx]}</td>
+          <td style="font-weight: 600;">${item.name}</td>
+          <td style="color: var(--gold); font-size: 0.82rem;">${item.tier}</td>
+          <td style="font-weight: 700; color: var(--gold-light);">${item.score} pts</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('leaderboardModal').classList.add('active');
+    }
+
+    function closeLeaderboardModal() {
+      soundSynth.click();
+      document.getElementById('leaderboardModal').classList.remove('active');
+    }
   </script>
 </body>
 </html>
