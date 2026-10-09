@@ -865,7 +865,9 @@
       background: radial-gradient(circle, #FFFFF8 0%, #FAF6ED 100%);
     }
 
-    /* MEMORIAL FLAME & DIYA */
+    /* ==========================================================================
+       MEMORIAL FLAME & CONTINUOUS FLICKERING DIYA ANIMATION
+       ========================================================================== */
     .tribute-section {
       background: #F7F4EC;
       padding: clamp(3.5rem, 8vw, 6rem) 0;
@@ -912,6 +914,12 @@
       background: radial-gradient(circle, rgba(251, 191, 36, 0.35) 0%, rgba(245, 158, 11, 0.12) 45%, rgba(0,0,0,0) 70%);
       border-radius: 50%;
       pointer-events: none;
+      animation: haloPulse 2s infinite alternate ease-in-out;
+    }
+
+    @keyframes haloPulse {
+      0% { transform: translateX(-50%) scale(0.92); opacity: 0.65; }
+      100% { transform: translateX(-50%) scale(1.12); opacity: 1; }
     }
 
     .diya-container {
@@ -921,6 +929,7 @@
       z-index: 2;
     }
 
+    /* ALL-THE-TIME FLICKERING & SWAYING FLAME */
     .flame-element {
       width: 36px;
       height: 60px;
@@ -929,6 +938,36 @@
       border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
       box-shadow: 0 0 25px #F59E0B, 0 0 50px #EA580C;
       position: relative;
+      transform-origin: center bottom;
+      animation: flameWaver 1.2s infinite ease-in-out alternate;
+    }
+
+    @keyframes flameWaver {
+      0% {
+        transform: scale(1) rotate(-1.5deg);
+        box-shadow: 0 0 24px #F59E0B, 0 0 45px #EA580C;
+        border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
+      }
+      25% {
+        transform: scale(1.04, 0.96) rotate(2deg) skewX(1deg);
+        box-shadow: 0 0 30px #FBBF24, 0 0 52px #F97316;
+        border-radius: 46% 54% 38% 32% / 62% 58% 42% 38%;
+      }
+      50% {
+        transform: scale(0.97, 1.05) rotate(-2.5deg) skewX(-1.5deg);
+        box-shadow: 0 0 26px #F59E0B, 0 0 48px #EA580C;
+        border-radius: 54% 46% 32% 38% / 58% 62% 38% 42%;
+      }
+      75% {
+        transform: scale(1.02, 0.98) rotate(1deg);
+        box-shadow: 0 0 32px #FDE047, 0 0 55px #EA580C;
+        border-radius: 48% 52% 36% 34% / 60% 60% 40% 40%;
+      }
+      100% {
+        transform: scale(0.98, 1.03) rotate(-1deg);
+        box-shadow: 0 0 25px #F59E0B, 0 0 50px #EA580C;
+        border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
+      }
     }
 
     .diya-bowl {
